@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "target": "ES6",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/pages/api/authToken.js",
+    "src/pages/api/retrieveRendered.ts"
+, "src/pages/api/retrieveInstance.js", "src/app/image/[id]/page.tsx"  ],
+  "exclude": ["node_modules"]
+}
