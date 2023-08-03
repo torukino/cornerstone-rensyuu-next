@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { clientBySeriesUID } from '@/tools/gcp/clientBySeriesUID';
 import { convertDicomTagsToJson } from '@/tools/gcp/convertDicomTagsToJson';
 import { CLIENTFLAT } from '@/types/clients/clientFlat';
-import { CLIENTSERIES } from '@/types/clients/clientWithSeriesArray';
+import { CLIENTSERIES } from '@/types/clients/clientWithSeries';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const response = await fetch(

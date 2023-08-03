@@ -1,28 +1,29 @@
-import {  createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import {CLIENTUNIQUEID } from '@/types/clientUniqueId'
+import { CLIENTUNIQUEID } from '@/types/clients/clientUniqueId';
 
-const BUG = false
+const BUG = false;
 
 export interface CLIENTUNIQUEID_ {
-  clientUniqueIds:CLIENTUNIQUEID[]
+  clientUniqueIds: CLIENTUNIQUEID[];
 }
 
 const initialState: CLIENTUNIQUEID_ = {
   clientUniqueIds: [],
-}
+};
 export const clientUniqueIdsSlice = createSlice({
-  name: "clientUniqueIds",
+  name: 'clientUniqueIds',
   initialState,
   reducers: {
     resetClientUniqueIds: (state) => {
-      state.clientUniqueIds = initialState.clientUniqueIds
+      state.clientUniqueIds = initialState.clientUniqueIds;
     },
     setClientUniqueIds: (state, action: PayloadAction<CLIENTUNIQUEID[]>) => {
-      state.clientUniqueIds = action.payload
+      state.clientUniqueIds = action.payload;
     },
   },
-})
-export const { resetClientUniqueIds, setClientUniqueIds } = clientUniqueIdsSlice.actions
+});
+export const { resetClientUniqueIds, setClientUniqueIds } =
+  clientUniqueIdsSlice.actions;
 
-export default clientUniqueIdsSlice.reducer
+export default clientUniqueIdsSlice.reducer;

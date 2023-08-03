@@ -4,6 +4,8 @@ import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import { initDemo, setTitleAndDescription } from '@/tools/cornerstoneTools';
 
 export const initStackBasic = async (idName: string): Promise<void> => {
+
+  
   // This is for debugging purposes
   console.warn(
     'Click on index.ts to open source code for this example --------->',
@@ -55,16 +57,16 @@ export const initStackBasic = async (idName: string): Promise<void> => {
     const viewportId = 'CT_STACK';
     const viewportInput = {
       defaultOptions: {
-        background: <Types.Point3>[0.2, 0, 0.2],
+        background: <Types.Point3>[0.5, 0.2, 0.2],// 背景色
       },
-      element,
-      type: ViewportType.STACK,
-      viewportId,
+      element,// 画像を表示する要素
+      type: ViewportType.STACK,// 画像を表示するタイプ
+      viewportId,// 画像を表示するID
     };
 
-    renderingEngine.enableElement(viewportInput);
+    renderingEngine.enableElement(viewportInput);// 画像を表示する要素を有効化
 
-    // Get the stack viewport that was created
+    // Get the stack viewport
     const viewport = <Types.IStackViewport>(
       renderingEngine.getViewport(viewportId)
     );

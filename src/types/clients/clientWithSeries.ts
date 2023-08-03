@@ -21,3 +21,18 @@ export interface SERIES {
   SOPInstanceUID?: string;
   StudyInstanceUID?: string;
 }
+
+export const initClientWithSeries = {
+  id: '',
+  name: '',
+  age: '',
+  birthday: '',
+  date: '',
+  DerivativeDiscription: '',
+  gender: '',
+  No: '',
+  seriesArray: [],
+  time: '',
+  type: '',
+  yomi: '',
+};

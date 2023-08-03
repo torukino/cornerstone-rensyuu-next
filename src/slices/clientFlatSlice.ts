@@ -1,28 +1,28 @@
-import {  createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import {CLIENTFLAT } from '@/types/clientFlat'
+import { CLIENTFLAT } from '@/types/clients/clientFlat';
 
-const BUG = false
+const BUG = false;
 
 export interface CLIENFLAT_ {
-  clientFlat:CLIENTFLAT[]
+  clientFlat: CLIENTFLAT[];
 }
 
 const initialState: CLIENFLAT_ = {
   clientFlat: [],
-}
+};
 export const clientFlatSlice = createSlice({
-  name: "clientFlat",
+  name: 'clientFlat',
   initialState,
   reducers: {
     resetClientFlat: (state) => {
-      state.clientFlat = initialState.clientFlat
+      state.clientFlat = initialState.clientFlat;
     },
     setClientFlat: (state, action: PayloadAction<CLIENTFLAT[]>) => {
-      state.clientFlat = action.payload
+      state.clientFlat = action.payload;
     },
   },
-})
-export const { resetClientFlat, setClientFlat } = clientFlatSlice.actions
+});
+export const { resetClientFlat, setClientFlat } = clientFlatSlice.actions;
 
-export default clientFlatSlice.reducer
+export default clientFlatSlice.reducer;
