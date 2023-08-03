@@ -1,6 +1,4 @@
 import StackBasic from '@/components/cornerstone3d/BasicStack';
-import StackAPI from '@/components/cornerstone3d/StackAPI';
-import StackVOISigmoid from '@/components/cornerstone3d/StackVOISigmoid';
 
 export default async function Page() {
   const res = await fetch('http://localhost:3000/api/hellox');
@@ -14,8 +12,8 @@ export default async function Page() {
         <div className="flex flex-wrap">
           <div className="ml-8">
             <StackBasic />
-            <StackAPI />
-            <StackVOISigmoid />
+            {/* <StackAPI />
+            <StackVOISigmoid /> */}
           </div>
 
           {/* <div className="ml-4 mt-8">
