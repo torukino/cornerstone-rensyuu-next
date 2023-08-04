@@ -2,8 +2,9 @@ import { Enums, RenderingEngine, Types } from '@cornerstonejs/core';
 
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import { initDemo, setTitleAndDescription } from '@/tools/cornerstoneTools';
+import { CLIENTFLAT } from '@/types/clients/clientFlat';
 
-export const initStackBasic = async (idName: string): Promise<void> => {
+export const initStackBasic = async (idName: string, clientFlat: CLIENTFLAT): Promise<void> => {
 
   
   // This is for debugging purposes
@@ -38,7 +39,7 @@ export const initStackBasic = async (idName: string): Promise<void> => {
     await initDemo(gcp);
 
     // Get Cornerstone imageIds and fetch metadata into RAM
-    const imageIds = await getImageIds(gcp);
+    const imageIds = await getImageIds(gcp, clientFlat);
 
     // createImageIdsAndCacheMetaData({
     //   gcp,

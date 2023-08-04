@@ -3,14 +3,19 @@
 import React, { useEffect, useRef } from 'react';
 
 import { initStackBasic } from '@/components/cornerstone3d/tools/stackBasic';
+import { CLIENTFLAT } from '@/types/clients/clientFlat';
 
-const StackBasic = () => {
+interface PROPS {
+  clientFlat: CLIENTFLAT;
+}
+
+const StackBasic: React.FC<PROPS> = ({ clientFlat }) => {
   const idName = 'stackBasic';
   const initialized = useRef(false);
 
   useEffect(() => {
     const run = async () => {
-      await initStackBasic(idName);
+      await initStackBasic(idName, clientFlat);
     };
     if (!initialized.current) {
       // ここで useRef の値をチェックします。

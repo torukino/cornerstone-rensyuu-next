@@ -1,3 +1,4 @@
+import StackBasic from '@/components/cornerstone3d/BasicStack';
 import { convertDicomTagsToJson } from '@/tools/gcp/convertDicomTagsToJson';
 import { CLIENTFLAT } from '@/types/clients/clientFlat';
 
@@ -41,6 +42,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <div>
+      {focusedArray && focusedArray.length > 0 && (
+        <StackBasic clientFlat={focusedArray[0]} />
+      )}
       {focusedArray.map((client, index) => (
         <div key={index}>
           <span>{client.id}</span>
