@@ -262,10 +262,10 @@
     gl-matrix "^3.4.3"
     lodash.clonedeep "4.5.0"
 
-"@cornerstonejs/core@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@cornerstonejs/core/-/core-1.1.8.tgz#8040055e45fc74d91b1f6b32b8974947b696e4fc"
-  integrity sha512-2dcSBYhhKoHaiN7+pQkKNmH5JzymXThx+JzLzG4F5BDGYfHOL2A1bxhVsYGhnbZNIfbxBOPQuIchXJjnfwuFeg==
+"@cornerstonejs/core@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@cornerstonejs/core/-/core-1.10.0.tgz#a9e0ba2c7dbdb91d8a9408d1e9ddcef1cd2d4e4d"
+  integrity sha512-TBf70LPom1WboLqUCS7FDMSSxyXOW9BpG6G7JSahD1xxC/aNP1Ut1J2QNVtpSXdajFQTDZz9PaPIRTYfERLPRQ==
   dependencies:
     "@kitware/vtk.js" "27.3.1"
     detect-gpu "^5.0.22"
@@ -286,19 +286,19 @@
     pako "^2.0.4"
     uuid "^9.0.0"
 
-"@cornerstonejs/streaming-image-volume-loader@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@cornerstonejs/streaming-image-volume-loader/-/streaming-image-volume-loader-1.1.8.tgz#1db9b675670d40a58c1d76120e506c4b044d1dd1"
-  integrity sha512-TkN7gAcGEO3JaDCyJCHcNO5EyLQLA+ndmsRIHkbaePO91Y+wY3vTsir7alBXs6PIxaM4gRNJmAdHNEKXJixMxw==
+"@cornerstonejs/streaming-image-volume-loader@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@cornerstonejs/streaming-image-volume-loader/-/streaming-image-volume-loader-1.10.0.tgz#6e4aa5278a6f36e5a15ab28901ba7568caa7eb4f"
+  integrity sha512-eaGNcLi0eI/8HXPFyPS1HtvYOvsTiku7VFpNJDqeQdr8VEZ4P2nSEsnDRmnAWZMvcp4YPrj1Xx59lOcpg8Rgtw==
   dependencies:
-    "@cornerstonejs/core" "^1.1.8"
+    "@cornerstonejs/core" "^1.10.0"
 
-"@cornerstonejs/tools@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@cornerstonejs/tools/-/tools-1.1.8.tgz#dc3f73c6e9b1355d592397536a4435a2fb17cce8"
-  integrity sha512-uc8f2ck0mZZ5TcCw6Erz87sRM9nezpNKGELMRlBO1QR/podEUBjAxhIWnHkJf4nRSB5BGQ9+xaYKC4jZ1q54jg==
+"@cornerstonejs/tools@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@cornerstonejs/tools/-/tools-1.10.0.tgz#e062196c1dff7da94555cdea2fe8c1fca9a9a513"
+  integrity sha512-kUTVOc7e/58TNCk6TOJyjbBe0NilYtCHgQJeQIO/20FWNJFW7bg/SbKBNFMcsLZjUqkFJPBvc5EFnAulR+7skw==
   dependencies:
-    "@cornerstonejs/core" "^1.1.8"
+    "@cornerstonejs/core" "^1.10.0"
     lodash.clonedeep "4.5.0"
     lodash.get "^4.4.2"
 

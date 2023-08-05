@@ -11,21 +11,26 @@ interface PROPS {
 const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
   const [SeriesInstanceUID, setSeriesInstanceUID] = useState<string>('');
   const [StudyInstanceUID, setStudyInstanceUID] = useState<string>('');
+  const [DerivativeDiscription, setDerivativeDiscription] =
+    useState<string>('');
 
   const selectImage = (c: CLIENTSERIES) => {
     console.log(`${c.id} ${c.name} ${c.DerivativeDiscription}`);
     setSeriesInstanceUID('');
     setStudyInstanceUID('');
+    setDerivativeDiscription('');
     if (
       c &&
       c.seriesArray &&
       c.seriesArray.length > 0 &&
       c.seriesArray[0] &&
       c.seriesArray[0].SeriesInstanceUID &&
-      c.seriesArray[0].StudyInstanceUID
+      c.seriesArray[0].StudyInstanceUID &&
+      c.DerivativeDiscription
     ) {
       setSeriesInstanceUID(c.seriesArray[0].SeriesInstanceUID);
       setStudyInstanceUID(c.seriesArray[0].StudyInstanceUID);
+      setDerivativeDiscription(c.DerivativeDiscription);
     }
   };
 
@@ -59,6 +64,7 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
         <StackBasic
           SeriesInstanceUID={SeriesInstanceUID}
           StudyInstanceUID={StudyInstanceUID}
+          DerivativeDiscription={DerivativeDiscription}
         />
       )}
     </div>

@@ -1,0 +1,31 @@
+import RGB from '@types/cornerstone/RGB';
+
+type ColormapRegistration = {
+  ColorSpace: string;
+  Name: string;
+  RGBPoints: RGB[];
+};
+
+type OpacityMapping = {
+  /** value to map to opacity */
+  opacity: number;
+  /** opacity value */
+  value: number;
+};
+
+type ColormapPublic = {
+  /** name of the colormap */
+  name?: string;
+  opacity?: OpacityMapping[] | number;
+  /** midpoint mapping between values to opacity if the colormap
+   * is getting used for fusion, this is an array of arrays which
+   * each array containing 2 values, the first value is the value
+   * to map to opacity and the second value is the opacity value.
+   * By default, the minimum value is mapped to 0 opacity and the
+   * maximum value is mapped to 1 opacity, but you can configure
+   * the points in the middle to be mapped to different opacities
+   * instead of a linear mapping from 0 to 1.
+   */
+};
+
+export type { ColormapPublic, ColormapRegistration, OpacityMapping };
