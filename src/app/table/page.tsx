@@ -1,8 +1,8 @@
 import ClientUniqueIdTable from '@/components/ClientUniqueIdTable';
 import { convertAllClientFlatToClientUniqueById } from '@/tools/gcp/convertAllClientFlatToClientUniqueById';
 import { convertDicomTagsToJson } from '@/tools/gcp/convertDicomTagsToJson';
-import { CLIENTFLAT } from '@/types/clientFlat';
-import { CLIENTUNIQUEID } from '@/types/clientUniqueId';
+import { CLIENTFLAT } from '@/types/clients/clientFlat';
+import { CLIENTUNIQUEID } from '@/types/clients/clientUniqueId';
 
 export const Table = async () => {
   // Call the new API endpoint to get the auth token

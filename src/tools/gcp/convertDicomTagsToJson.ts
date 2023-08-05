@@ -1,6 +1,6 @@
 import { parse } from 'date-fns';
 
-import { CLIENTFLAT } from '../../types/clientFlat';
+import { CLIENTFLAT } from '@/types/clients/clientFlat';
 
 const calculateAge = (birthdate: Date, referenceDate: Date): string => {
   let age = referenceDate.getFullYear() - birthdate.getFullYear();

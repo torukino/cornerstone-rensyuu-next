@@ -1,5 +1,4 @@
-import Link from 'next/link';
-
+import TableClient from '@/app/cornerstone/tableClient/TableClient';
 import { clientBySeriesUID } from '@/tools/gcp/clientBySeriesUID';
 import { convertDicomTagsToJson } from '@/tools/gcp/convertDicomTagsToJson';
 import { CLIENTFLAT } from '@/types/clients/clientFlat';
@@ -36,50 +35,8 @@ export default async function Page({ params }: { params: { id: string } }) {
           <span>ヨミ</span>
           <span>{clientWithSeriesArray[0].yomi}</span>
         </div>
+        <TableClient clientWithSeriesArray={clientWithSeriesArray} />
       </div>
-
-      <table className="table-auto">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">内訳</th>
-            <th className="px-4 py-2">作成日</th>
-            <th className="px-4 py-2">年齢</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clientWithSeriesArray.map((c, i) => (
-            <tr key={i}>
-              <td className="border px-4 py-2">
-                <Link
-                  href={`/selectedData/${encodeURIComponent(
-                    c.id + ':' + c.DerivativeDiscription + ':' + c.date,
-                  )}`}
-                >
-                  {c.DerivativeDiscription}
-                </Link>
-              </td>
-              <td className="border px-4 py-2">
-                <Link
-                  href={`/selectedData/${encodeURIComponent(
-                    c.id + ':' + c.DerivativeDiscription + ':' + c.date,
-                  )}`}
-                >
-                  {c.date}
-                </Link>
-              </td>
-              <td className="border px-4 py-2">
-                <Link
-                  href={`/selectedData/${encodeURIComponent(
-                    c.id + ':' + c.DerivativeDiscription + ':' + c.date,
-                  )}`}
-                >
-                  {c.date}
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 }

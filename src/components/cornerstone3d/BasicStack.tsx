@@ -1,28 +1,33 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 import { initStackBasic } from '@/components/cornerstone3d/tools/stackBasic';
-import { CLIENTFLAT } from '@/types/clients/clientFlat';
 
 interface PROPS {
-  clientFlat: CLIENTFLAT;
+  SeriesInstanceUID: string;
+  StudyInstanceUID: string;
 }
 
-const StackBasic: React.FC<PROPS> = ({ clientFlat }) => {
+const StackBasic: React.FC<PROPS> = ({
+  SeriesInstanceUID,
+  StudyInstanceUID,
+}) => {
   const idName = 'stackBasic';
-  const initialized = useRef(false);
-
+  const run = async (SeriesInstanceUID: string, StudyInstanceUID: string) => {
+    await initStackBasic(idName, SeriesInstanceUID, StudyInstanceUID);
+  };
   useEffect(() => {
-    const run = async () => {
-      await initStackBasic(idName, clientFlat);
-    };
-    if (!initialized.current) {
-      // ここで useRef の値をチェックします。
-      run();
-      initialized.current = true; // ここで useRef の値をセットします。
+    if (SeriesInstanceUID && StudyInstanceUID) {
+      run(SeriesInstanceUID, StudyInstanceUID);
     }
-  }, []);
+    return () => {
+      const element = document.getElementById(`${idName}-content`);
+      if (element) {
+        element.innerHTML = '';
+      }
+    };
+  }, [SeriesInstanceUID, StudyInstanceUID]);
   return (
     <div>
       <h1 id={`${idName}-title`} className="text-3xl"></h1>

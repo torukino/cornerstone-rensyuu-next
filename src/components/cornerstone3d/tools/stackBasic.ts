@@ -2,11 +2,12 @@ import { Enums, RenderingEngine, Types } from '@cornerstonejs/core';
 
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import { initDemo, setTitleAndDescription } from '@/tools/cornerstoneTools';
-import { CLIENTFLAT } from '@/types/clients/clientFlat';
 
-export const initStackBasic = async (idName: string, clientFlat: CLIENTFLAT): Promise<void> => {
-
-  
+export const initStackBasic = async (
+  idName: string,
+  SeriesInstanceUID: string,
+  StudyInstanceUID: string,
+): Promise<void> => {
   // This is for debugging purposes
   console.warn(
     'Click on index.ts to open source code for this example --------->',
@@ -39,7 +40,7 @@ export const initStackBasic = async (idName: string, clientFlat: CLIENTFLAT): Pr
     await initDemo(gcp);
 
     // Get Cornerstone imageIds and fetch metadata into RAM
-    const imageIds = await getImageIds(gcp, clientFlat);
+    const imageIds = await getImageIds(gcp, SeriesInstanceUID, StudyInstanceUID);
 
     // createImageIdsAndCacheMetaData({
     //   gcp,
@@ -58,14 +59,14 @@ export const initStackBasic = async (idName: string, clientFlat: CLIENTFLAT): Pr
     const viewportId = 'CT_STACK';
     const viewportInput = {
       defaultOptions: {
-        background: <Types.Point3>[0.5, 0.2, 0.2],// 背景色
+        background: <Types.Point3>[0.8, 0.0, 0.2], // 背景色
       },
-      element,// 画像を表示する要素
-      type: ViewportType.STACK,// 画像を表示するタイプ
-      viewportId,// 画像を表示するID
+      element, // 画像を表示する要素
+      type: ViewportType.STACK, // 画像を表示するタイプ
+      viewportId, // 画像を表示するID
     };
 
-    renderingEngine.enableElement(viewportInput);// 画像を表示する要素を有効化
+    renderingEngine.enableElement(viewportInput); // 画像を表示する要素を有効化
 
     // Get the stack viewport
     const viewport = <Types.IStackViewport>(

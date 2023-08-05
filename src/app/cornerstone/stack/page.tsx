@@ -1,5 +1,3 @@
-import StackBasic from '@/components/cornerstone3d/BasicStack';
-
 export default async function Page() {
   const res = await fetch('http://localhost:3000/api/hellox');
   const data = await res.json();
@@ -11,8 +9,8 @@ export default async function Page() {
         <div className="ml-8 text-2xl text-blue-600">Stack Series</div>
         <div className="flex flex-wrap">
           <div className="ml-8">
-            <StackBasic />
-            {/* <StackAPI />
+            {/*  <StackBasic />
+           <StackAPI />
             <StackVOISigmoid /> */}
           </div>
 

@@ -1,13 +1,10 @@
 import createImageIdsAndCacheMetaData from '@/tools/cornerstoneTools/createImageIdsAndCacheMetaData';
-import { CLIENTFLAT } from '@/types/clients/clientFlat';
 
 export const getImageIds = async (
   gcp: boolean,
-  clientFlat: CLIENTFLAT,
+  SeriesInstanceUID: string,
+  StudyInstanceUID: string,
 ): Promise<string[]> => {
-  const SeriesInstanceUID = clientFlat.SeriesInstanceUID;
-  const StudyInstanceUID = clientFlat.StudyInstanceUID;
-
   const imageIds = await createImageIdsAndCacheMetaData({
     gcp,
     SeriesInstanceUID: SeriesInstanceUID,
