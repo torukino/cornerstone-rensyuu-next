@@ -1,8 +1,8 @@
-import { CLIENTFLAT } from '../../types/clients/clientFlat';
+import { CLIENTFLAT } from '@/types/clients/clientFlat';
 import {
   CLIENTUNIQUEID,
   initClientUniqueId,
-} from '../../types/clients/clientUniqueId';
+} from '@/types/clients/clientUniqueId';
 
 export function convertAllClientFlatToClientUniqueById(
   all_Info: CLIENTFLAT[],

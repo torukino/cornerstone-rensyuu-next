@@ -1,8 +1,10 @@
 import { getUrl } from '@/tools/gcp/getUrl';
-import { CLIENTFLAT } from '@/types/clientFlat';
-import { CLIENTSERIES } from '@/types/clientWithSeriesArray';
+import { CLIENTFLAT } from '@/types/clients/clientFlat';
+import { CLIENTSERIES } from '@/types/clients/clientWithSeries';
 
-export const clientBySeriesUID = (clientWithSelectedId: CLIENTFLAT[]):CLIENTSERIES[] => {
+export const clientBySeriesUID = (
+  clientWithSelectedId: CLIENTFLAT[],
+): CLIENTSERIES[] => {
   const seriesUIDArray = clientWithSelectedId.map(
     (c) => c['SeriesInstanceUID'],
   );
@@ -19,9 +21,11 @@ export const clientBySeriesUID = (clientWithSelectedId: CLIENTFLAT[]):CLIENTSERI
     const seriesArray = clients.map((cc: CLIENTFLAT) => {
       const url: string = getUrl(cc);
       return {
+        imagePositionPatient: cc.imagePositionPatient,
         InstanceUID: cc.InstanceUID,
         SeriesInstanceUID: cc.SeriesInstanceUID,
         SeriesNumber: cc.SeriesNumber,
+        sliceLocation: cc.sliceLocation,
         SOPInstanceUID: cc.SOPInstanceUID,
         StudyInstanceUID: cc.StudyInstanceUID,
         url: url,

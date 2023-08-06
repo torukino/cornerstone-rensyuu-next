@@ -15,9 +15,11 @@ export interface CLIENTSERIES {
 
 export interface SERIES {
   dicom?: ArrayBuffer;
+  imagePositionPatient?: string;
   InstanceUID?: string;
   SeriesInstanceUID?: string;
   SeriesNumber?: string;
+  sliceLocation?: string;
   SOPInstanceUID?: string;
   StudyInstanceUID?: string;
 }

@@ -9,11 +9,27 @@ const calculateAge = (birthdate: Date, referenceDate: Date): string => {
     age--;
   }
   return age.toString().padStart(3, '0') + 'Y';
-}
+};
 
 export const convertDicomTagsToJson = (inputData: any): CLIENTFLAT => {
-  const birthdate = parse(inputData['00100030']['Value'][0], "yyyyMMdd", new Date());
-  const referenceDate = parse(inputData['00080020']['Value'][0], "yyyyMMdd", new Date());
+  const birthdate = parse(
+    inputData['00100030']['Value'][0],
+    'yyyyMMdd',
+    new Date(),
+  );
+  const referenceDate = parse(
+    inputData['00080020']['Value'][0],
+    'yyyyMMdd',
+    new Date(),
+  );
+  const imagePositionPatient =
+    inputData['00200032'] && inputData['00200032'].Value
+      ? inputData['00200032']['Value']
+      : null;
+  const sliceLocation =
+    inputData['00201041'] && inputData['00201041'].Value
+      ? inputData['00201041']['Value'][0]
+      : null;
 
   const outputData: CLIENTFLAT = {
     id: inputData['00100020']['Value'][0],
@@ -21,16 +37,21 @@ export const convertDicomTagsToJson = (inputData: any): CLIENTFLAT => {
     age: calculateAge(birthdate, referenceDate),
     birthday: inputData['00100030']['Value'][0],
     date: inputData['00080020']['Value'][0],
-    DerivativeDiscription: inputData['0008103E'] && inputData['0008103E'].Value ? inputData['0008103E']['Value'][0] : null, 
+    DerivativeDiscription:
+      inputData['0008103E'] && inputData['0008103E'].Value
+        ? inputData['0008103E']['Value'][0]
+        : null,
     gender: inputData['00100040']['Value'][0],
-    No: inputData['00200013'].Value ? inputData['00200013']['Value'][0] : null, 
+    imagePositionPatient: imagePositionPatient,
+    No: inputData['00200013'].Value ? inputData['00200013']['Value'][0] : null,
     SeriesInstanceUID: inputData['0020000E']['Value'][0],
     SeriesNumber: inputData['00200010']['Value'][0],
+    sliceLocation: sliceLocation,
     SOPInstanceUID: inputData['00080018']['Value'][0],
-    StudyInstanceUID: inputData['0020000D']['Value'][0], 
+    StudyInstanceUID: inputData['0020000D']['Value'][0],
     time: inputData['00080030']['Value'][0],
     type: inputData['00080060']['Value'][0],
     yomi: inputData['00100010']['Value'][0]['Phonetic'],
   };
   return outputData;
-}
+};

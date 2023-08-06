@@ -3,8 +3,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { convertAllClientFlatToClientUniqueById } from '@/tools/gcp/convertAllClientFlatToClientUniqueById';
 import { convertDicomTagsToJson } from '@/tools/gcp/convertDicomTagsToJson';
 import { getHealthcareSetting } from '@/tools/gcp/healthcareSetting';
-import { CLIENTFLAT } from '@/types/clientFlat';
-import { CLIENTUNIQUEID } from '@/types/clientUniqueId';
+import { CLIENTFLAT } from '@/types/clients/clientFlat';
+import { CLIENTUNIQUEID } from '@/types/clients/clientUniqueId';
 
 export default async function handler(
   req: NextApiRequest,

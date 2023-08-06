@@ -5,7 +5,9 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  mode: 'jit',
   plugins: [],
+  purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     extend: {
       backgroundImage: {
@@ -15,4 +17,4 @@ module.exports = {
       },
     },
   },
-}
+};

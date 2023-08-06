@@ -1,11 +1,11 @@
-export default function addButtonToToolbar({
+export default function addButtonToToolbarBetauchi({
   title,
   container,
   idName,
   onClick,
 }: {
   title: string;
-  container?: HTMLElement;
+  container: HTMLElement;
   idName: string;
   onClick: () => void;
 }) {
@@ -14,10 +14,6 @@ export default function addButtonToToolbar({
   button.id = idName || '';
   button.innerHTML = title;
   button.onclick = onClick;
-
-  if (!container) {
-    container = document.getElementById(idName + '-toolbar') || undefined;
-  }
 
   container && container.append(button);
 }
