@@ -17,7 +17,12 @@ console.warn(
   'Click on index.ts to open source code for this example --------->',
 );
 
-export const initVolumeBasic = (idName: string) => {
+export const initVolumeBasic = (
+  idName: string,
+  SeriesInstanceUID: string,
+  StudyInstanceUID: string,
+  DerivativeDiscription: string,
+) => {
   const { ViewportType } = Enums;
 
   // ======== Set up page ======== //
@@ -45,7 +50,11 @@ export const initVolumeBasic = (idName: string) => {
     await initDemo(gcp);
 
     // Get Cornerstone imageIds and fetch metadata into RAM
-    const imageIds = await getImageIds(gcp);
+    const imageIds = await getImageIds(
+      gcp,
+      SeriesInstanceUID,
+      StudyInstanceUID,
+    );
 
     // createImageIdsAndCacheMetaData({
     //   gcp,
@@ -99,7 +108,22 @@ export const initVolumeBasic = (idName: string) => {
     ]);
     console.log('viewport --- 2', viewport.sWidth);
     // Render the image
-    viewport.setProperties({ voiRange: { lower: -1500, upper: 2500 } });
+    // viewport.setProperties({ voiRange: { lower: -1500, upper: 2500 } });
+
+    if (DerivativeDiscription.includes('T1'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 1500 } });
+    if (DerivativeDiscription.includes('T2 '))
+      //注意：T2の後ろに半角スペースが入っている
+      viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
+    if (DerivativeDiscription.includes('FLAIR'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 1500 } });
+    if (DerivativeDiscription.includes('DWI'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 1000 } });
+    if (DerivativeDiscription.includes('Apparent Diffusion Coefficient'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
+    if (DerivativeDiscription.includes('T2*'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
+
     viewport.render();
 
     console.log('viewport --- 3', viewport.sWidth);

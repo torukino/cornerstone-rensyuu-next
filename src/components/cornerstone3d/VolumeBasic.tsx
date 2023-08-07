@@ -1,29 +1,45 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 import { initVolumeBasic } from '@/components/cornerstone3d/tools/volumeBasic';
 
-const VolumeBasic = () => {
-  const idName = 'VolumeBasic';
-  const initialized = useRef(false);
-  useEffect(() => {
-    const run = async () => {
-      const content = document.getElementById(idName + '-content');
-      const toolbar = document.getElementById(idName + '-toolbar');
-      if (content && toolbar) {
-        content.innerHTML = '';
-        toolbar.innerHTML = '';
+interface PROPS {
+  DerivativeDiscription: string;
+  SeriesInstanceUID: string;
+  StudyInstanceUID: string;
+}
 
-        await initVolumeBasic(idName);
-      }
-    };
-    if (!initialized.current) {
-      // ここで useRef の値をチェックします。
-      run();
-      initialized.current = true; // ここで useRef の値をセットします。
+const VolumeBasic: React.FC<PROPS> = ({
+  DerivativeDiscription,
+  SeriesInstanceUID,
+  StudyInstanceUID,
+}) => {
+  const idName = 'VolumeBasic';
+  const run = async (
+    SeriesInstanceUID: string,
+    StudyInstanceUID: string,
+    DerivativeDiscription: string,
+  ) => {
+    await initVolumeBasic(
+      idName,
+      SeriesInstanceUID,
+      StudyInstanceUID,
+      DerivativeDiscription,
+    );
+  };
+
+  useEffect(() => {
+    if (SeriesInstanceUID && StudyInstanceUID && DerivativeDiscription) {
+      run(SeriesInstanceUID, StudyInstanceUID, DerivativeDiscription);
     }
-  }, []);
+    return () => {
+      const toolbar = document.getElementById(`${idName}-toolbar`);
+      if (toolbar) toolbar.innerHTML = '';
+      const content = document.getElementById(`${idName}-content`);
+      if (content) content.innerHTML = '';
+    };
+  }, [SeriesInstanceUID, StudyInstanceUID, DerivativeDiscription]);
 
   return (
     <div>
