@@ -55,8 +55,7 @@ export const initVolumeBasic = (
       SeriesInstanceUID,
       StudyInstanceUID,
     );
-
-    // createImageIdsAndCacheMetaData({
+    // const imageIds =  createImageIdsAndCacheMetaData({
     //   gcp,
     //   SeriesInstanceUID:
     //     '1.3.6.1.4.1.14519.5.2.1.7009.2403.226151125820845824875394858561',
@@ -110,6 +109,10 @@ export const initVolumeBasic = (
     // Render the image
     // viewport.setProperties({ voiRange: { lower: -1500, upper: 2500 } });
 
+
+    console.log('DerivativeDiscription', DerivativeDiscription);
+    if (DerivativeDiscription.includes('VSRAD'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 1500 } });
     if (DerivativeDiscription.includes('T1'))
       viewport.setProperties({ voiRange: { lower: 0, upper: 1500 } });
     if (DerivativeDiscription.includes('T2 '))
@@ -127,6 +130,7 @@ export const initVolumeBasic = (
     viewport.render();
 
     console.log('viewport --- 3', viewport.sWidth);
+    console.log('viewport --- 4', JSON.stringify(viewport, null, 2));
   }
 
   run();

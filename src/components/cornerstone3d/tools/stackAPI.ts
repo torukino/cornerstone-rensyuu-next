@@ -18,7 +18,12 @@ console.warn(
   'This is for debugging purposes: Click on index.ts to open source code for this example --------->',
 );
 
-export const initStackAPI = async (idName: string): Promise<void> => {
+export const initStackAPI = async (
+  idName: string,
+  SeriesInstanceUID: string,
+  StudyInstanceUID: string,
+  DerivativeDiscription: string,
+): Promise<void> => {
   // if (!content) return;
   const { Events, ViewportType } = Enums;
 
@@ -330,7 +335,7 @@ export const initStackAPI = async (idName: string): Promise<void> => {
 
     const viewportInput = {
       defaultOptions: {
-        background: <Types.Point3>[0.2, 0, 0.2],
+        background: <Types.Point3>[0.8, 0, 0.2],
       },
       element: element,
       type: ViewportType.STACK,
@@ -344,16 +349,37 @@ export const initStackAPI = async (idName: string): Promise<void> => {
       renderingEngine.getViewport(viewportId)
     );
 
-    const imageIds = await getImageIds(gcp);
-    // Define a stack containing a few images
-    const stack = [imageIds[0], imageIds[1], imageIds[2], imageIds[3]];
 
+    const imageIds = await getImageIds(
+      gcp,
+      SeriesInstanceUID,
+      StudyInstanceUID,
+    );
+
+    imageIds.sort();
+
+
+    // Define a stack containing a few images
+    // const stack = [imageIds[0], imageIds[1], imageIds[2], imageIds[3]];
+const stack = imageIds
     // Set the stack on the viewport
     await viewport.setStack(stack);
 
     // Set the VOI of the stack
-    viewport.setProperties({ voiRange: { lower: -1500, upper: 2500 } });
-
+    // viewport.setProperties({ voiRange: { lower: -1500, upper: 2500 } });
+    if (DerivativeDiscription.includes('T1'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 1500 } });
+    if (DerivativeDiscription.includes('T2 '))
+      //注意：T2の後ろに半角スペースが入っている
+      viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
+    if (DerivativeDiscription.includes('FLAIR'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 1500 } });
+    if (DerivativeDiscription.includes('DWI'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 1000 } });
+    if (DerivativeDiscription.includes('Apparent Diffusion Coefficient'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
+    if (DerivativeDiscription.includes('T2*'))
+      viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
     // Render the image
     viewport.render();
   };

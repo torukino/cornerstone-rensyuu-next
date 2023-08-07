@@ -1,22 +1,43 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 import { initStackAPI } from '@/components/cornerstone3d/tools/stackAPI';
 
-const StackAPI = () => {
+interface PROPS {
+  DerivativeDiscription: string;
+  SeriesInstanceUID: string;
+  StudyInstanceUID: string;
+}
+
+const StackAPI: React.FC<PROPS> = ({
+  DerivativeDiscription,
+  SeriesInstanceUID,
+  StudyInstanceUID,
+}) => {
   const idName = 'stackAPI';
-  const initialized = useRef(false);
-
+  const run = async (
+    SeriesInstanceUID: string,
+    StudyInstanceUID: string,
+    DerivativeDiscription: string,
+  ) => {
+    await initStackAPI(
+      idName,
+      SeriesInstanceUID,
+      StudyInstanceUID,
+      DerivativeDiscription,
+    );
+  };
   useEffect(() => {
-    const run = async () => {
-      await initStackAPI(idName);
-    };
-
-    if (!initialized.current) {
-      run();
-      initialized.current = true;
+    if (SeriesInstanceUID && StudyInstanceUID && DerivativeDiscription) {
+      run(SeriesInstanceUID, StudyInstanceUID, DerivativeDiscription);
     }
-  }, []);
+    return () => {
+      const toolbar = document.getElementById(`${idName}-toolbar`);
+      if (toolbar) toolbar.innerHTML = '';
+      const content = document.getElementById(`${idName}-content`);
+      if (content) content.innerHTML = '';
+    };
+  }, [SeriesInstanceUID, StudyInstanceUID, DerivativeDiscription]);
 
   return (
     <div>

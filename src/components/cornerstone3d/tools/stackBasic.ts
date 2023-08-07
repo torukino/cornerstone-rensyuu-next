@@ -108,6 +108,9 @@ export const initStackBasic = async (
       viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
     if (DerivativeDiscription.includes('T2*'))
       viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
+
+    console.log('viewport --- ', JSON.stringify(viewport, null, 2));
+
     // Render the image
     viewport.render();
 

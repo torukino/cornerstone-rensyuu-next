@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 
-import StackBasicBetauchi from '@/components/cornerstone3d/BasicStackBetauchi';
-import VolumeBasic from '@/components/cornerstone3d/VolumeBasic';
+import StackBasic from '@/components/cornerstone3d/BasicStack';
+import StackAPI from '@/components/cornerstone3d/StackAPI';
 import { CLIENTSERIES } from '@/types/clients/clientWithSeries';
 
 interface PROPS {
@@ -55,7 +55,7 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
                 <p>{clientWithSeries.date}</p>
               </td>
               <td className="border px-4 py-2">
-                <p>{clientWithSeries.date}</p>
+                <p>{clientWithSeries.age}</p>
               </td>
             </tr>
           ))}
@@ -63,16 +63,21 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
       </table>
       {SeriesInstanceUID && StudyInstanceUID && (
         <div>
-          {/* <StackBasic
-            SeriesInstanceUID={SeriesInstanceUID}
-            StudyInstanceUID={StudyInstanceUID}
-            DerivativeDiscription={DerivativeDiscription}
-          /> */}
-          <StackBasicBetauchi
+          <StackBasic
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
           />
+          <StackAPI
+            SeriesInstanceUID={SeriesInstanceUID}
+            StudyInstanceUID={StudyInstanceUID}
+            DerivativeDiscription={DerivativeDiscription}
+          />
+          {/* <StackBasicBetauchi
+            SeriesInstanceUID={SeriesInstanceUID}
+            StudyInstanceUID={StudyInstanceUID}
+            DerivativeDiscription={DerivativeDiscription}
+          /> */}
 
           {/* <VolumeBasic
             SeriesInstanceUID={SeriesInstanceUID}
