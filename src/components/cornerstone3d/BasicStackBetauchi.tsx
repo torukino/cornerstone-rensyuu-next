@@ -1,16 +1,26 @@
 'use client';
-
 import {
+  Enums,
   getRenderingEngine,
   RenderingEngine,
   Types,
 } from '@cornerstonejs/core';
+import * as cornerstoneTools from '@cornerstonejs/tools';
 import React, { useEffect } from 'react';
 
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import ViewportType from '@/enums/cornerstone/ViewportType';
-import { initDemo } from '@/tools/cornerstoneTools';
-import addButtonToToolbarBetauchi from '@/tools/cornerstoneTools/addButtonToToolbarBetauchi';
+import {
+  addButtonToToolbar,
+  camera as cameraHelpers,
+  initDemo,
+} from '@/tools/cornerstoneTools';
+
+const {
+  Enums: csToolsEnums,
+  ToolGroupManager,
+  WindowLevelTool,
+} = cornerstoneTools;
 
 const BUG = false;
 interface PROPS {
@@ -25,6 +35,8 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
   StudyInstanceUID,
 }) => {
   const idName = 'stackBasicBetauchi';
+  const { MouseBindings } = csToolsEnums;
+  const toolGroupId = 'STACK_TOOL_GROUP_ID';
 
   const run = async (
     idName: string,
@@ -33,13 +45,135 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
     DerivativeDiscription: string,
   ): Promise<void> => {
     const content = document.getElementById(idName + '-content');
+    
     const element = document.createElement('div');
     element.id = idName + 'cornerstone-element';
     element.style.width = '500px';
     element.style.height = '500px';
-    content && content.appendChild(element);
+    content?.appendChild(element);
+
+    //Eventsを表示するためのdiv
+    const lastEvents: any[] = [];
+    const lastEventsDiv = document.createElement('div');
+    content?.appendChild(lastEventsDiv);
+
+    function updateLastEvents(
+      number: number,
+      eventName: string,
+      detail: string,
+    ) {
+      if (lastEvents.length > 4) {
+        // `lastEvents`配列の末尾から要素を削除する
+        lastEvents.pop();
+      }
+      // `detail`、`eventName`、`number`をプロパティとして持つオブジェクトを作成し、`lastEvents`配列の先頭に追加する
+      lastEvents.unshift({ detail, eventName, number });
+
+      // Display
+      lastEventsDiv.innerHTML = '';
+
+      lastEvents.forEach((le) => {
+        const element = document.createElement('p');
+        element.className = 'border border-black p-2 text-blue-500 text-sm whitespace-normal';
+        element.innerText = le.number + ' ' + le.eventName + '\n\n' + le.detail;
+
+        lastEventsDiv.appendChild(element);
+      });
+    }
+
+    let eventNumber = 1;
+
+    const { CAMERA_MODIFIED, IMAGE_RENDERED, STACK_NEW_IMAGE } = Enums.Events;
+
+    element.addEventListener(IMAGE_RENDERED, ((
+      evt: Types.EventTypes.ImageRenderedEvent,
+    ) => {
+      updateLastEvents(eventNumber, IMAGE_RENDERED, JSON.stringify(evt.detail));
+      eventNumber++;
+    }) as EventListener);
+
+    element.addEventListener(CAMERA_MODIFIED, ((
+      evt: Types.EventTypes.CameraModifiedEvent,
+    ) => {
+      updateLastEvents(
+        eventNumber,
+        CAMERA_MODIFIED,
+        JSON.stringify(evt.detail),
+      );
+      eventNumber++;
+    }) as EventListener);
+
+    element.addEventListener(STACK_NEW_IMAGE, ((
+      evt: Types.EventTypes.StackNewImageEvent,
+    ) => {
+      // Remove the image since then we serialize a bunch of pixelData to the screen.
+      const { imageId, renderingEngineId, viewportId } = evt.detail;
+      const detail = {
+        image: 'cornerstoneImageObject',
+        imageId,
+        renderingEngineId,
+        viewportId,
+      };
+
+      updateLastEvents(eventNumber, STACK_NEW_IMAGE, JSON.stringify(detail));
+      eventNumber++;
+    }) as EventListener);
+
+    // マウスの座標を取得するためのHTML要素を作成
+    const mousePosDiv = document.createElement('div');
+    const canvasPosElement = document.createElement('p');
+    const worldPosElement = document.createElement('p');
+    canvasPosElement.innerText = 'canvas:';
+    worldPosElement.innerText = 'world:';
+    content?.appendChild(mousePosDiv);
+
+    mousePosDiv.appendChild(canvasPosElement);
+    mousePosDiv.appendChild(worldPosElement);
+    // Get the viewport element
+    element.addEventListener('mousemove', (evt) => {
+      const rect = element.getBoundingClientRect();
+      const canvasPos: Types.Point2 = [
+        Math.floor(evt.clientX - rect.left),
+        Math.floor(evt.clientY - rect.top),
+      ];
+      // Convert canvas coordinates to world coordinates
+      const worldPos = viewport.canvasToWorld(canvasPos);
+
+      canvasPosElement.innerText = `canvas座標: (${canvasPos[0]}, ${canvasPos[1]})`;
+      worldPosElement.innerText = `world座標: (${worldPos[0].toFixed(
+        2,
+      )}, ${worldPos[1].toFixed(2)}, ${worldPos[2].toFixed(2)})`;
+    });
+    canvasPosElement.className = 'text-xl text-blue-800';
+    worldPosElement.className = 'text-xl text-blue-800';
+    //ここまで
+
     const gcp = true;
     await initDemo(gcp);
+
+    // Add tools to Cornerstone3D
+    try {
+      cornerstoneTools.addTool(WindowLevelTool);
+    } catch (e) {
+      console.log('error', e);
+    }
+    // Define a tool group, which defines how mouse events map to tool commands for
+    // Any viewport using the group
+    const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
+
+    // Add the tools to the tool group
+    toolGroup?.addTool(WindowLevelTool.toolName);
+
+    // Set the initial state of the tools, here we set one tool active on left click.
+    // This means left click will draw that tool.
+    toolGroup?.setToolActive(WindowLevelTool.toolName, {
+      bindings: [
+        {
+          mouseButton: MouseBindings.Primary, // Left Click
+        },
+      ],
+    });
+
     // Get Cornerstone imageIds and fetch metadata into RAM
     const imageIds = await getImageIds(
       gcp,
@@ -63,7 +197,7 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
       type: ViewportType.STACK, // 画像を表示するタイプ
       viewportId, // 画像を表示するID
     };
-
+    toolGroup?.addViewport(viewportId, renderingEngineId);
     renderingEngine.enableElement(viewportInput); // 画像を表示する要素を有効化
 
     // Get the stack viewport
@@ -95,7 +229,202 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
 
     const container = document.getElementById(`${idName}-toolbar`);
     container &&
-      addButtonToToolbarBetauchi({
+      addButtonToToolbar({
+        title: '線型VOI',
+        container,
+        idName,
+        onClick: () => {
+          // Get the rendering engine
+          const renderingEngine = getRenderingEngine(renderingEngineId);
+
+          // Get the stack viewport
+          const viewport = renderingEngine?.getViewport(
+            viewportId,
+          ) as Types.IStackViewport;
+
+          // Set a range to highlight bones
+          viewport.setProperties({
+            VOILUTFunction: Enums.VOILUTFunctionType.LINEAR,
+          });
+
+          viewport.render();
+        },
+      });
+
+    container &&
+      addButtonToToolbar({
+        title: 'シグモイドVOI',
+        container,
+        idName,
+        onClick: () => {
+          // Get the rendering engine
+          const renderingEngine = getRenderingEngine(renderingEngineId);
+
+          // Get the stack viewport
+          const viewport = renderingEngine?.getViewport(
+            viewportId,
+          ) as Types.IStackViewport;
+
+          // Set a range to highlight bones
+          viewport.setProperties({
+            VOILUTFunction: Enums.VOILUTFunctionType.SAMPLED_SIGMOID,
+          });
+
+          viewport.render();
+        },
+      });
+
+    container &&
+      addButtonToToolbar({
+        title: '拡大・縮小（ランダム）',
+        container,
+        idName,
+
+        onClick: () => {
+          // Get the rendering engine
+          const renderingEngine = getRenderingEngine(renderingEngineId);
+
+          // Get the stack viewport
+          const viewport = renderingEngine?.getViewport(
+            viewportId,
+          ) as Types.IStackViewport;
+
+          // Reset the camera so that we can set some pan and zoom relative to the
+          // defaults for this demo. Note that changes could be relative instead.
+          viewport.resetCamera();
+
+          // Get the current camera properties
+          const camera = viewport.getCamera();
+
+          const { focalPoint, parallelScale, position } =
+            cameraHelpers.getRandomlyTranslatedAndZoomedCameraProperties(
+              camera,
+              50,
+            );
+
+          const newCamera = {
+            focalPoint: focalPoint as Types.Point3,
+            parallelScale,
+            position: position as Types.Point3,
+          };
+
+          viewport.setCamera(newCamera);
+          viewport.render();
+        },
+      });
+
+    container &&
+      addButtonToToolbar({
+        title: 'リセット',
+        container,
+        idName,
+        onClick: () => {
+          // Get the rendering engine
+          const renderingEngine = getRenderingEngine(renderingEngineId);
+
+          // Get the stack viewport
+          const viewport = renderingEngine?.getViewport(
+            viewportId,
+          ) as Types.IStackViewport;
+
+          // Resets the viewport's camera
+          viewport.resetCamera();
+          // Resets the viewport's properties
+          viewport.resetProperties();
+          viewport.render();
+        },
+      });
+
+    container &&
+      addButtonToToolbar({
+        title: '白黒反転',
+        container,
+        idName,
+        onClick: () => {
+          // Get the rendering engine
+          const renderingEngine = getRenderingEngine(renderingEngineId);
+
+          // Get the stack viewport
+          const viewport = renderingEngine?.getViewport(
+            viewportId,
+          ) as Types.IStackViewport;
+
+          const { invert } = viewport.getProperties();
+
+          viewport.setProperties({ invert: !invert });
+
+          viewport.render();
+        },
+      });
+
+    container &&
+      addButtonToToolbar({
+        title: '30°ずつの回転',
+        container,
+        idName,
+        onClick: () => {
+          // Get the rendering engine
+          const renderingEngine = getRenderingEngine(renderingEngineId);
+
+          // Get the stack viewport
+          const viewport = renderingEngine?.getViewport(
+            viewportId,
+          ) as Types.IStackViewport;
+
+          const { rotation } = viewport.getProperties();
+          console.log('rotation:', rotation);
+          const newRotation = (rotation || 0) + 30;
+          viewport.setProperties({ rotation: newRotation });
+
+          viewport.render();
+        },
+      });
+
+    container &&
+      addButtonToToolbar({
+        title: '左右反転',
+        container,
+        idName,
+        onClick: () => {
+          // Get the rendering engine
+          const renderingEngine = getRenderingEngine(renderingEngineId);
+
+          // Get the stack viewport
+          const viewport = renderingEngine?.getViewport(
+            viewportId,
+          ) as Types.IStackViewport;
+
+          const { flipHorizontal } = viewport.getCamera();
+          viewport.setCamera({ flipHorizontal: !flipHorizontal });
+
+          viewport.render();
+        },
+      });
+
+    container &&
+      addButtonToToolbar({
+        title: '上下反転',
+        container,
+        idName,
+        onClick: () => {
+          // Get the rendering engine
+          const renderingEngine = getRenderingEngine(renderingEngineId);
+
+          // Get the stack viewport
+          const viewport = renderingEngine?.getViewport(
+            viewportId,
+          ) as Types.IStackViewport;
+
+          const { flipVertical } = viewport.getCamera();
+
+          viewport.setCamera({ flipVertical: !flipVertical });
+
+          viewport.render();
+        },
+      });
+
+    container &&
+      addButtonToToolbar({
         title: '次',
         container,
         idName,
@@ -128,7 +457,7 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
         },
       });
     container &&
-      addButtonToToolbarBetauchi({
+      addButtonToToolbar({
         title: '前',
         container,
         idName,
@@ -175,6 +504,7 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
       const toolbar = document.getElementById(`${idName}-toolbar`);
       if (toolbar) toolbar.innerHTML = '';
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [SeriesInstanceUID, StudyInstanceUID, DerivativeDiscription]);
   return (
     <div className="mb-10 ml-10">

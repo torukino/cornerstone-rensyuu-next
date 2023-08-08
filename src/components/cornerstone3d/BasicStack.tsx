@@ -43,7 +43,10 @@ const StackBasic: React.FC<PROPS> = ({
     <div className="mb-10 ml-10">
       <h1 id={`${idName}-title`} className="text-3xl"></h1>
       <p id={`${idName}-description`} className="text-xl text-blue-800"></p>
-      <div id={`${idName}-toolbar`} className="justify-between text-blue-500"></div>
+      <div
+        id={`${idName}-toolbar`}
+        className="flex flex-wrap justify-between text-blue-500"
+      ></div>
       <div id={`${idName}-content`} className="items-center"></div>
     </div>
   );

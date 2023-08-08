@@ -2,9 +2,9 @@ import { vec3 } from 'gl-matrix';
 
 export default function getRandomlyTranslatedAndZoomedCameraProperties(
   camera,
-  maxTranslateInMM
+  maxTranslateInMM,
 ) {
-  const { viewUp, viewPlaneNormal, parallelScale, position, focalPoint } =
+  const { focalPoint, parallelScale, position, viewPlaneNormal, viewUp } =
     camera;
 
   // Modify the zoom by some factor
@@ -41,7 +41,7 @@ export default function getRandomlyTranslatedAndZoomedCameraProperties(
 
   return {
     focalPoint: newFocalPoint,
-    position: newPosition,
     parallelScale: newParallelScale,
+    position: newPosition,
   };
 }
