@@ -51,6 +51,38 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
     element.style.width = '500px';
     element.style.height = '500px';
     content?.appendChild(element);
+ // マウスの座標を取得するためのHTML要素を作成
+    const mousePosDiv = document.createElement('div');
+    const canvasPosElement = document.createElement('p');
+    const worldPosElement = document.createElement('p');
+    canvasPosElement.innerText = 'canvas:';
+    worldPosElement.innerText = 'world:';
+    content?.appendChild(mousePosDiv);
+
+    mousePosDiv.appendChild(canvasPosElement);
+    mousePosDiv.appendChild(worldPosElement);
+    // Get the viewport element
+    element.addEventListener('mousemove', (evt) => {
+      const rect = element.getBoundingClientRect();
+      const canvasPos: Types.Point2 = [
+        Math.floor(evt.clientX - rect.left),
+        Math.floor(evt.clientY - rect.top),
+      ];
+      // Convert canvas coordinates to world coordinates
+      const worldPos = viewport.canvasToWorld(canvasPos);
+
+      canvasPosElement.innerText = `canvas座標: (${canvasPos[0]}, ${canvasPos[1]})`;
+      worldPosElement.innerText = `world座標: (${worldPos[0].toFixed(
+        2,
+      )}, ${worldPos[1].toFixed(2)}, ${worldPos[2].toFixed(2)})`;
+    });
+    canvasPosElement.className = 'text-xl text-purple-800';
+    worldPosElement.className = 'text-xl text-purple-800 mb-10';
+    //ここまで
+
+
+
+
 
     //Eventsを表示するためのdiv
     const lastEvents: any[] = [];
@@ -119,35 +151,7 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
       eventNumber++;
     }) as EventListener);
 
-    // マウスの座標を取得するためのHTML要素を作成
-    const mousePosDiv = document.createElement('div');
-    const canvasPosElement = document.createElement('p');
-    const worldPosElement = document.createElement('p');
-    canvasPosElement.innerText = 'canvas:';
-    worldPosElement.innerText = 'world:';
-    content?.appendChild(mousePosDiv);
-
-    mousePosDiv.appendChild(canvasPosElement);
-    mousePosDiv.appendChild(worldPosElement);
-    // Get the viewport element
-    element.addEventListener('mousemove', (evt) => {
-      const rect = element.getBoundingClientRect();
-      const canvasPos: Types.Point2 = [
-        Math.floor(evt.clientX - rect.left),
-        Math.floor(evt.clientY - rect.top),
-      ];
-      // Convert canvas coordinates to world coordinates
-      const worldPos = viewport.canvasToWorld(canvasPos);
-
-      canvasPosElement.innerText = `canvas座標: (${canvasPos[0]}, ${canvasPos[1]})`;
-      worldPosElement.innerText = `world座標: (${worldPos[0].toFixed(
-        2,
-      )}, ${worldPos[1].toFixed(2)}, ${worldPos[2].toFixed(2)})`;
-    });
-    canvasPosElement.className = 'text-xl text-blue-800';
-    worldPosElement.className = 'text-xl text-blue-800';
-    //ここまで
-
+   
     const gcp = true;
     await initDemo(gcp);
 
