@@ -45,13 +45,14 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
     DerivativeDiscription: string,
   ): Promise<void> => {
     const content = document.getElementById(idName + '-content');
-    
+
     const element = document.createElement('div');
     element.id = idName + 'cornerstone-element';
     element.style.width = '500px';
     element.style.height = '500px';
     content?.appendChild(element);
- // マウスの座標を取得するためのHTML要素を作成
+
+    // マウスの座標を取得するためのHTML要素を作成　ここから
     const mousePosDiv = document.createElement('div');
     const canvasPosElement = document.createElement('p');
     const worldPosElement = document.createElement('p');
@@ -78,13 +79,16 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
     });
     canvasPosElement.className = 'text-xl text-purple-800';
     worldPosElement.className = 'text-xl text-purple-800 mb-10';
-    //ここまで
+    // マウスの座標を取得するためのHTML要素を作成　ここまで
+
+    //ズーム操作ツールを追加する ここから
+    
 
 
 
+    //ズーム操作ツールを追加する ここまで
 
-
-    //Eventsを表示するためのdiv
+    //Eventsを表示するためのdiv ここから
     const lastEvents: any[] = [];
     const lastEventsDiv = document.createElement('div');
     content?.appendChild(lastEventsDiv);
@@ -106,7 +110,8 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
 
       lastEvents.forEach((le) => {
         const element = document.createElement('p');
-        element.className = 'border border-black p-2 text-blue-500 text-sm whitespace-normal';
+        element.className =
+          'border border-black p-2 text-blue-500 text-sm whitespace-normal';
         element.innerText = le.number + ' ' + le.eventName + '\n\n' + le.detail;
 
         lastEventsDiv.appendChild(element);
@@ -150,8 +155,8 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
       updateLastEvents(eventNumber, STACK_NEW_IMAGE, JSON.stringify(detail));
       eventNumber++;
     }) as EventListener);
+    //Eventsを表示するためのdiv ここまで
 
-   
     const gcp = true;
     await initDemo(gcp);
 
@@ -178,7 +183,7 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
       ],
     });
 
-    // Get Cornerstone imageIds and fetch metadata into RAM
+    // コーナーストーンのimageIdsを取得し、メタデータをRAMに取り込む
     const imageIds = await getImageIds(
       gcp,
       SeriesInstanceUID,
@@ -187,11 +192,11 @@ const StackBasicBetauchi: React.FC<PROPS> = ({
 
     imageIds.sort();
 
-    // Instantiate a rendering engine
+    //レンダリング・エンジンをインスタンス化する
     const renderingEngineId = idName + '-RenderingEngine';
     const renderingEngine = new RenderingEngine(renderingEngineId);
 
-    // Create a stack viewport
+    // スタックビューポートの作成
     const viewportId = ' MRI_STACK';
     const viewportInput = {
       defaultOptions: {
