@@ -92,10 +92,17 @@ const StackBasicBetauchiToru: React.FC<PROPS> = ({
     content?.append(instructions);
 
     // Add tools to Cornerstone3D
-    cornerstoneTools.addTool(PanTool);
-    cornerstoneTools.addTool(WindowLevelTool);
-    cornerstoneTools.addTool(StackScrollMouseWheelTool);
-    cornerstoneTools.addTool(ZoomTool);
+    // cornerstoneTools.addTool(PanTool);
+    // cornerstoneTools.addTool(WindowLevelTool);
+    // cornerstoneTools.addTool(StackScrollMouseWheelTool);
+    // cornerstoneTools.addTool(ZoomTool);
+
+    if (!ToolGroupManager.getToolGroup(toolGroupId)) {
+      cornerstoneTools.addTool(PanTool);
+      cornerstoneTools.addTool(WindowLevelTool);
+      cornerstoneTools.addTool(StackScrollMouseWheelTool);
+      cornerstoneTools.addTool(ZoomTool);
+    }
 
     // ツールグループを定義し、
     // マウスイベントが以下のツールコマンドにどのようにマッピングされるかを定義します。
