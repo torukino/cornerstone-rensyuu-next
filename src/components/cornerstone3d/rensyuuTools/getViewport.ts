@@ -1,12 +1,12 @@
 import { RenderingEngine, Types } from '@cornerstonejs/core';
 import { ViewportType } from '@cornerstonejs/core/dist/esm/enums';
 
-export const getBaseViewport = async (
+export const getBaseViewport =  (
   imageIds: string[],
   element: HTMLDivElement,
   renderingEngineId: string,
   viewportId: string,
-): Promise<Types.IStackViewport> => {
+): Types.IStackViewport => {
   //レンダリング・エンジンをインスタンス化する
   const renderingEngine = new RenderingEngine(renderingEngineId);
 
@@ -21,13 +21,11 @@ export const getBaseViewport = async (
   };
   renderingEngine.enableElement(viewportInput); // 画像を表示する要素を有効化
   // スタックビューポートを取得します。
-  const viewport = renderingEngine.getViewport(
-    viewportId,
-  ) as Types.IStackViewport;
+  const viewport = renderingEngine.getViewport(viewportId) as Types.IStackViewport;
   // すべての画像を含むスタックを定義する
   const stack = imageIds;
   // ビューポートにスタックを設定する
-  await viewport.setStack(stack);
+  viewport.setStack(stack);
   viewport.setProperties({ voiRange: { lower: 0, upper: 2000 } });
   return viewport;
 };

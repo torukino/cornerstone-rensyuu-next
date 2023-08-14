@@ -1,22 +1,25 @@
 import { Types } from '@cornerstonejs/core';
+// マウスの座標を取得するためのHTML要素を作成
 
 export const mouseCoordinate = (
   content: HTMLElement,
   element: HTMLElement,
   viewport: Types.IStackViewport,
 ) => {
-  // マウスの座標を取得するためのHTML要素を作成　ここから
   const mousePosDiv = document.createElement('div');
   const canvasPosElement = document.createElement('p');
   const worldPosElement = document.createElement('p');
   canvasPosElement.innerText = 'canvas:';
   worldPosElement.innerText = 'world:';
-  content?.appendChild(mousePosDiv);
-
   mousePosDiv.appendChild(canvasPosElement);
   mousePosDiv.appendChild(worldPosElement);
+
+  content.appendChild(mousePosDiv);
+
   // Get the viewport element
+  console.log('Adding event listener to: ', element);
   element.addEventListener('mousemove', (evt) => {
+    console.log(`mousemove: ${JSON.stringify(evt, null, 2)}`);
     const rect = element.getBoundingClientRect();
     const canvasPos: Types.Point2 = [
       Math.floor(evt.clientX - rect.left),
@@ -30,12 +33,8 @@ export const mouseCoordinate = (
       2,
     )}, ${worldPos[1].toFixed(2)}, ${worldPos[2].toFixed(2)})`;
   });
+  console.log('Event listener added!');
+
   canvasPosElement.className = 'text-xl text-purple-800';
   worldPosElement.className = 'text-xl text-purple-800 mb-10';
-  // マウスの座標を取得するためのHTML要素を作成　ここまで
-  const instructions = document.createElement('p');
-  instructions.innerText =
-    '中クリック:移動\n右クリック：拡大縮小\nマウスホイール：スタックスクロール';
-
-  content.append(instructions);
 };
