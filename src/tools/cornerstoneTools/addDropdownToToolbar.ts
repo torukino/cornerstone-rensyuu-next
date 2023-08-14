@@ -13,6 +13,8 @@ export default function addDropDownToToolbar({
 }) {
   const { defaultValue, values } = options;
   const select = document.createElement('select');
+  select.className =
+    'font-bold border-blue-700 bg-blue-500 text-white py-1 px-2 m-2 transition-colors duration-200 ease-in-out hover:bg-opacity-75 hover:border-purple-700';
 
   select.id = id || '';
 
@@ -36,10 +38,6 @@ export default function addDropDownToToolbar({
       onSelectedValueChange(selectElement.value);
     }
   };
-
-  if (!container) {
-    container = document.getElementById(idName + '-toolbar') || undefined;
-  }
 
   container?.append(select);
 }
