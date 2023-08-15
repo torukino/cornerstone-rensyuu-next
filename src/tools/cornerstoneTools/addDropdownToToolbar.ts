@@ -22,7 +22,7 @@ export default function addDropDownToToolbar({
     const optionElement = document.createElement('option');
 
     optionElement.value = String(value);
-    optionElement.innerText = String(value);
+    optionElement.innerText = JapaneseText(String(value));
 
     if (value === defaultValue) {
       optionElement.selected = true;
@@ -41,3 +41,20 @@ export default function addDropDownToToolbar({
 
   container?.append(select);
 }
+
+const JapaneseText = (value: string): string => {
+  const mapping = {
+    Angle: '角度',
+    ArrowAnnotate: '矢印注釈',
+    Bidirectional: '両矢印',
+    CircleROI: '円',
+    CobbAngle: 'コブ角',
+    EllipticalROI: '楕円',
+    Length: '長さ',
+    PlanarFreehandROI: '自由曲線',
+    Probe: 'マーカー',
+    RectangleROI: '矩形',
+  };
+
+  return mapping[value as keyof typeof mapping] || value;
+};
