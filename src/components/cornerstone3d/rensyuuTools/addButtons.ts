@@ -59,7 +59,7 @@ export const addButtons = (
   element.oncontextmenu = (e) => e.preventDefault();
 
   container.className =
-    'w-1/3 mb-4 border border-solid border-gray-400 border-2';
+    'w-[500px] mb-4 border border-solid border-gray-400 border-2';
 
   const toolGroupId = 'STACK_TOOL_GROUP_ID';
   const toolsNames = [
@@ -98,7 +98,7 @@ export const addButtons = (
   // Define a tool group, which defines how mouse events map to tool commands for
   // Any viewport using the group
 
-  ToolGroupManager.destroyToolGroup(toolGroupId);
+  ToolGroupManager.destroyToolGroup(toolGroupId); //
   const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
   if (!toolGroup) return;
 
@@ -155,8 +155,9 @@ export const addButtons = (
   // フックを使用するツールであるため、マウスボタンを割り当てる必要はありません。
   toolGroup.setToolActive(cornerstoneTools.StackScrollMouseWheelTool.toolName);
   // Instantiate a rendering engine
-  const renderingEngine = new RenderingEngine(renderingEngineId);
 
+  //  TODO: ここは同じことではないか？？？なぜする必要があるのか。
+  const renderingEngine = new RenderingEngine(renderingEngineId);
   // Create a stack viewport
   const viewportInput = {
     defaultOptions: {
@@ -166,10 +167,11 @@ export const addButtons = (
     type: ViewportType.STACK,
     viewportId,
   };
-
   renderingEngine.enableElement(viewportInput);
 
   // ビューポートにツールグループを設定する
+
+  // TODO: ここだけ違う。作成したtoolGroupにviewportを設定している。
   toolGroup.addViewport(viewportId, renderingEngineId);
 
   // 作成されたスタックビューポートを取得
@@ -186,6 +188,7 @@ export const addButtons = (
   //画像をレンダリングする
   viewport.render();
 
+  // TODO: ここが機能していない。ちゃんと切り替わっていない
   addDropdownToToolbar({
     container,
     idName,
@@ -193,6 +196,7 @@ export const addButtons = (
       const newSelectedToolName = String(newSelectedToolNameAsStringOrNumber);
 
       //新しいツールをアクティブにする
+      // 前までのツールをenabledにして、選択したものをactiveにする
       toolGroup.setToolActive(newSelectedToolName, {
         bindings: [
           {
@@ -202,7 +206,7 @@ export const addButtons = (
       });
 
       // Set the old tool passive
-      // toolGroup?.setToolPassive(selectedToolName);
+      toolGroup?.setToolEnabled(selectedToolName);
 
       selectedToolName = newSelectedToolName as string;
     },

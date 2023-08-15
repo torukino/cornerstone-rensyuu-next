@@ -15,6 +15,8 @@ export const runMain = async (
 ): Promise<void> => {
   const gcp = true;
   await initDemo(gcp);
+
+  // TODO: ここでelementに追加しているから、別の写真をレンダリングした後に他の別の写真をクリックしたら２枚表示されるエラーが生じるのでは？
   const content = document.getElementById(idName + '-content');
   if (!content) return;
 
@@ -25,6 +27,7 @@ export const runMain = async (
   const viewportId = ' MRI_STACK';
   const toolGroupId = 'MRI_TOOL_GROUP';
 
+  // Dicom の使い方に従った画像の取得
   const imageIds = await getImageIds(gcp, SeriesInstanceUID, StudyInstanceUID);
   imageIds.sort();
 

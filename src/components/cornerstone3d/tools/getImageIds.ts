@@ -1,5 +1,15 @@
 import createImageIdsAndCacheMetaData from '@/tools/cornerstoneTools/createImageIdsAndCacheMetaData';
 
+/**
+ * イメージIDを作成し、メタデータをキャッシュします。
+ *
+ * @param {boolean} gcp - GCPの使用が有効かどうか。
+ * @param {string} SeriesInstanceUID - シリーズインスタンスの一意識別子。
+ * @param {string} StudyInstanceUID - スタディインスタンスの一意識別子。
+ * @returns {Promise<string[]>} イメージIDの配列のプロミス。
+ * @example
+ * const ids = await getImageIds(true, 'シリーズUID', 'スタディUID');
+ */
 export const getImageIds = async (
   gcp: boolean,
   SeriesInstanceUID: string,

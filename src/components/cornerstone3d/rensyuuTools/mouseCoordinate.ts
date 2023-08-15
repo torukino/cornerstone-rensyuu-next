@@ -20,6 +20,8 @@ export const mouseCoordinate = (
   console.log('Adding event listener to: ', element);
   element.addEventListener('mousemove', (evt) => {
     console.log(`mousemove: ${JSON.stringify(evt, null, 2)}`);
+    // getBoundingClientRectの中身はなんですか？
+    // https://developer.mozilla.org/ja/docs/Web/API/Element/getBoundingClientRect
     const rect = element.getBoundingClientRect();
     const canvasPos: Types.Point2 = [
       Math.floor(evt.clientX - rect.left),
@@ -33,6 +35,10 @@ export const mouseCoordinate = (
       2,
     )}, ${worldPos[1].toFixed(2)}, ${worldPos[2].toFixed(2)})`;
   });
+  //
+  //   let num = 10.56789;
+  // let str = num.toFixed(2); // strには"10.57"という文字列が代入される
+
   console.log('Event listener added!');
 
   canvasPosElement.className = 'text-xl text-purple-800';
