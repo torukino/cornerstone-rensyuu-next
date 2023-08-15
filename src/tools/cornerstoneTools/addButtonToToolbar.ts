@@ -5,7 +5,7 @@ export default function addButtonToToolbar({
   onClick,
 }: {
   title: string;
-  container?: HTMLElement;
+  container: HTMLElement;
   idName: string;
   onClick: () => void;
 }) {
@@ -17,5 +17,5 @@ export default function addButtonToToolbar({
   button.innerHTML = title;
   button.onclick = onClick;
 
-  container && container.append(button);
+  container.append(button);
 }

@@ -1,4 +1,9 @@
-import { getRenderingEngine, Types } from '@cornerstonejs/core';
+import {
+  Enums,
+  getRenderingEngine,
+  RenderingEngine,
+  Types,
+} from '@cornerstonejs/core';
 import {
   AngleTool,
   ArrowAnnotateTool,
@@ -7,14 +12,19 @@ import {
   CobbAngleTool,
   EllipticalROITool,
   LengthTool,
+  PanTool,
   PlanarFreehandROITool,
   ProbeTool,
   RectangleROITool,
+  StackScrollMouseWheelTool,
   ToolGroupManager,
+  WindowLevelTool,
+  ZoomTool,
 } from '@cornerstonejs/tools';
 import * as cornerstoneTools from '@cornerstonejs/tools';
 import { MouseBindings } from '@cornerstonejs/tools/dist/esm/enums';
 
+import ViewportType from '@/enums/cornerstone/ViewportType';
 import {
   addButtonToToolbar,
   addDropdownToToolbar,
@@ -23,17 +33,35 @@ import {
 const BUG = false;
 
 export const addButtons = (
+  element: HTMLDivElement,
   idName: string,
   imageIds: string[],
   renderingEngineId: string,
   viewportId: string,
 ) => {
+  const { Events } = Enums;
+  element.addEventListener(Events.CAMERA_MODIFIED, (_) => {
+    // Get the rendering engine
+    const renderingEngine = getRenderingEngine(renderingEngineId);
+    if (!renderingEngine) return;
+    // Get the stack viewport
+    const viewport = renderingEngine.getViewport(
+      viewportId,
+    ) as Types.IStackViewport;
+
+    if (!viewport) return;
+  });
+
   const container = document.getElementById(`${idName}-toolbar`);
   if (!container) return;
 
-  container.className =
-    'flex justify-center w-1/2 mb-4 border border-solid border-gray-400 border-2';
+  // Disable right click context menu so we can have right click tools
+  element.oncontextmenu = (e) => e.preventDefault();
 
+  container.className =
+    'w-1/3 mb-4 border border-solid border-gray-400 border-2';
+
+  const toolGroupId = 'STACK_TOOL_GROUP_ID';
   const toolsNames = [
     PlanarFreehandROITool.toolName,
     LengthTool.toolName,
@@ -49,24 +77,36 @@ export const addButtons = (
   let selectedToolName = toolsNames[0];
 
   // Cornerstone3Dにツールを追加する
-  // if (!ToolGroupManager.getToolGroup(toolGroupId)) {
-  cornerstoneTools.addTool(PlanarFreehandROITool);
-  cornerstoneTools.addTool(LengthTool);
-  cornerstoneTools.addTool(ProbeTool);
-  cornerstoneTools.addTool(RectangleROITool);
-  cornerstoneTools.addTool(EllipticalROITool);
-  cornerstoneTools.addTool(CircleROITool);
-  cornerstoneTools.addTool(BidirectionalTool);
-  cornerstoneTools.addTool(AngleTool);
-  cornerstoneTools.addTool(CobbAngleTool);
-  cornerstoneTools.addTool(ArrowAnnotateTool);
-  // }
+  if (!ToolGroupManager.getToolGroup(toolGroupId)) {
+    cornerstoneTools.addTool(PlanarFreehandROITool);
+    cornerstoneTools.addTool(LengthTool);
+    cornerstoneTools.addTool(ProbeTool);
+    cornerstoneTools.addTool(RectangleROITool);
+    cornerstoneTools.addTool(EllipticalROITool);
+    cornerstoneTools.addTool(CircleROITool);
+    cornerstoneTools.addTool(BidirectionalTool);
+    cornerstoneTools.addTool(AngleTool);
+    cornerstoneTools.addTool(CobbAngleTool);
+    cornerstoneTools.addTool(ArrowAnnotateTool);
+    // ツールグループにボタンなしのツールを追加する
+    cornerstoneTools.addTool(WindowLevelTool);
+    cornerstoneTools.addTool(PanTool);
+    cornerstoneTools.addTool(ZoomTool);
+    cornerstoneTools.addTool(StackScrollMouseWheelTool);
+  }
 
   // Define a tool group, which defines how mouse events map to tool commands for
   // Any viewport using the group
-  const toolGroupId = 'MRI_TOOL_GROUP';
-  const toolGroup = ToolGroupManager.getToolGroup(toolGroupId);
+
+  ToolGroupManager.destroyToolGroup(toolGroupId);
+  const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
   if (!toolGroup) return;
+
+  const instructions = document.createElement('p');
+  instructions.innerText =
+    '中クリック:移動\n右クリック：拡大縮小\nマウスホイール：スタックスクロール';
+  // container.className = 'ml-4';
+  container.append(instructions);
 
   // Add the tools to the tool group
   toolGroup.addTool(PlanarFreehandROITool.toolName);
@@ -79,6 +119,11 @@ export const addButtons = (
   toolGroup.addTool(AngleTool.toolName);
   toolGroup.addTool(CobbAngleTool.toolName);
   toolGroup.addTool(ArrowAnnotateTool.toolName);
+  // ツールグループにボタンなしのツールを追加する
+  toolGroup.addTool(WindowLevelTool.toolName);
+  toolGroup.addTool(PanTool.toolName);
+  toolGroup.addTool(ZoomTool.toolName);
+  toolGroup.addTool(StackScrollMouseWheelTool.toolName);
 
   // ツールの初期状態を設定する。ここでは、左クリック時にアクティブになるツールを1つ設定する。
   // これは左クリックでそのツールが描画されることを意味する。
@@ -89,6 +134,57 @@ export const addButtons = (
       },
     ],
   });
+
+  // ツールの初期状態を設定する。
+  toolGroup.setToolActive(cornerstoneTools.PanTool.toolName, {
+    bindings: [
+      {
+        mouseButton: MouseBindings.Auxiliary, // 中央クリック
+      },
+    ],
+  });
+  toolGroup.setToolActive(cornerstoneTools.ZoomTool.toolName, {
+    bindings: [
+      {
+        mouseButton: MouseBindings.Secondary, // 右クリック
+      },
+    ],
+  });
+
+  // スタックスクロールマウスホイールは、マウスボタンの代わりに `mouseWheelCallback` フックを使用するツールです。
+  // フックを使用するツールであるため、マウスボタンを割り当てる必要はありません。
+  toolGroup.setToolActive(cornerstoneTools.StackScrollMouseWheelTool.toolName);
+  // Instantiate a rendering engine
+  const renderingEngine = new RenderingEngine(renderingEngineId);
+
+  // Create a stack viewport
+  const viewportInput = {
+    defaultOptions: {
+      background: <Types.Point3>[0.8, 0, 0.2],
+    },
+    element,
+    type: ViewportType.STACK,
+    viewportId,
+  };
+
+  renderingEngine.enableElement(viewportInput);
+
+  // ビューポートにツールグループを設定する
+  toolGroup.addViewport(viewportId, renderingEngineId);
+
+  // 作成されたスタックビューポートを取得
+  const viewport = <Types.IStackViewport>(
+    renderingEngine.getViewport(viewportId)
+  );
+
+  // 単一の画像を含むスタックを定義する
+  const stack = imageIds;
+
+  //ビューポートにスタックを設定する
+  viewport.setStack(stack);
+
+  //画像をレンダリングする
+  viewport.render();
 
   addDropdownToToolbar({
     container,

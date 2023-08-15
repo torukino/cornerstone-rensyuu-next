@@ -36,8 +36,7 @@ const StackBasicBetauchiToru: React.FC<PROPS> = ({
   SeriesInstanceUID,
   StudyInstanceUID,
 }) => {
-  const idName = 'stackBasicBetauchi';
-  const { MouseBindings } = csToolsEnums;
+  const idName = 'stackBasicBetauchiToru';
 
   useEffect(() => {
     if (SeriesInstanceUID && StudyInstanceUID && DerivativeDiscription) {

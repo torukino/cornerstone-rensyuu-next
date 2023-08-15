@@ -11,11 +11,11 @@ const {
 } = cornerstoneTools;
 
 export const setToolGroups = (
+  content: HTMLElement,
   viewportId: string,
   renderingEngineId: string,
 ) => {
   const toolGroupId = 'native_tool_group';
-
 
   if (!ToolGroupManager.getToolGroup(toolGroupId)) {
     // Add tools to Cornerstone3D
@@ -25,19 +25,21 @@ export const setToolGroups = (
     cornerstoneTools.addTool(ZoomTool);
   }
 
-
   // ツールグループを定義し、マウスイベントが以下のツールコマンドにどのようにマッピングされるかを定義します。
   // グループを使用するすべてのビューポート
   const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
   if (!toolGroup) return;
 
+  const instructions = document.createElement('p');
+  instructions.innerText =
+    '中クリック:移動\n右クリック：拡大縮小\nマウスホイール：スタックスクロール';
+  content.append(instructions);
 
   // ツールグループにツールを追加する
   toolGroup.addTool(WindowLevelTool.toolName);
   toolGroup.addTool(PanTool.toolName);
   toolGroup.addTool(ZoomTool.toolName);
   toolGroup.addTool(StackScrollMouseWheelTool.toolName);
-
 
   // ツールの初期状態を設定する。
   toolGroup.setToolActive(cornerstoneTools.PanTool.toolName, {
