@@ -6,6 +6,7 @@ import {
 } from '@cornerstonejs/core';
 import {
   AngleTool,
+  annotation,
   ArrowAnnotateTool,
   BidirectionalTool,
   CircleROITool,
@@ -31,7 +32,7 @@ import {
 } from '@/tools/cornerstoneTools';
 
 const BUG = false;
-
+let annotationUidNumber: number = 0;
 export const addButtons = (
   element: HTMLDivElement,
   idName: string,
@@ -52,6 +53,64 @@ export const addButtons = (
     if (!viewport) return;
   });
 
+  // 1. イベントリスナーの追加
+  document.addEventListener('keydown', handleKeydown);
+  element.addEventListener('contextmenu', handleRightClick);
+
+  // 2. イベントハンドラの定義
+  function handleKeydown(e: KeyboardEvent) {
+    console.log(e.key);
+    if (e.key === 'Escape' || e.key === 'Backspace') {
+      deleteSelectedAnnotation();
+    } else if (e.key === ' ' || e.key === '　') {
+      console.log('space ------ ');
+      const annotations = annotation.state.getAnnotations;
+      const size = annotations.length;
+      if (size > 0) {
+        if ((annotationUidNumber = size)) annotationUidNumber = 0;
+        else annotationUidNumber += 1;
+ 
+      }
+    }
+  }
+
+  function handleRightClick(e: MouseEvent) {
+    e.preventDefault();
+    // 右クリックメニューを表示 (こちらは簡易的な実装です)
+    const contextMenu = document.createElement('div');
+    contextMenu.innerText = '注釈を削除';
+    contextMenu.style.background = 'white';
+    contextMenu.style.padding = '0px 4px';
+    contextMenu.style.position = 'absolute';
+    contextMenu.style.left = `${e.pageX}px`;
+    contextMenu.style.top = `${e.pageY}px`;
+    document.body.appendChild(contextMenu);
+
+    contextMenu.addEventListener('click', () => {
+      deleteSelectedAnnotation();
+      document.body.removeChild(contextMenu);
+    });
+
+    // 他の場所をクリックしたときのメニューの削除
+    document.addEventListener('click', () => {
+      if (document.body.contains(contextMenu)) {
+        document.body.removeChild(contextMenu);
+      }
+    });
+  }
+
+  function deleteSelectedAnnotation() {
+    // こちらはCornerstoneのAPIを使用して選択された注釈を削除する処理を実装します。
+    // 実際の削除処理は、Cornerstoneの具体的なAPIや使用しているツールによって異なります。
+    // そのため、具体的なコードはCornerstoneのドキュメントを参照してください。
+    const annotationUIDs: string[] =
+      annotation.selection.getAnnotationsSelected();
+    annotationUIDs.forEach((ann) => {
+      annotation.state.removeAnnotation(ann);
+      viewport.render();
+    });
+  }
+
   const container = document.getElementById(`${idName}-toolbar`);
   if (!container) return;
 
@@ -63,6 +122,7 @@ export const addButtons = (
 
   const toolGroupId = 'STACK_TOOL_GROUP_ID';
   const toolsNames = [
+    WindowLevelTool.toolName,
     PlanarFreehandROITool.toolName,
     LengthTool.toolName,
     ProbeTool.toolName,
@@ -127,7 +187,7 @@ export const addButtons = (
 
   // ツールの初期状態を設定する。ここでは、左クリック時にアクティブになるツールを1つ設定する。
   // これは左クリックでそのツールが描画されることを意味する。
-  toolGroup.setToolActive(PlanarFreehandROITool.toolName, {
+  toolGroup.setToolActive(WindowLevelTool.toolName, {
     bindings: [
       {
         mouseButton: MouseBindings.Primary, // Left Click

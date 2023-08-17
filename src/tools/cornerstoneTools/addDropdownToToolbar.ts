@@ -54,6 +54,7 @@ const JapaneseText = (value: string): string => {
     PlanarFreehandROI: '自由曲線',
     Probe: 'マーカー',
     RectangleROI: '矩形',
+    WindowLevel: 'コントラスト',
   };
 
   return mapping[value as keyof typeof mapping] || value;
