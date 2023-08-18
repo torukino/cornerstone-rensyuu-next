@@ -24,16 +24,14 @@ import {
 } from '@cornerstonejs/tools';
 import * as cornerstoneTools from '@cornerstonejs/tools';
 import { MouseBindings } from '@cornerstonejs/tools/dist/esm/enums';
-import {
-  selection,
-  state,
-} from '@cornerstonejs/tools/dist/esm/stateManagement/annotation';
 
 import ViewportType from '@/enums/cornerstone/ViewportType';
 import {
   addButtonToToolbar,
   addDropdownToToolbar,
 } from '@/tools/cornerstoneTools';
+
+const { selection, state } = annotation;
 
 const BUG = false;
 let annotationUidNumber: number = 0;
@@ -45,6 +43,14 @@ export const addButtons = (
   viewportId: string,
 ) => {
   const { Events } = Enums;
+
+  /**
+   * カメラが変更されたときのイベントリスナーを追加します。
+   * イベントが発生すると、レンダリングエンジンを取得し、
+   * スタックビューポートを取得します。
+   * レンダリングエンジンまたはビューポートが存在しない場合、
+   * 処理は終了します。
+   */
   element.addEventListener(Events.CAMERA_MODIFIED, (_) => {
     // Get the rendering engine
     const renderingEngine = getRenderingEngine(renderingEngineId);
@@ -57,25 +63,43 @@ export const addButtons = (
     if (!viewport) return;
   });
 
-  const defaultFrameOfReferemceSpecificAnnotationManager =
-    annotation.state.getAnnotationManager();
+  // const defaultFrameOfReferemceSpecificAnnotationManager =
+  //   annotation.state.getAnnotationManager();
 
   // 1. イベントリスナーの追加
   document.addEventListener('keydown', handleKeydown);
   element.addEventListener('contextmenu', handleRightClick);
 
   // 2. イベントハンドラの定義
+  /**
+   * キーボードイベントを処理する関数
+   * 'Escape'または'Backspace'が押された場合、選択された注釈を削除します。
+   * 'Space'が押された場合、注釈のUID番号を更新します。
+   * @param {KeyboardEvent} e - 発生したキーボードイベント
+   */
   function handleKeydown(e: KeyboardEvent) {
     console.log(e.key);
-    if (e.key === 'Escape' || e.key === 'Backspace') {
+    if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete') {
       deleteSelectedAnnotation();
     } else if (e.key === ' ' || e.key === '　') {
       console.log('space ------ ');
-      const annotations = annotation.state.getAnnotations;
-      const size = annotations.length;
+      let allAnnotations: cornerstoneTools.Types.Annotation[] = [];
+      for (let toolName of toolsNames) {
+        // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
+        const annotationsList = state.getAnnotations(toolName, viewportId);
+        allAnnotations = [...allAnnotations, ...annotationsList];
+      }
+      const size = allAnnotations.length;
       if (size > 0) {
         if ((annotationUidNumber = size)) annotationUidNumber = 0;
         else annotationUidNumber += 1;
+
+        const annotation = allAnnotations[annotationUidNumber];
+        if (annotation && annotation.annotationUID) {
+          const annotationUID = annotation.annotationUID;
+          console.log('annotationUID', annotationUID);
+          selection.setAnnotationSelected(annotationUID, true, false);
+        }
       }
     }
   }
@@ -105,10 +129,13 @@ export const addButtons = (
     });
   }
 
+  /**
+   * 選択された注釈を削除する関数
+   * CornerstoneのAPIを使用して選択された注釈を削除します。
+   * 実際の削除処理は、Cornerstoneの具体的なAPIや使用しているツールによって異なります。
+   * そのため、具体的なコードはCornerstoneのドキュメントを参照してください。
+   */
   function deleteSelectedAnnotation() {
-    // こちらはCornerstoneのAPIを使用して選択された注釈を削除する処理を実装します。
-    // 実際の削除処理は、Cornerstoneの具体的なAPIや使用しているツールによって異なります。
-    // そのため、具体的なコードはCornerstoneのドキュメントを参照してください。
     const annotationUIDs: string[] = selection.getAnnotationsSelected();
     if (annotationUIDs && annotationUIDs.length > 0) {
       const annotationUID = annotationUIDs[0];
