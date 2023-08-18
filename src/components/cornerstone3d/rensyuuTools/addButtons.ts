@@ -272,7 +272,7 @@ export const addButtons = (
       });
 
       // Set the old tool passive
-      toolGroup?.setToolEnabled(selectedToolName);
+      toolGroup?.setToolPassive(selectedToolName);
 
       selectedToolName = newSelectedToolName as string;
     },
