@@ -24,6 +24,10 @@ import {
 } from '@cornerstonejs/tools';
 import * as cornerstoneTools from '@cornerstonejs/tools';
 import { MouseBindings } from '@cornerstonejs/tools/dist/esm/enums';
+import {
+  selection,
+  state,
+} from '@cornerstonejs/tools/dist/esm/stateManagement/annotation';
 
 import ViewportType from '@/enums/cornerstone/ViewportType';
 import {
@@ -53,6 +57,9 @@ export const addButtons = (
     if (!viewport) return;
   });
 
+  const defaultFrameOfReferemceSpecificAnnotationManager =
+    annotation.state.getAnnotationManager();
+
   // 1. イベントリスナーの追加
   document.addEventListener('keydown', handleKeydown);
   element.addEventListener('contextmenu', handleRightClick);
@@ -69,7 +76,6 @@ export const addButtons = (
       if (size > 0) {
         if ((annotationUidNumber = size)) annotationUidNumber = 0;
         else annotationUidNumber += 1;
- 
       }
     }
   }
@@ -103,12 +109,12 @@ export const addButtons = (
     // こちらはCornerstoneのAPIを使用して選択された注釈を削除する処理を実装します。
     // 実際の削除処理は、Cornerstoneの具体的なAPIや使用しているツールによって異なります。
     // そのため、具体的なコードはCornerstoneのドキュメントを参照してください。
-    const annotationUIDs: string[] =
-      annotation.selection.getAnnotationsSelected();
-    annotationUIDs.forEach((ann) => {
-      annotation.state.removeAnnotation(ann);
-      viewport.render();
-    });
+    const annotationUIDs: string[] = selection.getAnnotationsSelected();
+    if (annotationUIDs && annotationUIDs.length > 0) {
+      const annotationUID = annotationUIDs[0];
+      state.removeAnnotation(annotationUID);
+    }
+    viewport.render();
   }
 
   const container = document.getElementById(`${idName}-toolbar`);
