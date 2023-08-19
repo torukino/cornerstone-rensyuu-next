@@ -81,27 +81,29 @@ export const addButtons = (
     console.log(e.key);
     if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete') {
       deleteSelectedAnnotation();
-    } else if (e.key === ' ' || e.key === '　') {
+    } else if (e.key === ' ' || e.key === '　' || e.key === 'Tab') {
       console.log('space ------ ');
       let allAnnotations: cornerstoneTools.Types.Annotation[] = [];
       toolsNames
         .filter((t) => t !== 'WindowLevel')
         .forEach((toolName) => {
           // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
-          const annotationsList = state.getAnnotations(toolName, element);
-          allAnnotations = [...allAnnotations, ...annotationsList];
+          const annotationsList:
+            | cornerstoneTools.Types.Annotation[]
+            | undefined = state.getAnnotations(toolName, element);
+          if (annotationsList && annotationsList.length > 0)
+            allAnnotations = [...allAnnotations, ...annotationsList];
         });
-      const size = allAnnotations.length;
-      if (size > 0) {
-        if ((annotationUidNumber = size)) annotationUidNumber = 0;
-        else annotationUidNumber += 1;
+      const size: number = allAnnotations.length;
+      if (annotationUidNumber === size) annotationUidNumber = 0;
+      else annotationUidNumber += 1;
 
-        const annotation = allAnnotations[annotationUidNumber];
-        if (annotation && annotation.annotationUID) {
-          const annotationUID = annotation.annotationUID;
-          console.log('annotationUID', annotationUID);
-          selection.setAnnotationSelected(annotationUID, true, false);
-        }
+      const annotation = allAnnotations[annotationUidNumber];
+      console.log('number of annotation: ', size);
+      if (annotation && annotation.annotationUID) {
+        const annotationUID = annotation.annotationUID;
+        console.log('annotationUID', annotationUID);
+        selection.setAnnotationSelected(annotationUID, true, false);
       }
     }
   }
@@ -120,6 +122,7 @@ export const addButtons = (
 
     contextMenu.addEventListener('click', () => {
       deleteSelectedAnnotation();
+      annotationUidNumber  -= annotationUidNumber
       document.body.removeChild(contextMenu);
     });
 
