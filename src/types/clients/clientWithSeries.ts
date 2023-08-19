@@ -6,6 +6,7 @@ export interface CLIENTSERIES {
   date?: string;
   DerivativeDiscription?: string;
   gender?: string;
+  instituteName?: string;
   No?: string;
   seriesArray?: SERIES[];
   time?: string;

@@ -8,6 +8,7 @@ export interface CLIENTFLAT {
   gender?: string;
   imagePositionPatient?: string;
   InstanceUID?: string;
+  instituteName?: string;
   No?: string;
   SeriesInstanceUID?: string;
   SeriesNumber?: string;

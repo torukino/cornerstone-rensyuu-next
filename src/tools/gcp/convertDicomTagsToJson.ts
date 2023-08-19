@@ -25,11 +25,11 @@ export const convertDicomTagsToJson = (inputData: any): CLIENTFLAT => {
   const imagePositionPatient =
     inputData['00200032'] && inputData['00200032'].Value
       ? inputData['00200032']['Value']
-      : null;
+      : '';
   const sliceLocation =
     inputData['00201041'] && inputData['00201041'].Value
       ? inputData['00201041']['Value'][0]
-      : null;
+      : '';
 
   const outputData: CLIENTFLAT = {
     id: inputData['00100020']['Value'][0],
@@ -40,12 +40,16 @@ export const convertDicomTagsToJson = (inputData: any): CLIENTFLAT => {
     DerivativeDiscription:
       inputData['0008103E'] && inputData['0008103E'].Value
         ? inputData['0008103E']['Value'][0]
-        : null,
+        : '',
     gender: inputData['00100040']['Value'][0],
     imagePositionPatient: imagePositionPatient,
-    No: inputData['00200013'].Value ? inputData['00200013']['Value'][0] : null,
+    instituteName:
+      inputData['00080080'] && inputData['00080080'].Value
+        ? inputData['00080080']['Value'][0]
+        : '',
+    No: inputData['00200013'].Value ? inputData['00200013']['Value'][0] : '',
     SeriesInstanceUID: inputData['0020000E']['Value'][0],
-    SeriesNumber: inputData['00200010']['Value'][0],
+    SeriesNumber: inputData['00200010']['Value']?.[0],
     sliceLocation: sliceLocation,
     SOPInstanceUID: inputData['00080018']['Value'][0],
     StudyInstanceUID: inputData['0020000D']['Value'][0],

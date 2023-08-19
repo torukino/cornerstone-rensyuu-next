@@ -41,6 +41,7 @@ export const clientBySeriesUID = (
       date: c.date,
       DerivativeDiscription: c.DerivativeDiscription,
       gender: c.gender,
+      instituteName: c.instituteName,
       No: c.No,
       seriesArray: seriesArray,
       time: c.time,

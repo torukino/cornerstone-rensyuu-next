@@ -39,7 +39,7 @@ const StackBasicBetauchiToru: React.FC<PROPS> = ({
   const idName = 'stackBasicBetauchiToru';
 
   useEffect(() => {
-    if (SeriesInstanceUID && StudyInstanceUID && DerivativeDiscription) {
+    if (SeriesInstanceUID && StudyInstanceUID ) {
       runMain(
         idName,
         SeriesInstanceUID,

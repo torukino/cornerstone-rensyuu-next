@@ -15,7 +15,9 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
     useState<string>('');
 
   const selectImage = (c: CLIENTSERIES) => {
-    console.log(`${c.id} ${c.name} ${c.DerivativeDiscription}`);
+    console.log(
+      `${c.id} ${c.name} \ninstituteName:${c.instituteName} \nDerivativeDiscription:${c.DerivativeDiscription}`,
+    );
     setSeriesInstanceUID('');
     setStudyInstanceUID('');
     setDerivativeDiscription('');
@@ -25,12 +27,14 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
       c.seriesArray.length > 0 &&
       c.seriesArray[0] &&
       c.seriesArray[0].SeriesInstanceUID &&
-      c.seriesArray[0].StudyInstanceUID &&
-      c.DerivativeDiscription
+      c.seriesArray[0].StudyInstanceUID
+      // c.DerivativeDiscription
     ) {
       setSeriesInstanceUID(c.seriesArray[0].SeriesInstanceUID);
       setStudyInstanceUID(c.seriesArray[0].StudyInstanceUID);
-      setDerivativeDiscription(c.DerivativeDiscription);
+      c.DerivativeDiscription &&
+        setDerivativeDiscription(c.DerivativeDiscription);
+      c.instituteName && setDerivativeDiscription(c.instituteName);
     }
   };
 

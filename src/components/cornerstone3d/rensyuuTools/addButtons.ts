@@ -41,7 +41,7 @@ export const addButtons = (
   imageIds: string[],
   renderingEngineId: string,
   viewportId: string,
-) => {
+): void | undefined => {
   const { Events } = Enums;
 
   /**
@@ -68,43 +68,40 @@ export const addButtons = (
 
   // 1. イベントリスナーの追加
   document.addEventListener('keydown', handleKeydown);
-  element.addEventListener('contextmenu', handleRightClick);
+  element.addEventListener('click', handleRightClick);
 
+  let allAnnotations: cornerstoneTools.Types.Annotation[] = [];
   // 2. イベントハンドラの定義
+
   /**
    * キーボードイベントを処理する関数
    * 'Escape'または'Backspace'が押された場合、選択された注釈を削除します。
-   * 'Space'が押された場合、注釈のUID番号を更新します。
+   * 'Space'または"Tab"が押された場合、選択される注釈のUID番号を更新します。
    * @param {KeyboardEvent} e - 発生したキーボードイベント
    */
   function handleKeydown(e: KeyboardEvent) {
     console.log(e.key);
+    toolsNames
+      .filter((t) => t !== 'WindowLevel')
+      .forEach((toolName) => {
+        // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
+        const annotationsList: cornerstoneTools.Types.Annotation[] | undefined =
+          state.getAnnotations(toolName, element);
+        if (annotationsList && annotationsList.length > 0)
+          allAnnotations = [...allAnnotations, ...annotationsList];
+      });
+
     if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete') {
       deleteSelectedAnnotation();
     } else if (e.key === ' ' || e.key === '　' || e.key === 'Tab') {
-      console.log('space ------ ');
-      let allAnnotations: cornerstoneTools.Types.Annotation[] = [];
-      toolsNames
-        .filter((t) => t !== 'WindowLevel')
-        .forEach((toolName) => {
-          // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
-          const annotationsList:
-            | cornerstoneTools.Types.Annotation[]
-            | undefined = state.getAnnotations(toolName, element);
-          if (annotationsList && annotationsList.length > 0)
-            allAnnotations = [...allAnnotations, ...annotationsList];
-        });
-      const size: number = allAnnotations.length;
-      if (annotationUidNumber === size) annotationUidNumber = 0;
+      if (annotationUidNumber === allAnnotations.length)
+        annotationUidNumber = 0;
       else annotationUidNumber += 1;
-
       const annotation = allAnnotations[annotationUidNumber];
-      console.log('number of annotation: ', size);
-      if (annotation && annotation.annotationUID) {
-        const annotationUID = annotation.annotationUID;
-        console.log('annotationUID', annotationUID);
+      const annotationUID = annotation.annotationUID;
+      console.log('annotation UID:', annotationUID);
+      annotationUID &&
         selection.setAnnotationSelected(annotationUID, true, false);
-      }
     }
   }
 
@@ -122,7 +119,7 @@ export const addButtons = (
 
     contextMenu.addEventListener('click', () => {
       deleteSelectedAnnotation();
-      annotationUidNumber  -= annotationUidNumber
+      annotationUidNumber -= annotationUidNumber;
       document.body.removeChild(contextMenu);
     });
 
@@ -145,6 +142,16 @@ export const addButtons = (
     if (annotationUIDs && annotationUIDs.length > 0) {
       const annotationUID = annotationUIDs[0];
       state.removeAnnotation(annotationUID);
+      toolsNames
+        .filter((t) => t !== 'WindowLevel')
+        .forEach((toolName) => {
+          // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
+          const annotationsList:
+            | cornerstoneTools.Types.Annotation[]
+            | undefined = state.getAnnotations(toolName, element);
+          if (annotationsList && annotationsList.length > 0)
+            allAnnotations = [...allAnnotations, ...annotationsList];
+        });
     }
     viewport.render();
   }
@@ -269,7 +276,7 @@ export const addButtons = (
 
   // ビューポートにツールグループを設定する
 
-  // TODO: ここだけ違う。作成したtoolGroupにviewportを設定している。
+  //　作成したtoolGroupにviewportを設定している。
   toolGroup.addViewport(viewportId, renderingEngineId);
 
   // 作成されたスタックビューポートを取得
@@ -286,7 +293,14 @@ export const addButtons = (
   //画像をレンダリングする
   viewport.render();
 
-  // TODO: ここが機能していない。ちゃんと切り替わっていない
+  /**
+   * ツールバーにドロップダウンを追加します。
+   * ドロップダウンから新しいツールが選択されたとき、そのツールをアクティブにします。
+   * 以前のツールはパッシブに設定されます。
+   * @param {Object} container - ツールバーのコンテナ
+   * @param {string} idName - ツールバーのID名
+   * @param {function} onSelectedValueChange - 新しいツールが選択されたときに呼び出される関数
+   */
   addDropdownToToolbar({
     container,
     idName,
@@ -371,8 +385,8 @@ export const addButtons = (
 
       // Increment the index, clamping to the first image if necessary
       let newImageIdIndex = currentImageIdIndex - 1;
-
       newImageIdIndex = Math.max(newImageIdIndex, 0);
+
       if (BUG) {
         console.log('@@@@@@@@@@@@@@@@@@@', newImageIdIndex);
         const NoOfImgs = imageIds[newImageIdIndex].split('/')[18].split('.');
