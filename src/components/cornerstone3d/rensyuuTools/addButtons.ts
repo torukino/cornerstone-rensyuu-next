@@ -84,11 +84,13 @@ export const addButtons = (
     } else if (e.key === ' ' || e.key === '　') {
       console.log('space ------ ');
       let allAnnotations: cornerstoneTools.Types.Annotation[] = [];
-      for (let toolName of toolsNames) {
-        // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
-        const annotationsList = state.getAnnotations(toolName, viewportId);
-        allAnnotations = [...allAnnotations, ...annotationsList];
-      }
+      toolsNames
+        .filter((t) => t !== 'WindowLevel')
+        .forEach((toolName) => {
+          // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
+          const annotationsList = state.getAnnotations(toolName, element);
+          allAnnotations = [...allAnnotations, ...annotationsList];
+        });
       const size = allAnnotations.length;
       if (size > 0) {
         if ((annotationUidNumber = size)) annotationUidNumber = 0;
