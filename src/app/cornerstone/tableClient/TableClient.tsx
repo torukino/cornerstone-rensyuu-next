@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import StackBasicBetauchiToru from '@/components/cornerstone3d/BasicStackBetauchiToru';
+import StackBasicBetauchiToruVolume from '@/components/cornerstone3d/BasicStackBetauchiToruVolume';
 import { CLIENTSERIES } from '@/types/clients/clientWithSeries';
 
 interface PROPS {
@@ -76,7 +76,7 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
           /> */}
-          <StackBasicBetauchiToru
+          <StackBasicBetauchiToruVolume
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
