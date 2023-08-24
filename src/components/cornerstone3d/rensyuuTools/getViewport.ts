@@ -14,7 +14,7 @@ export const getBaseViewport = (
   const viewportInput = {
     // TODO: 多分ここら辺で生データについての情報をいじることができるのではないか？
     defaultOptions: {
-      background: [0.8, 0.0, 0.2] as Types.Point3, // 背景色
+      background: [0.0, 0.0, 0.0] as Types.Point3, // 背景色
     },
     element, // 画像を表示する要素
     type: ViewportType.STACK, // 画像を表示するタイプ

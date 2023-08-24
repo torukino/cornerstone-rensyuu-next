@@ -42,7 +42,7 @@ interface PROPS {
   StudyInstanceUID: string;
 }
 
-const StackBasicBetauchiToru: React.FC<PROPS> = ({
+const StackBasicBetauchiToruCopy: React.FC<PROPS> = ({
   DerivativeDiscription,
   SeriesInstanceUID,
   StudyInstanceUID,
@@ -438,4 +438,4 @@ const StackBasicBetauchiToru: React.FC<PROPS> = ({
   );
 };
 
-export default StackBasicBetauchiToru;
+export default StackBasicBetauchiToruCopy;

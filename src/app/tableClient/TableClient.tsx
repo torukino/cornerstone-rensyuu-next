@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import StackBasicBetauchiToruVolumeHair from '@/components/cornerstone3d/BasicStackBetauchiToruVolumeHair';
+import StackBasicBetauchiToru from '@/components/cornerstone3d/BasicStackBetauchiToru';
 import { CLIENTSERIES } from '@/types/clients/clientWithSeries';
 
 interface PROPS {
@@ -70,18 +70,22 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
-          /> */}
-          {/* <StackAPI
+          />
+          <StackAPI
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
           /> */}
-          <StackBasicBetauchiToruVolumeHair
+          {/* <StackBasicBetauchiToruVolumeHair
+            SeriesInstanceUID={SeriesInstanceUID}
+            StudyInstanceUID={StudyInstanceUID}
+            DerivativeDiscription={DerivativeDiscription}
+          /> */}
+          <StackBasicBetauchiToru
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
           />
-
           {/* <VolumeBasic
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}

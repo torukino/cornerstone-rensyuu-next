@@ -36,7 +36,7 @@ const StackBasicBetauchiToru: React.FC<PROPS> = ({
   SeriesInstanceUID,
   StudyInstanceUID,
 }) => {
-  const idName = 'stackBasicBetauchiToru';
+  const idName = 'stackBasicBetauchiToru'+SeriesInstanceUID;
 
   useEffect(() => {
     if (SeriesInstanceUID && StudyInstanceUID ) {
@@ -54,7 +54,7 @@ const StackBasicBetauchiToru: React.FC<PROPS> = ({
       if (toolbar) toolbar.innerHTML = '';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [SeriesInstanceUID, StudyInstanceUID, DerivativeDiscription]);
+  }, [SeriesInstanceUID, StudyInstanceUID]);
   return (
     <div className="mb-10 ml-10">
       <h1 className="text-3xl"></h1>

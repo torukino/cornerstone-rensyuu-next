@@ -24,8 +24,7 @@ export const runMain = async (
   content.appendChild(element);
 
   const renderingEngineId = idName + '-RenderingEngine';
-  const viewportId = ' MRI_STACK';
-  const toolGroupId = 'MRI_TOOL_GROUP';
+  const viewportId = idName + 'MRI_STACK';
 
   // Dicom の使い方に従った画像の取得
   const imageIds = await getImageIds(gcp, SeriesInstanceUID, StudyInstanceUID);

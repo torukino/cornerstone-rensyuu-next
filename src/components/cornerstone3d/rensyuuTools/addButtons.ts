@@ -62,15 +62,12 @@ export const addButtons = (
 
     if (!viewport) return;
   });
-
-  // const defaultFrameOfReferemceSpecificAnnotationManager =
-  //   annotation.state.getAnnotationManager();
-
   // 1. イベントリスナーの追加
+  // 右クリックが動作しない問題を修正
+  element.addEventListener('contextmenu', handleRightClick);
   document.addEventListener('keydown', handleKeydown);
   element.addEventListener('click', handleRightClick);
 
-  let allAnnotations: cornerstoneTools.Types.Annotation[] = [];
   // 2. イベントハンドラの定義
 
   /**
@@ -79,30 +76,53 @@ export const addButtons = (
    * 'Space'または"Tab"が押された場合、選択される注釈のUID番号を更新します。
    * @param {KeyboardEvent} e - 発生したキーボードイベント
    */
-  function handleKeydown(e: KeyboardEvent) {
-    console.log(e.key);
-    toolsNames
+
+  let allAnnotations: cornerstoneTools.Types.Annotation[] = [];
+  function getAllAnnotations(
+    toolNames: string[],
+  ): cornerstoneTools.Types.Annotation[] {
+    let allAnnotations: cornerstoneTools.Types.Annotation[] = []; // ここでallAnnotationsをローカル変数として定義
+    toolNames
       .filter((t) => t !== 'WindowLevel')
       .forEach((toolName) => {
-        // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
         const annotationsList: cornerstoneTools.Types.Annotation[] | undefined =
           state.getAnnotations(toolName, element);
         if (annotationsList && annotationsList.length > 0)
           allAnnotations = [...allAnnotations, ...annotationsList];
       });
-
+    return allAnnotations;
+  }
+  function handleKeydown(e: KeyboardEvent) {
+    console.log(e.key);
+    const allAnnotations = getAllAnnotations(toolNames);
     if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete') {
       deleteSelectedAnnotation();
     } else if (e.key === ' ' || e.key === '　' || e.key === 'Tab') {
-      if (annotationUidNumber === allAnnotations.length)
-        annotationUidNumber = 0;
-      else annotationUidNumber += 1;
+      if (annotationUidNumber < allAnnotations.length-1)
+        annotationUidNumber += 1;
+      else annotationUidNumber = 0;
+      console.log('annotationUidNumber:', annotationUidNumber);
       const annotation = allAnnotations[annotationUidNumber];
       const annotationUID = annotation.annotationUID;
       console.log('annotation UID:', annotationUID);
       annotationUID &&
         selection.setAnnotationSelected(annotationUID, true, false);
     }
+  }
+
+  /**
+   * 選択された注釈を削除する関数
+   * CornerstoneのAPIを使用して選択された注釈を削除します。
+   * 実際の削除処理は、Cornerstoneの具体的なAPIや使用しているツールによって異なります。
+   * そのため、具体的なコードはCornerstoneのドキュメントを参照してください。
+   */
+  function deleteSelectedAnnotation() {
+    const annotationUIDs: string[] = selection.getAnnotationsSelected();
+    if (annotationUIDs && annotationUIDs.length > 0) {
+      const annotationUID = annotationUIDs[0];
+      state.removeAnnotation(annotationUID);
+    }
+    viewport.render();
   }
 
   function handleRightClick(e: MouseEvent) {
@@ -131,31 +151,6 @@ export const addButtons = (
     });
   }
 
-  /**
-   * 選択された注釈を削除する関数
-   * CornerstoneのAPIを使用して選択された注釈を削除します。
-   * 実際の削除処理は、Cornerstoneの具体的なAPIや使用しているツールによって異なります。
-   * そのため、具体的なコードはCornerstoneのドキュメントを参照してください。
-   */
-  function deleteSelectedAnnotation() {
-    const annotationUIDs: string[] = selection.getAnnotationsSelected();
-    if (annotationUIDs && annotationUIDs.length > 0) {
-      const annotationUID = annotationUIDs[0];
-      state.removeAnnotation(annotationUID);
-      toolsNames
-        .filter((t) => t !== 'WindowLevel')
-        .forEach((toolName) => {
-          // TODO: ここでエラーがうまくいきません。getAnnotationsで落ちています. @torukino
-          const annotationsList:
-            | cornerstoneTools.Types.Annotation[]
-            | undefined = state.getAnnotations(toolName, element);
-          if (annotationsList && annotationsList.length > 0)
-            allAnnotations = [...allAnnotations, ...annotationsList];
-        });
-    }
-    viewport.render();
-  }
-
   const container = document.getElementById(`${idName}-toolbar`);
   if (!container) return;
 
@@ -166,7 +161,7 @@ export const addButtons = (
     'w-[500px] mb-4 border border-solid border-gray-400 border-2';
 
   const toolGroupId = 'STACK_TOOL_GROUP_ID';
-  const toolsNames = [
+  const toolNames = [
     WindowLevelTool.toolName,
     PlanarFreehandROITool.toolName,
     LengthTool.toolName,
@@ -179,7 +174,7 @@ export const addButtons = (
     CobbAngleTool.toolName,
     ArrowAnnotateTool.toolName,
   ];
-  let selectedToolName = toolsNames[0];
+  let selectedToolName = toolNames[0];
 
   // Cornerstone3Dにツールを追加する
   if (!ToolGroupManager.getToolGroup(toolGroupId)) {
@@ -266,7 +261,7 @@ export const addButtons = (
   // Create a stack viewport
   const viewportInput = {
     defaultOptions: {
-      background: <Types.Point3>[0.8, 0, 0.2],
+      background: <Types.Point3>[0.0, 0, 0.0],
     },
     element,
     type: ViewportType.STACK,
@@ -322,7 +317,7 @@ export const addButtons = (
 
       selectedToolName = newSelectedToolName as string;
     },
-    options: { defaultValue: selectedToolName, values: toolsNames },
+    options: { defaultValue: selectedToolName, values: toolNames },
   });
 
   addButtonToToolbar({
