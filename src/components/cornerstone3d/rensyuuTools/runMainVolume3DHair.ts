@@ -23,7 +23,7 @@ const { CrosshairsTool, StackScrollMouseWheelTool, ToolGroupManager } =
   cornerstoneTools;
 
 export const runMainVolume3DHair = async (
-  idName: string,
+  idName3D: string,
   SeriesInstanceUID: string,
   StudyInstanceUID: string,
   DerivativeDiscription: string,
@@ -32,13 +32,13 @@ export const runMainVolume3DHair = async (
   await initDemo(gcp);
 
   // Define a unique id for the volume
-  const volumeName = 'CT_VOLUME_ID'; // Id of the volume less loader prefix
+  const volumeName = idName3D + 'CT_VOLUME_ID'; // Id of the volume less loader prefix
   const volumeLoaderScheme = 'cornerstoneStreamingImageVolume'; // Loader id which defines which volume loader to use
   const volumeId = `${volumeLoaderScheme}:${volumeName}`; // VolumeId with loader id + volume id
-  const toolGroupId = 'MY_TOOLGROUP_ID';
+  const toolGroupId = idName3D + 'MY_TOOLGROUP_ID';
 
   // TODO: ここでelementに追加しているから、別の写真をレンダリングした後に他の別の写真をクリックしたら２枚表示されるエラーが生じるのでは？
-  const content = document.getElementById(idName + '-content');
+  const content = document.getElementById(idName3D + '-content');
   if (!content) return;
 
   const element: HTMLDivElement = getElement();
@@ -142,9 +142,10 @@ export const runMainVolume3DHair = async (
     MIP: 'Maximum Intensity Projection',
   };
 
-  const container = document.getElementById(`${idName}-toolbar`);
+  const container = document.getElementById(`${idName3D}-toolbar`);
   if (!container) return;
 
+  const idName = idName3D;
   addDropdownToToolbar({
     container,
     idName,

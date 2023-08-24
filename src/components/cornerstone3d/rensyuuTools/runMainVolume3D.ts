@@ -17,7 +17,7 @@ import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import { addDropdownToToolbar, initDemo } from '@/tools/cornerstoneTools';
 
 export const runMainVolume3D = async (
-  idName: string,
+  idName3D: string,
   SeriesInstanceUID: string,
   StudyInstanceUID: string,
   DerivativeDiscription: string,
@@ -26,7 +26,7 @@ export const runMainVolume3D = async (
   await initDemo(gcp);
   const toolGroupId = 'TOOL_GROUP_ID';
   // TODO: ここでelementに追加しているから、別の写真をレンダリングした後に他の別の写真をクリックしたら２枚表示されるエラーが生じるのでは？
-  const content = document.getElementById(idName + '-content');
+  const content = document.getElementById(idName3D + '-content');
   if (!content) return;
 
   const element: HTMLDivElement = getElement();
@@ -56,8 +56,9 @@ export const runMainVolume3D = async (
   instructions.innerText = 'Click the image to rotate it.';
 
   content.append(instructions);
-  const container = document.getElementById(`${idName}-toolbar`);
+  const container = document.getElementById(`${idName3D}-toolbar`);
   if (!container) return;
+  const idName = idName3D;
   addDropdownToToolbar({
     container,
     idName,
@@ -66,7 +67,9 @@ export const runMainVolume3D = async (
         .getViewport(viewportId)
         .getDefaultActor().actor as Types.VolumeActor;
 
-      const preset = VIEWPORT_PRESETS.find((preset) => preset.name === presetName);
+      const preset = VIEWPORT_PRESETS.find(
+        (preset) => preset.name === presetName,
+      );
       if (preset) {
         utilities.applyPreset(volumeActor, preset);
       }
@@ -75,9 +78,7 @@ export const runMainVolume3D = async (
     },
     options: {
       defaultValue: 'CT-Bone',
-      values: VIEWPORT_PRESETS.map(
-        (preset) => preset.name,
-      ),
+      values: VIEWPORT_PRESETS.map((preset) => preset.name),
     },
   });
 

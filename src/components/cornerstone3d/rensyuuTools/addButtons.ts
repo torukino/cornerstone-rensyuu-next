@@ -37,7 +37,7 @@ const BUG = false;
 let annotationUidNumber: number = 0;
 export const addButtons = (
   element: HTMLDivElement,
-  idName: string,
+  idName2D: string,
   imageIds: string[],
   renderingEngineId: string,
   viewportId: string,
@@ -77,7 +77,6 @@ export const addButtons = (
    * @param {KeyboardEvent} e - 発生したキーボードイベント
    */
 
-  let allAnnotations: cornerstoneTools.Types.Annotation[] = [];
   function getAllAnnotations(
     toolNames: string[],
   ): cornerstoneTools.Types.Annotation[] {
@@ -151,7 +150,7 @@ export const addButtons = (
     });
   }
 
-  const container = document.getElementById(`${idName}-toolbar`);
+  const container = document.getElementById(`${idName2D}-toolbar`);
   if (!container) return;
 
   // Disable right click context menu so we can have right click tools
@@ -337,11 +336,11 @@ export const addButtons = (
     // Append the new div to the element
     element.appendChild(newDiv);
   }
-
+  const idName = idName2D;
   addDropdownToToolbar({
     container,
     idName,
-    onSelectedValueChange: (newSelectedToolNameAsStringOrNumber) => {
+    onSelectedValueChange: (newSelectedToolNameAsStringOrNumber: any) => {
       const newSelectedToolName = String(newSelectedToolNameAsStringOrNumber);
 
       //新しいツールをアクティブにする
