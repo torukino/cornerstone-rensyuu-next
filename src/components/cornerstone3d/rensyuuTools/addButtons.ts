@@ -98,7 +98,7 @@ export const addButtons = (
     if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete') {
       deleteSelectedAnnotation();
     } else if (e.key === ' ' || e.key === '　' || e.key === 'Tab') {
-      if (annotationUidNumber < allAnnotations.length-1)
+      if (annotationUidNumber < allAnnotations.length - 1)
         annotationUidNumber += 1;
       else annotationUidNumber = 0;
       console.log('annotationUidNumber:', annotationUidNumber);
@@ -286,6 +286,7 @@ export const addButtons = (
   viewport.setStack(stack);
 
   //画像をレンダリングする
+  displayImageIndex();
   viewport.render();
 
   /**
@@ -296,6 +297,47 @@ export const addButtons = (
    * @param {string} idName - ツールバーのID名
    * @param {function} onSelectedValueChange - 新しいツールが選択されたときに呼び出される関数
    */
+
+  function displayImageIndex() {
+    // Get the rendering engine
+    const renderingEngine = getRenderingEngine(renderingEngineId);
+    if (!renderingEngine) return;
+    // Get the stack viewport
+    const viewport = renderingEngine.getViewport(
+      viewportId,
+    ) as Types.IStackViewport;
+
+    // Get the current index of the image displayed
+    const currentImageIdIndex = viewport.getCurrentImageIdIndex();
+    console.log(`currentImageIdIndex: ${currentImageIdIndex}`);
+    const oldDiv = document.getElementById('image-index-display');
+    if (oldDiv) {
+      element.removeChild(oldDiv);
+    }
+    // Create a new div element
+    element.style.position = 'relative';
+
+    // Create a new div element
+    const newDiv = document.createElement('div');
+    newDiv.id = 'image-index-display';
+    newDiv.style.position = 'absolute';
+    newDiv.style.left = '0';
+    newDiv.style.bottom = '0';
+    newDiv.style.background = 'white';
+    newDiv.style.padding = '0px 4px';
+    newDiv.style.fontSize = '20px';
+    newDiv.style.fontWeight = 'bold';
+    newDiv.style.backgroundColor = 'black';
+    newDiv.style.color = 'white';
+    newDiv.style.zIndex = '1000';
+
+    // Set the text content
+    newDiv.textContent = `${currentImageIdIndex + 1} / ${imageIds.length}`;
+
+    // Append the new div to the element
+    element.appendChild(newDiv);
+  }
+
   addDropdownToToolbar({
     container,
     idName,
@@ -393,6 +435,8 @@ export const addButtons = (
 
       // Set the new image index, the viewport itself does a re-render
       viewport.setImageIdIndex(newImageIdIndex);
+      // Update the image index display
+      displayImageIndex();
     },
   });
   addButtonToToolbar({
@@ -426,6 +470,8 @@ export const addButtons = (
 
       // Set the new image index, the viewport itself does a re-render
       viewport.setImageIdIndex(newImageIdIndex);
+      // Update the image index display
+      displayImageIndex();
     },
   });
 };

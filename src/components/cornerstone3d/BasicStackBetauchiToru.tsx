@@ -49,9 +49,17 @@ const StackBasicBetauchiToru: React.FC<PROPS> = ({
     }
     return () => {
       const content = document.getElementById(`${idName}-content`);
-      if (content) content.innerHTML = '';
+      if (content) {
+        while (content.firstChild) {
+          content.removeChild(content.firstChild);
+        }
+      }
       const toolbar = document.getElementById(`${idName}-toolbar`);
-      if (toolbar) toolbar.innerHTML = '';
+      if (toolbar) {
+        while (toolbar.firstChild) {
+          toolbar.removeChild(toolbar.firstChild);
+        }
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [SeriesInstanceUID, StudyInstanceUID]);
