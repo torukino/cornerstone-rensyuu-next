@@ -1,4 +1,4 @@
-import TableClient from '@/app/cornerstone/tableClient/TableClient';
+import TableClient from '@/app/tableClient/TableClient';
 import { clientBySeriesUID } from '@/tools/gcp/clientBySeriesUID';
 import { convertDicomTagsToJson } from '@/tools/gcp/convertDicomTagsToJson';
 import { CLIENTFLAT } from '@/types/clients/clientFlat';

@@ -9,7 +9,9 @@ export default async function handler(
   const { cloudRegion, datasetId, dicomStoreId, projectId } =
     getHealthcareSetting();
 
-  const tokenResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/authToken`);
+  const tokenResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/authToken`,
+  );
   const tokenData = await tokenResponse.json();
   const base = 'https://healthcare.googleapis.com/v1/';
   const parent = `projects/${projectId}/locations/${cloudRegion}/datasets/${datasetId}/dicomStores/${dicomStoreId}/`;
@@ -19,7 +21,8 @@ export default async function handler(
   const options = {
     headers: {
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json; charset=utf-8',
+      // 'Content-Type': 'application/json; charset=utf-8',
+      'Content-Type': 'application/dicom+json',
     },
   };
 

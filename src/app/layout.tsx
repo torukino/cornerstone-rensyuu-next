@@ -26,8 +26,10 @@ export default function Layout({ children }: Props) {
           <Link href="/table1" className="ml-4">
             <span className="ml-4 bg-red-100">table new</span>
           </Link>
-          <Link href="/cornerstone/stack" className="ml-4">
-            <span className="ml-4 bg-blue-100 text-2xl">stack</span>
+          <Link href="/tableNew" className="ml-4">
+            <span className="ml-4 border-4 border-solid border-blue-400 bg-purple-400 text-3xl">
+              移植用table New
+            </span>
           </Link>
         </header>
         <main>{children}</main>
