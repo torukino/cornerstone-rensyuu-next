@@ -37,7 +37,7 @@ const BUG = false;
 let annotationUidNumber: number = 0;
 export const addButtons = (
   element: HTMLDivElement,
-  idName2D: string,
+  idName: string,
   imageIds: string[],
   renderingEngineId: string,
   viewportId: string,
@@ -68,6 +68,22 @@ export const addButtons = (
   document.addEventListener('keydown', handleKeydown);
   element.addEventListener('click', handleRightClick);
 
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  // マウスホイールイベントリスナーを追加
+  element.addEventListener('wheel', () => {
+    // 既存のタイムアウトがある場合はクリア
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    // 新しいタイムアウトを設定
+    timeoutId = setTimeout(() => {
+      // 画像のインデックスを更新
+      displayImageIndex();
+      timeoutId = null;
+    }, 100); // 100ミリ秒の遅延を設ける
+  });
   // 2. イベントハンドラの定義
 
   /**
@@ -150,7 +166,7 @@ export const addButtons = (
     });
   }
 
-  const container = document.getElementById(`${idName2D}-toolbar`);
+  const container = document.getElementById(`${idName}-toolbar`);
   if (!container) return;
 
   // Disable right click context menu so we can have right click tools
@@ -336,7 +352,7 @@ export const addButtons = (
     // Append the new div to the element
     element.appendChild(newDiv);
   }
-  const idName = idName2D;
+
   addDropdownToToolbar({
     container,
     idName,
