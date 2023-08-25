@@ -10,7 +10,6 @@ import { ViewportType } from '@cornerstonejs/core/dist/esm/enums';
 import * as cornerstoneTools from '@cornerstonejs/tools';
 import { MouseBindings } from '@cornerstonejs/tools/dist/esm/enums';
 
-import { getElement } from '@/components/cornerstone3d/rensyuuTools/getElement';
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import {
   addDropdownToToolbar,
@@ -23,7 +22,7 @@ const { CrosshairsTool, StackScrollMouseWheelTool, ToolGroupManager } =
   cornerstoneTools;
 
 export const runMainVolume3DHair = async (
-  idName3D: string,
+  idName: string,
   SeriesInstanceUID: string,
   StudyInstanceUID: string,
   DerivativeDiscription: string,
@@ -32,17 +31,23 @@ export const runMainVolume3DHair = async (
   await initDemo(gcp);
 
   // Define a unique id for the volume
-  const volumeName = idName3D + 'CT_VOLUME_ID'; // Id of the volume less loader prefix
+  const volumeName = idName + 'CT_VOLUME_ID'; // Id of the volume less loader prefix
   const volumeLoaderScheme = 'cornerstoneStreamingImageVolume'; // Loader id which defines which volume loader to use
-  const volumeId = `${volumeLoaderScheme}:${volumeName}`; // VolumeId with loader id + volume id
-  const toolGroupId = idName3D + 'MY_TOOLGROUP_ID';
+  const volumeId = idName + `${volumeLoaderScheme}:${volumeName}`; // VolumeId with loader id + volume id
+  const toolGroupId = idName + 'MY_TOOLGROUP_ID';
 
   // TODO: ここでelementに追加しているから、別の写真をレンダリングした後に他の別の写真をクリックしたら２枚表示されるエラーが生じるのでは？
-  const content = document.getElementById(idName3D + '-content');
+  const content = document.getElementById(idName + '-content');
   if (!content) return;
 
-  const element: HTMLDivElement = getElement();
-  content.appendChild(element);
+  // const element: HTMLDivElement = document.createElement('div');
+  // Disable right click context menu so we can have right click tools
+  // element.oncontextmenu = (e) => e.preventDefault();
+  // これにより、右クリックメニューが表示されなくなります。
+  // element.id = 'cornerstone-element';
+  // element.style.width = '500px';
+  // element.style.height = '500px';
+  // content.appendChild(element);
 
   /********************
    * 3D ここから追加
@@ -142,10 +147,9 @@ export const runMainVolume3DHair = async (
     MIP: 'Maximum Intensity Projection',
   };
 
-  const container = document.getElementById(`${idName3D}-toolbar`);
+  const container = document.getElementById(`${idName}-toolbar`);
   if (!container) return;
 
-  const idName = idName3D;
   addDropdownToToolbar({
     container,
     idName,
@@ -166,8 +170,12 @@ export const runMainVolume3DHair = async (
           throw new Error('undefined orientation option');
       }
 
-      const toolGroup = ToolGroupManager.getToolGroup(toolGroupId);
+      let toolGroup = ToolGroupManager.getToolGroup(toolGroupId);
+      if (!toolGroup) {
+        toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
+      }
       if (!toolGroup) return;
+
       const crosshairsInstance = toolGroup.getToolInstance(
         cornerstoneTools.CrosshairsTool.toolName,
       );
@@ -201,11 +209,24 @@ export const runMainVolume3DHair = async (
   });
 
   // Add tools to Cornerstone3D
-  if (!ToolGroupManager.getToolGroup(toolGroupId)) {
-    cornerstoneTools.addTool(StackScrollMouseWheelTool);
-    cornerstoneTools.addTool(CrosshairsTool);
+  // if (!ToolGroupManager.getToolGroup(toolGroupId)) {
+  //   cornerstoneTools.addTool(StackScrollMouseWheelTool);
+  //   cornerstoneTools.addTool(CrosshairsTool);
+  // }
+  // Define tool groups to add the segmentation display tool to
+  let toolGroup = ToolGroupManager.getToolGroup(toolGroupId);
+  if (!toolGroup) {
+    toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
   }
 
+  if (!toolGroup) return;
+
+  const toolIds = ['StackScrollMouseWheel', 'Crosshairs'];
+  toolIds.forEach((toolId) => {
+    if (!ToolGroupManager.getToolGroup(toolId)) {
+      toolGroup?.addTool(toolId);
+    }
+  });
   // Dicom の使い方に従った画像の取得
   const imageIds = await getImageIds(gcp, SeriesInstanceUID, StudyInstanceUID);
   imageIds.sort();
@@ -215,7 +236,7 @@ export const runMainVolume3DHair = async (
   });
 
   // Instantiate a rendering engine
-  const renderingEngineId = 'myRenderingEngine';
+  const renderingEngineId = idName + 'myRenderingEngine';
   const renderingEngine = new RenderingEngine(renderingEngineId);
 
   // Create the viewports
@@ -266,9 +287,6 @@ export const runMainVolume3DHair = async (
     [viewportId1, viewportId2, viewportId3],
   );
 
-  // Define tool groups to add the segmentation display tool to
-  const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
-  if (!toolGroup) return;
   // For the crosshairs to operate, the viewports must currently be
   // added ahead of setting the tool active. This will be improved in the future.
   toolGroup.addViewport(viewportId1, renderingEngineId);

@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { runMainVolume3DHair } from '@/components/cornerstone3d/rensyuuTools/runMainVolume3DHair';
 
@@ -16,15 +16,24 @@ const ViewStack: React.FC<PROPS> = ({
   StudyInstanceUID,
 }) => {
   const idName = 'viewVolume';
+
+  const [hasRunMap, setHasRunMap] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
-    if (SeriesInstanceUID && StudyInstanceUID) {
+    console.log('SeriesInstanceUID', SeriesInstanceUID);
+    console.log('StudyInstanceUID', StudyInstanceUID);
+    const key = `${SeriesInstanceUID}-${StudyInstanceUID}`;
+    if (!hasRunMap[key] && SeriesInstanceUID && StudyInstanceUID) {
       runMainVolume3DHair(
         idName,
         SeriesInstanceUID,
         StudyInstanceUID,
         DerivativeDiscription,
       );
+      console.log('in runMainVolume3DHair');
+      setHasRunMap((prev) => ({ ...prev, [key]: true }));
     }
+
     return () => {
       const content = document.getElementById(`${idName}-content`);
       if (content) content.innerHTML = '';
@@ -33,6 +42,7 @@ const ViewStack: React.FC<PROPS> = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [SeriesInstanceUID, StudyInstanceUID]);
+
   return (
     <div className="mb-10 ml-10">
       <h1 className="text-3xl"></h1>
