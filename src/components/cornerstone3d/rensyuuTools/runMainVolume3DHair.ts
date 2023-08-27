@@ -9,6 +9,7 @@ import {
 import { ViewportType } from '@cornerstonejs/core/dist/esm/enums';
 import * as cornerstoneTools from '@cornerstonejs/tools';
 import { MouseBindings } from '@cornerstonejs/tools/dist/esm/enums';
+import { destroyToolGroup } from '@cornerstonejs/tools/dist/esm/store/ToolGroupManager';
 
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import {
@@ -20,6 +21,9 @@ import { VOIRange } from '@/types/cornerstone/voi';
 
 const { CrosshairsTool, StackScrollMouseWheelTool, ToolGroupManager } =
   cornerstoneTools;
+
+cornerstoneTools.addTool(CrosshairsTool);
+cornerstoneTools.addTool(StackScrollMouseWheelTool);
 
 export const runMainVolume3DHair = async (
   idName: string,
@@ -209,24 +213,9 @@ export const runMainVolume3DHair = async (
   });
 
   // Add tools to Cornerstone3D
-  // if (!ToolGroupManager.getToolGroup(toolGroupId)) {
-  //   cornerstoneTools.addTool(StackScrollMouseWheelTool);
-  //   cornerstoneTools.addTool(CrosshairsTool);
-  // }
-  // Define tool groups to add the segmentation display tool to
-  let toolGroup = ToolGroupManager.getToolGroup(toolGroupId);
-  if (!toolGroup) {
-    toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
-  }
+  // cornerstoneTools.addTool(StackScrollMouseWheelTool);
+  // cornerstoneTools.addTool(CrosshairsTool);
 
-  if (!toolGroup) return;
-
-  const toolIds = ['StackScrollMouseWheel', 'Crosshairs'];
-  toolIds.forEach((toolId) => {
-    if (!ToolGroupManager.getToolGroup(toolId)) {
-      toolGroup?.addTool(toolId);
-    }
-  });
   // Dicom の使い方に従った画像の取得
   const imageIds = await getImageIds(gcp, SeriesInstanceUID, StudyInstanceUID);
   imageIds.sort();
@@ -287,14 +276,35 @@ export const runMainVolume3DHair = async (
     [viewportId1, viewportId2, viewportId3],
   );
 
+  // Define tool groups to add the segmentation display tool to
+  destroyToolGroup(toolGroupId);
+  let toolGroup = ToolGroupManager.getToolGroup(toolGroupId);
+  toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
+
+  if (!toolGroup) return;
+
   // For the crosshairs to operate, the viewports must currently be
   // added ahead of setting the tool active. This will be improved in the future.
   toolGroup.addViewport(viewportId1, renderingEngineId);
   toolGroup.addViewport(viewportId2, renderingEngineId);
   toolGroup.addViewport(viewportId3, renderingEngineId);
 
+  // ツールをライブラリに登録
+  // 全てのツールを削除
+  // [CrosshairsTool, StackScrollMouseWheelTool].forEach((tool) => {
+  //   cornerstoneTools.removeTool(tool.name);
+  // });
+  // Init cornerstone tools
+  // cornerstoneTools.init();
+  if (!ToolGroupManager.getToolGroupsWithToolName('Crosshairs')) {
+    cornerstoneTools.addTool(CrosshairsTool);
+  }
+  if (!ToolGroupManager.getToolGroupsWithToolName('StackScrollMouseWheel')) {
+    cornerstoneTools.addTool(StackScrollMouseWheelTool);
+  }
+
   // Manipulation Tools
-  toolGroup.addTool(cornerstoneTools.StackScrollMouseWheelTool.toolName);
+  toolGroup.addTool(StackScrollMouseWheelTool.toolName);
   // Add Crosshairs tool and configure it to link the three viewports
   // These viewports could use different tool groups. See the PET-CT example
   // for a more complicated used case.
