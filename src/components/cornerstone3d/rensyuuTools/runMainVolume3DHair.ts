@@ -223,9 +223,9 @@ export const runMainVolume3DHair = async (
   const volume = await volumeLoader.createAndCacheVolume(volumeId, {
     imageIds,
   });
-
+  console.log(volume);
   // Instantiate a rendering engine
-  const renderingEngineId = idName + 'myRenderingEngine';
+  const renderingEngineId = idName + '-myRenderingEngine';
   const renderingEngine = new RenderingEngine(renderingEngineId);
 
   // Create the viewports
@@ -283,19 +283,13 @@ export const runMainVolume3DHair = async (
 
   if (!toolGroup) return;
 
-  // For the crosshairs to operate, the viewports must currently be
-  // added ahead of setting the tool active. This will be improved in the future.
+  // 十字線を動作させるには、現在、ビューポートを
+  // を追加する必要があります。これは将来改善される予定です。
   toolGroup.addViewport(viewportId1, renderingEngineId);
   toolGroup.addViewport(viewportId2, renderingEngineId);
   toolGroup.addViewport(viewportId3, renderingEngineId);
 
   // ツールをライブラリに登録
-  // 全てのツールを削除
-  // [CrosshairsTool, StackScrollMouseWheelTool].forEach((tool) => {
-  //   cornerstoneTools.removeTool(tool.name);
-  // });
-  // Init cornerstone tools
-  // cornerstoneTools.init();
   if (!ToolGroupManager.getToolGroupsWithToolName('Crosshairs')) {
     cornerstoneTools.addTool(CrosshairsTool);
   }
@@ -305,9 +299,9 @@ export const runMainVolume3DHair = async (
 
   // Manipulation Tools
   toolGroup.addTool(StackScrollMouseWheelTool.toolName);
-  // Add Crosshairs tool and configure it to link the three viewports
-  // These viewports could use different tool groups. See the PET-CT example
-  // for a more complicated used case.
+  // 十字ツールを追加し、3つのビューポートをリンクするように設定します。
+  // これらのビューポートは異なるツールグループを使用することができます。PET-CTの例
+  // を参照してください。
 
   const isMobile = window.matchMedia('(any-pointer:coarse)').matches;
 
@@ -326,13 +320,13 @@ export const runMainVolume3DHair = async (
   toolGroup.setToolActive(cornerstoneTools.CrosshairsTool.toolName, {
     bindings: [{ mouseButton: MouseBindings.Primary }],
   });
-  // As the Stack Scroll mouse wheel is a tool using the `mouseWheelCallback`
-  // hook instead of mouse buttons, it does not need to assign any mouse button.
+  // スタックスクロールマウスホイールは、マウスボタンの代わりに `mouseWheelCallback` フックを使用するツールです。
+  // フックを使用するツールなので、マウスボタンを割り当てる必要はありません。
   toolGroup.setToolActive(cornerstoneTools.StackScrollMouseWheelTool.toolName);
 
   // Render the image
   renderingEngine.renderViewports([viewportId1, viewportId2, viewportId3]);
-
+  console.log('Viewports rendered'); // レンダリングが完了したことをログに出力
   // あなたのMRI T1画像に適したVOI範囲を設定します。
   const voiRange: VOIRange = { lower: 0, upper: 2500 }; // これは例です。実際の値はあなたの画像によります。
 
@@ -350,6 +344,8 @@ export const runMainVolume3DHair = async (
   // voiRangeを設定します。
   viewport1.setProperties({ voiRange }, volumeId);
   viewport1.render();
+  console.log('Viewport 1 rendered with VOI range'); // VOI範囲を設定してレンダリングしたことをログに出力
+
   viewport2.setProperties({ voiRange }, volumeId);
   viewport2.render();
   viewport3.setProperties({ voiRange }, volumeId);
