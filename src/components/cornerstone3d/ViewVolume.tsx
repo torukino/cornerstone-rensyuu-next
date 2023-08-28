@@ -10,12 +10,13 @@ interface PROPS {
   StudyInstanceUID: string;
 }
 
-const ViewStack: React.FC<PROPS> = ({
+const ViewVolume: React.FC<PROPS> = ({
   DerivativeDiscription,
   SeriesInstanceUID,
   StudyInstanceUID,
 }) => {
-  const idName = 'viewVolume';
+  const idNamePrefix = 'viewVolume';
+  const [idName3D, setIdName3D] = useState<string>(idNamePrefix);
 
   const [hasRunMap, setHasRunMap] = useState<Record<string, boolean>>({});
 
@@ -25,7 +26,7 @@ const ViewStack: React.FC<PROPS> = ({
     const key = `${SeriesInstanceUID}-${StudyInstanceUID}`;
     if (!hasRunMap[key] && SeriesInstanceUID && StudyInstanceUID) {
       runMainVolume3DHair(
-        idName,
+        idName3D,
         SeriesInstanceUID,
         StudyInstanceUID,
         DerivativeDiscription,
@@ -35,9 +36,9 @@ const ViewStack: React.FC<PROPS> = ({
     }
 
     return () => {
-      const content = document.getElementById(`${idName}-content`);
+      const content = document.getElementById(`${setIdName3D}-content`);
       if (content) content.innerHTML = '';
-      const toolbar = document.getElementById(`${idName}-toolbar`);
+      const toolbar = document.getElementById(`${idName3D}-toolbar`);
       if (toolbar) toolbar.innerHTML = '';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,13 +51,13 @@ const ViewStack: React.FC<PROPS> = ({
 
       <div>
         <div
-          id={`${idName}-toolbar`}
+          id={`${idName3D}-toolbar`}
           className="justify-between text-blue-500"
         ></div>
-        <div id={`${idName}-content`} className=" items-center"></div>
+        <div id={`${idName3D}-content`} className=" items-center"></div>
       </div>
     </div>
   );
 };
 
-export default ViewStack;
+export default ViewVolume;

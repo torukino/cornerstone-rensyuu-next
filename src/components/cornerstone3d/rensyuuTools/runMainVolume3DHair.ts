@@ -13,10 +13,10 @@ import { destroyToolGroup } from '@cornerstonejs/tools/dist/esm/store/ToolGroupM
 
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import {
-  addDropdownToToolbar,
   initDemo,
   setCtTransferFunctionForVolumeActor,
 } from '@/tools/cornerstoneTools';
+import addDropdownToToolbar3D from '@/tools/cornerstoneTools/addDropdownToToolbar3D';
 import { VOIRange } from '@/types/cornerstone/voi';
 
 const { CrosshairsTool, StackScrollMouseWheelTool, ToolGroupManager } =
@@ -26,7 +26,7 @@ cornerstoneTools.addTool(CrosshairsTool);
 cornerstoneTools.addTool(StackScrollMouseWheelTool);
 
 export const runMainVolume3DHair = async (
-  idName: string,
+  idName3D: string,
   SeriesInstanceUID: string,
   StudyInstanceUID: string,
   DerivativeDiscription: string,
@@ -35,13 +35,13 @@ export const runMainVolume3DHair = async (
   await initDemo(gcp);
 
   // Define a unique id for the volume
-  const volumeName = idName + 'CT_VOLUME_ID'; // Id of the volume less loader prefix
+  const volumeName = idName3D + 'CT_VOLUME_ID'; // Id of the volume less loader prefix
   const volumeLoaderScheme = 'cornerstoneStreamingImageVolume'; // Loader id which defines which volume loader to use
-  const volumeId = idName + `${volumeLoaderScheme}:${volumeName}`; // VolumeId with loader id + volume id
-  const toolGroupId = idName + 'MY_TOOLGROUP_ID';
+  const volumeId = idName3D + `${volumeLoaderScheme}:${volumeName}`; // VolumeId with loader id + volume id
+  const toolGroupId = idName3D + 'MY_TOOLGROUP_ID';
 
   // TODO: ここでelementに追加しているから、別の写真をレンダリングした後に他の別の写真をクリックしたら２枚表示されるエラーが生じるのでは？
-  const content = document.getElementById(idName + '-content');
+  const content = document.getElementById(idName3D + '-content');
   if (!content) return;
 
   // const element: HTMLDivElement = document.createElement('div');
@@ -151,12 +151,12 @@ export const runMainVolume3DHair = async (
     MIP: 'Maximum Intensity Projection',
   };
 
-  const container = document.getElementById(`${idName}-toolbar`);
+  const container = document.getElementById(`${idName3D}-toolbar`);
   if (!container) return;
 
-  addDropdownToToolbar({
+  addDropdownToToolbar3D({
     container,
-    idName,
+    idName3D,
 
     onSelectedValueChange: (selectedValue) => {
       let blendModeToUse: any;
@@ -225,7 +225,7 @@ export const runMainVolume3DHair = async (
   });
   console.log(volume);
   // Instantiate a rendering engine
-  const renderingEngineId = idName + '-myRenderingEngine';
+  const renderingEngineId = idName3D + '-myRenderingEngine';
   const renderingEngine = new RenderingEngine(renderingEngineId);
 
   // Create the viewports
