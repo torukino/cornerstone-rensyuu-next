@@ -66,32 +66,12 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
       </table>
       {SeriesInstanceUID && StudyInstanceUID && (
         <div>
-          {/* <StackBasic
-            SeriesInstanceUID={SeriesInstanceUID}
-            StudyInstanceUID={StudyInstanceUID}
-            DerivativeDiscription={DerivativeDiscription}
-          />
-          <StackAPI
-            SeriesInstanceUID={SeriesInstanceUID}
-            StudyInstanceUID={StudyInstanceUID}
-            DerivativeDiscription={DerivativeDiscription}
-          /> */}
-          {/* <StackBasicBetauchiToruVolumeHair
-            SeriesInstanceUID={SeriesInstanceUID}
-            StudyInstanceUID={StudyInstanceUID}
-            DerivativeDiscription={DerivativeDiscription}
-          /> */}
           <ViewStack
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
           />
           {/* <ViewVolume
-            SeriesInstanceUID={SeriesInstanceUID}
-            StudyInstanceUID={StudyInstanceUID}
-            DerivativeDiscription={DerivativeDiscription}
-          /> */}
-          {/* <VolumeBasic
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}

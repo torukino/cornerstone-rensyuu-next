@@ -1,13 +1,13 @@
 export default function addDropDownToToolbar3D({
   id,
   container,
-  idName3D,
+  idName,
   onSelectedValueChange,
   options,
 }: {
   id?: string;
   container?: HTMLElement;
-  idName3D: string;
+  idName: string;
   onSelectedValueChange: (value: number | string) => void;
   options: { defaultValue: number | string; values: number[] | string[] };
 }) {
