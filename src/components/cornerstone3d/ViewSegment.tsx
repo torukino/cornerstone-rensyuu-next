@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect } from 'react';
 
+import { runSegment } from '@/components/cornerstone3d/rensyuuTools/runSegment';
+
 const BUG = false;
 interface PROPS {
   DerivativeDiscription: string;

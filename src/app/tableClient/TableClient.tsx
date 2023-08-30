@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 
+import ViewSegment from '@/components/cornerstone3d/ViewSegment';
 import { CLIENTSERIES } from '@/types/clients/clientWithSeries';
 
 interface PROPS {

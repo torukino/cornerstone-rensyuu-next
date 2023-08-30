@@ -2,6 +2,7 @@ import { Types } from '@cornerstonejs/core';
 
 import { getElement } from '@/components/cornerstone3d/rensyuuTools/getElement';
 import { getBaseViewport } from '@/components/cornerstone3d/rensyuuTools/getViewport';
+import { globalLabelmapSegmentationConfiguration } from '@/components/cornerstone3d/rensyuuTools/globalLabelmapSegmentationConfiguration';
 import { mouseCoordinate } from '@/components/cornerstone3d/rensyuuTools/mouseCoordinate';
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import { initDemo } from '@/tools/cornerstoneTools';
@@ -41,9 +42,11 @@ export const runSegment = async (
   globalLabelmapSegmentationConfiguration(
     element,
     idName,
-    imageIds,
     renderingEngineId,
     viewportId,
+    SeriesInstanceUID,
+    StudyInstanceUID,
+    DerivativeDiscription,
   );
 
   // Render the image
