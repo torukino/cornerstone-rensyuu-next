@@ -1,6 +1,7 @@
 import {
   Enums,
   getRenderingEngine,
+  ImageVolume,
   RenderingEngine,
   setVolumesForViewports,
   Types,
@@ -15,7 +16,6 @@ import {
   addToggleButtonToToolbar,
   initDemo,
 } from '@/tools/cornerstoneTools';
-
 // This is for debugging purposes
 console.warn(
   'Click on index.ts to open source code for this example --------->',
@@ -77,8 +77,8 @@ export const globalLabelmapSegmentationConfiguration = async (
       segmentation.config.setGlobalConfig(config);
 
       const renderingEngine = getRenderingEngine(renderingEngineId);
-
-      renderingEngine?.renderViewports([viewportId]);
+      if (!renderingEngine) return;
+      renderingEngine.renderViewports([viewportId]);
     },
   });
   addToggleButtonToToolbar({
@@ -157,7 +157,10 @@ export const globalLabelmapSegmentationConfiguration = async (
   /**
    * Adds two concentric circles to each axial slice of the demo segmentation.
    */
-  function fillSegmentationWithCircles(segmentationVolume, centerOffset) {
+  function fillSegmentationWithCircles(
+    segmentationVolume: ImageVolume,
+    centerOffset: number[],
+  ) {
     const scalarData = segmentationVolume.scalarData;
 
     let voxelIndex = 0;
@@ -235,62 +238,66 @@ export const globalLabelmapSegmentationConfiguration = async (
     // Add some data to the segmentations
     fillSegmentationWithCircles(segmentationVolume1, [50, 50]);
     fillSegmentationWithCircles(segmentationVolume2, [-50, -50]);
-
-    const gcp = true;
-    await initDemo(gcp);
-    const imageIds = await getImageIds(
-      gcp,
-      SeriesInstanceUID,
-      StudyInstanceUID,
-    );
-    imageIds.sort();
-
-    // Define a volume in memory
-    const volume = await volumeLoader.createAndCacheVolume(volumeId, {
-      imageIds,
-    });
-
-    // Add some segmentations based on the source data volume
-    await addSegmentationsToState();
-
-    // Instantiate a rendering engine
-    const renderingEngine = new RenderingEngine(renderingEngineId);
-
-    // Create the viewports
-    const viewportInput = {
-      defaultOptions: {
-        background: [0.2, 0, 0.2] as Types.Point3,
-        orientation: Enums.OrientationAxis.AXIAL,
-      },
-      element,
-      type: ViewportType.ORTHOGRAPHIC,
-      viewportId,
-    };
-
-    toolGroup.addViewport(viewportId, renderingEngineId);
-
-    renderingEngine.enableElement(viewportInput);
-
-    // Set the volume to load
-    volume.load();
-
-    // Set volumes on the viewports
-    await setVolumesForViewports(renderingEngine, [{ volumeId }], [viewportId]);
-
-    // // Add the segmentation representations to the toolgroup
-    await segmentation.addSegmentationRepresentations(toolGroupId, [
-      {
-        segmentationId: segmentationId1,
-        type: csToolsEnums.SegmentationRepresentations.Labelmap,
-      },
-      {
-        segmentationId: segmentationId2,
-        type: csToolsEnums.SegmentationRepresentations.Labelmap,
-      },
-    ]);
-
-    // Render the image
-    renderingEngine.renderViewports([viewportId]);
   }
+  const gcp = true;
+  await initDemo(gcp);
+  const imageIds = await getImageIds(gcp, SeriesInstanceUID, StudyInstanceUID);
+  imageIds.sort();
+
+  // Define a volume in memory
+  const volume = await volumeLoader.createAndCacheVolume(volumeId, {
+    imageIds,
+  });
+
+  // Add some segmentations based on the source data volume
+  await addSegmentationsToState();
+
+  // Instantiate a rendering engine
+  const renderingEngine = new RenderingEngine(renderingEngineId);
+
+  // Create the viewports
+  const viewportInput = {
+    defaultOptions: {
+      background: [0.2, 0, 0.2] as Types.Point3,
+      orientation: Enums.OrientationAxis.AXIAL,
+    },
+    element,
+    type: ViewportType.ORTHOGRAPHIC,
+    viewportId,
+  };
+
+  // Add tools to Cornerstone3D
+  cornerstoneTools.addTool(SegmentationDisplayTool);
+
+  // Define tool groups to add the segmentation display tool to
+  const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
+  if (!toolGroup) return;
+  toolGroup.addTool(SegmentationDisplayTool.toolName);
+  toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
+
+  toolGroup.addViewport(viewportId, renderingEngineId);
+
+  renderingEngine.enableElement(viewportInput);
+
+  // Set the volume to load
+  volume.load();
+
+  // Set volumes on the viewports
+  await setVolumesForViewports(renderingEngine, [{ volumeId }], [viewportId]);
+
+  // // Add the segmentation representations to the toolgroup
+  await segmentation.addSegmentationRepresentations(toolGroupId, [
+    {
+      segmentationId: segmentationId1,
+      type: csToolsEnums.SegmentationRepresentations.Labelmap,
+    },
+    {
+      segmentationId: segmentationId2,
+      type: csToolsEnums.SegmentationRepresentations.Labelmap,
+    },
+  ]);
+
+  // Render the image
+  renderingEngine.renderViewports([viewportId]);
   console.log('globalLabelmapSegmentationConfiguration');
 };
