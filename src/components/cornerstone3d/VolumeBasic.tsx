@@ -1,9 +1,9 @@
 'use client';
-
 import React, { useEffect } from 'react';
 
-import { initVolumeBasic } from '@/components/cornerstone3d/tools/volumeBasic';
+import { runVolumeBasic } from '@/components/cornerstone3d/rensyuuTools/runVolumeBasic';
 
+const BUG = false;
 interface PROPS {
   DerivativeDiscription: string;
   SeriesInstanceUID: string;
@@ -15,45 +15,36 @@ const VolumeBasic: React.FC<PROPS> = ({
   SeriesInstanceUID,
   StudyInstanceUID,
 }) => {
-  const idName = 'VolumeBasic';
-  const run = async (
-    SeriesInstanceUID: string,
-    StudyInstanceUID: string,
-    DerivativeDiscription: string,
-  ) => {
-    await initVolumeBasic(
-      idName,
-      SeriesInstanceUID,
-      StudyInstanceUID,
-      DerivativeDiscription,
-    );
-  };
-
+  const idName = 'volumeBasic';
   useEffect(() => {
-    if (SeriesInstanceUID && StudyInstanceUID && DerivativeDiscription) {
-      run(SeriesInstanceUID, StudyInstanceUID, DerivativeDiscription);
+    if (SeriesInstanceUID && StudyInstanceUID) {
+      runVolumeBasic(
+        idName,
+        SeriesInstanceUID,
+        StudyInstanceUID,
+        DerivativeDiscription,
+      );
     }
     return () => {
-      const toolbar = document.getElementById(`${idName}-toolbar`);
-      if (toolbar) toolbar.innerHTML = '';
       const content = document.getElementById(`${idName}-content`);
       if (content) content.innerHTML = '';
+      const toolbar = document.getElementById(`${idName}-toolbar`);
+      if (toolbar) toolbar.innerHTML = '';
     };
-  }, [SeriesInstanceUID, StudyInstanceUID, DerivativeDiscription]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [SeriesInstanceUID, StudyInstanceUID]);
   return (
-    <div>
-      <h1 id={`${idName}-title`} className="text-3xl"></h1>
-      <p id={`${idName}-description`} className="text-xl text-blue-800"></p>
-      <div
-        id={`${idName}-toolbar`}
-        className="grid w-1/3 grid-cols-4 gap-2"
-      ></div>
-      <div
-        id={`${idName}-content`}
-        className="items-center bg-blue-500"
-        style={{ height: '500px', width: '100%' }}
-      ></div>
+    <div className="mb-10 ml-10">
+      <h1 className="text-3xl"></h1>
+      <p className="text-xl text-blue-800"></p>
+
+      <div>
+        <div
+          id={`${idName}-toolbar`}
+          className="justify-between text-blue-500"
+        ></div>
+        <div id={`${idName}-content`} className=" items-center"></div>
+      </div>
     </div>
   );
 };
