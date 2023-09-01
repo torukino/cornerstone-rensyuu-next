@@ -20,8 +20,6 @@ export const runVolumeBasic = async (
   StudyInstanceUID: string,
   DerivativeDiscription: string,
 ): Promise<void> => {
-
-
   const gcp = true;
   await initDemo(gcp);
 
@@ -43,13 +41,14 @@ export const runVolumeBasic = async (
    * 処理に WebGL コンテキストを 1 つだけ使用し、
    * 同じデータを表示する画面上のビューポート間でテクスチャメモリを共有することができます。
    */
-  // 新しいRenderingEngineインスタンスを作成する前に、既存のインスタンスがあれば破棄する
-  if (renderingEngine) renderingEngine.destroy();
 
   const renderingEngineId = idName + '-RenderingEngine';
   const viewportId = idName + '-MRI-volume';
+  // 新しいRenderingEngineインスタンスを作成する前に、既存のインスタンスがあれば破棄する
+  if (renderingEngine) renderingEngine.disableElement(viewportId);
   renderingEngine = new RenderingEngine(renderingEngineId);
   if (!renderingEngine) return;
+  
   const viewportInput = {
     defaultOptions: {
       background: <Types.Point3>[0.2, 0, 0.2],
