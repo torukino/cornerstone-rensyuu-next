@@ -24,11 +24,13 @@
     "eslint-config-next": "13.4.2",
     "gl-matrix": "^3.4.3",
     "googleapis": "^118.0.0",
+    "lil-gui": "^0.18.2",
     "next": "^13.4.12",
     "postcss": "^8.4.23",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.3.2",
+    "three": "^0.156.0",
     "typescript": "5.0.4"
   },
   "devDependencies": {
@@ -53,7 +55,6 @@
     "eslint-plugin-sort-keys-custom-order": "^1.0.5",
     "eslint-plugin-tailwindcss": "^3.11.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "iconv": "^3.0.1",
     "iconv-lite": "^0.6.3",
     "multipart": "^0.1.5",
     "prettier": "^2.8.8",
