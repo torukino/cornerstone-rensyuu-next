@@ -32,11 +32,7 @@ export default function Layout({ children }: Props) {
             </span>
           </Link>
         </header>
-        <main>{children}</main>{' '}
-        <canvas
-          id="webgl"
-          className="pointer-events-none absolute inset-0 bg-transparent"
-        ></canvas>
+        <main>{children}</main>
       </body>
     </html>
   );
