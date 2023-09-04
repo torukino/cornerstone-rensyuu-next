@@ -1,12 +1,13 @@
 'use client';
 import React, { useEffect } from 'react';
 
-import { homeThree } from '@/tools/three/homeThree';
+import { earth } from '@/tools/three/earth';
 
 const HomeThree = () => {
   useEffect(() => {
   const canvas = document.querySelector('#webgl');
-   canvas && homeThree(canvas);
+  //  canvas && homeThree(canvas);
+   canvas && earth(canvas);
   }, []);
   return <div>HomeThree</div>;
 };
