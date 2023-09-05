@@ -39,12 +39,14 @@ export const earthThree = (canvas: HTMLElement) => {
     console.log(renderer.domElement);
 
     // background image
-    const backgroundTexture = new THREE.TextureLoader().load(
-      './space.jpg',
-      () => {
-        scene.background = backgroundTexture;
-      },
-    );
+    // const backgroundTexture = new THREE.TextureLoader().load(
+    //   './space.jpg',
+    //   () => {
+    //     scene.background = backgroundTexture;
+    //   },
+    // );
+    const backgroundTexture = new THREE.TextureLoader().load('./space.jpg');
+    scene.background = backgroundTexture;
     //texture
     let textures: THREE.Texture = new THREE.TextureLoader().load('./earth.jpg');
 
@@ -57,7 +59,7 @@ export const earthThree = (canvas: HTMLElement) => {
     // material
     let ballMaterial: THREE.MeshPhysicalMaterial =
       new THREE.MeshPhysicalMaterial({
-        flatShading: true,
+        flatShading: false,
         map: textures,
         // metalness: 0.4,
         // roughness: 0.37,
