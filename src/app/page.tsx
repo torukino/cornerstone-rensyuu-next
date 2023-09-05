@@ -1,4 +1,4 @@
-import HomeThree from "@/components/HomeThree";
+import HomeThreeRyo from '@/components/HomeThreeRyo';
 
 export default async function Home() {
   const res = await fetch('http://localhost:3000/api/hellox');
@@ -7,9 +7,10 @@ export default async function Home() {
 
   if (data)
     return (
-      <main className="ml-8">
-        <div>{data.text}</div>
-        <HomeThree />
+      <main className="">
+        {/* <div>{data.text}</div> */}
+        {/* <HomeThree /> */}
+        <HomeThreeRyo />
       </main>
     );
 }
