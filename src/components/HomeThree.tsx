@@ -24,15 +24,19 @@ const HomeThree = () => {
     };
   }, []);
   return (
-    <div className="left-0 top-0">
-      <canvas
-        id="webgl1"
-        className="z-0 h-1/3 w-1/3 bg-cover bg-center bg-no-repeat"
-      ></canvas>
-      <canvas
-        id="webgl2"
-        className="h-1/3 w-1/3 bg-cover bg-center bg-no-repeat"
-      ></canvas>
+    <div className="left-0 top-0 flex">
+      <div>
+        <canvas
+          id="webgl1"
+          className="w-[300] bg-cover bg-center bg-no-repeat"
+        ></canvas>
+      </div>
+      <div>
+        <canvas
+          id="webgl2"
+          className="w-[300] bg-cover bg-center bg-no-repeat"
+        ></canvas>
+      </div>
     </div>
   );
 };

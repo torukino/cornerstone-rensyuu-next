@@ -15,18 +15,19 @@ export const earthThree = (canvas: HTMLElement) => {
   if (!gui) return;
 
   // window.addEventListener('load', init);
-  init();
-  function init() {
+  init(canvas);
+  function init(canvas: HTMLElement) {
     // add scene
     scene = new THREE.Scene();
     // add camera
     camera = new THREE.PerspectiveCamera(
       50,
-      window.innerWidth / window.innerHeight,
+      (canvas as HTMLCanvasElement).width /
+        (canvas as HTMLCanvasElement).height, //window.innerWidth / window.innerHeight,
       0.1,
       1000,
     );
-    camera.position.set(0, 0, 500);
+    camera.position.set(500, 0, -500);
 
     // add renderer
     renderer = new THREE.WebGLRenderer({
@@ -34,7 +35,7 @@ export const earthThree = (canvas: HTMLElement) => {
       canvas: canvas as HTMLCanvasElement,
     });
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize((canvas as HTMLCanvasElement).width, (canvas as HTMLCanvasElement).height); //window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     console.log(renderer.domElement);
 

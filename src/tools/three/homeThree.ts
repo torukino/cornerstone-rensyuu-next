@@ -1,7 +1,7 @@
 import GUI from 'lil-gui';
 import * as THREE from 'three';
 
-export const homeThree = (canvas) => {
+export const homeThree = (canvas: HTMLElement) => {
   console.log('homeThree');
 
   //gui
@@ -9,15 +9,15 @@ export const homeThree = (canvas) => {
   if (!gui) return;
   // get canvas
 
-  if (!canvas) return ;
+  if (!canvas) return;
 
   // basic 3 elements
   // scene
   const scene = new THREE.Scene();
   // size
   const sizes = {
-    height: window.innerHeight,
-    width: window.innerWidth,
+    height: (canvas as HTMLCanvasElement).height, //window.innerHeight,
+    width: (canvas as HTMLCanvasElement).width, // window.innerWidth,
   };
   //camera
   const camera = new THREE.PerspectiveCamera(
@@ -26,7 +26,7 @@ export const homeThree = (canvas) => {
     0.1,
     100,
   );
-  camera.position.z = 10;
+  camera.position.z = 30;
   scene.add(camera);
   //renderer
   const renderer = new THREE.WebGLRenderer({
@@ -37,6 +37,9 @@ export const homeThree = (canvas) => {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(window.devicePixelRatio);
   // make objects
+
+  const backgroundTexture = new THREE.TextureLoader().load('./space1.jpg');
+  scene.background = backgroundTexture;
   // material
 
   const material = new THREE.MeshPhysicalMaterial({
@@ -101,8 +104,8 @@ export const homeThree = (canvas) => {
   // brawser resize
   window.addEventListener('resize', () => {
     // update size
-    sizes.width = window.innerWidth;
-    sizes.height = window.innerHeight;
+    sizes.width = (canvas as HTMLCanvasElement).width; //window.innerWidth;
+    sizes.height = (canvas as HTMLCanvasElement).height; //window.innerHeight;
 
     //update camera
     camera.aspect = sizes.width / sizes.height;
@@ -145,9 +148,7 @@ export const homeThree = (canvas) => {
   rot();
 
   // get location of cursor
-  const cursor = {};
-  cursor.x = 0;
-  cursor.y = 0;
+  const cursor = { x: 0, y: 0 };
 
   window.addEventListener('mousemove', (event) => {
     cursor.x = event.clientX / sizes.width - 0.5;
