@@ -1,4 +1,4 @@
-import GUI from 'lil-gui';
+import {GUI} from 'lil-gui';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
@@ -74,7 +74,8 @@ export const earthThree = (canvas: HTMLElement) => {
     // add mesh to scene
     scene.add(ballMesh);
     // parallel light
-    directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight = new THREE.DirectionalLight(0xffffff, 4);
+
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
     //ambient light
@@ -84,6 +85,7 @@ export const earthThree = (canvas: HTMLElement) => {
     pointLight = new THREE.PointLight(0xffffff, 1);
     pointLight.position.set(-200, -200, -200);
     pointLight.decay = 1;
+    
     pointLight.power = 4000;
     // scene.add(pointLight);
 

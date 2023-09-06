@@ -1,4 +1,4 @@
-import GUI from 'lil-gui';
+import {GUI} from 'lil-gui';
 import * as THREE from 'three';
 
 export const homeThree = (canvas: HTMLElement) => {

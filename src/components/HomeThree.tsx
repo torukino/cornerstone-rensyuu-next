@@ -24,17 +24,17 @@ const HomeThree = () => {
     };
   }, []);
   return (
-    <div className="left-0 top-0 flex">
+    <div className="left-0 top-0 flex flex-col">
       <div>
         <canvas
           id="webgl1"
-          className="w-[300] bg-cover bg-center bg-no-repeat"
+          className="bg-cover bg-center bg-no-repeat"
         ></canvas>
       </div>
       <div>
         <canvas
           id="webgl2"
-          className="w-[300] bg-cover bg-center bg-no-repeat"
+          className="bg-cover bg-center bg-no-repeat"
         ></canvas>
       </div>
     </div>
