@@ -4,6 +4,7 @@ import {
   Types,
   volumeLoader,
 } from '@cornerstonejs/core';
+import { cancelLoadAll } from '@cornerstonejs/core/dist/esm/loaders/imageLoader';
 
 import { getElement } from '@/components/cornerstone3d/rensyuuTools/getElement';
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
@@ -13,13 +14,15 @@ import {
 } from '@/tools/cornerstoneTools';
 
 const { ViewportType } = Enums;
-let renderingEngine: RenderingEngine | null = null;
+// let renderingEngine: RenderingEngine | null = null;
 export const runVolumeBasic = async (
   idName: string,
   SeriesInstanceUID: string,
   StudyInstanceUID: string,
   DerivativeDiscription: string,
 ): Promise<void> => {
+  // if(volumeLoader)  cancelLoadAll();
+
   const gcp = true;
   await initDemo(gcp);
 
@@ -45,14 +48,14 @@ export const runVolumeBasic = async (
   const renderingEngineId = idName + '-RenderingEngine';
   const viewportId = idName + '-MRI-volume';
   // 新しいRenderingEngineインスタンスを作成する前に、既存のインスタンスがあれば破棄する
-  if (renderingEngine) renderingEngine.disableElement(viewportId);
-  renderingEngine = new RenderingEngine(renderingEngineId);
+  // if (renderingEngine) renderingEngine.disableElement(viewportId);
+  const renderingEngine = new RenderingEngine(renderingEngineId);
   if (!renderingEngine) return;
-  
+
   const viewportInput = {
     defaultOptions: {
       background: <Types.Point3>[0.2, 0, 0.2],
-      orientation: Enums.OrientationAxis.SAGITTAL,
+      orientation: Enums.OrientationAxis.ACQUISITION,
     },
     element,
     type: ViewportType.ORTHOGRAPHIC,
@@ -62,30 +65,32 @@ export const runVolumeBasic = async (
   renderingEngine.enableElement(viewportInput);
   console.log(renderingEngine);
 
-  const viewport = <Types.IVolumeViewport>(
-    renderingEngine.getViewport(viewportId)
-  );
-
   const volumeName = 'MRI-volume-id';
   const volumeLoaderScheme = 'cornerstoneStreamingImageVolume';
   const volumeId = `${volumeLoaderScheme}:${volumeName}`;
 
   // メモリー上でvolumeを定義する
+
+
   const volume = await volumeLoader.createAndCacheVolume(volumeId, {
     imageIds,
   });
 
   // volumeの起動(load)のセット
-  volume.load();
+  await volume.load();
 
+  // ビューポートを取得する
+  const viewport = <Types.IVolumeViewport>(
+    renderingEngine.getViewport(viewportId)
+  );
   //ビューポートにvolumeをセットする
-  viewport.setVolumes([
+  await viewport.setVolumes([
     {
       callback: setMriTransferFunctionForVolumeActor,
       volumeId,
     },
   ]);
 
-  // Render the image
+  // 画像をレンダリングする
   viewport.render();
 };

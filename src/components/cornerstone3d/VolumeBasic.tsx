@@ -1,4 +1,5 @@
 'use client';
+import { cancelLoadAll } from '@cornerstonejs/core/dist/esm/loaders/imageLoader';
 import React, { useEffect } from 'react';
 
 import { runVolumeBasic } from '@/components/cornerstone3d/rensyuuTools/runVolumeBasic';
@@ -18,6 +19,7 @@ const VolumeBasic: React.FC<PROPS> = ({
   const idName = 'volumeBasic';
   useEffect(() => {
     if (SeriesInstanceUID && StudyInstanceUID) {
+    
       runVolumeBasic(
         idName,
         SeriesInstanceUID,
