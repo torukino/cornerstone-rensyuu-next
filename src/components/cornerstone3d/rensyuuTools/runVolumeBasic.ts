@@ -4,7 +4,6 @@ import {
   Types,
   volumeLoader,
 } from '@cornerstonejs/core';
-import { cancelLoadAll } from '@cornerstonejs/core/dist/esm/loaders/imageLoader';
 
 import { getElement } from '@/components/cornerstone3d/rensyuuTools/getElement';
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
@@ -15,12 +14,13 @@ import {
 
 const { ViewportType } = Enums;
 // let renderingEngine: RenderingEngine | null = null;
+let volume: any;
 export const runVolumeBasic = async (
   idName: string,
   SeriesInstanceUID: string,
   StudyInstanceUID: string,
   DerivativeDiscription: string,
-): Promise<void> => {
+): Promise<Types.IVolumeViewport | undefined> => {
   // if(volumeLoader)  cancelLoadAll();
 
   const gcp = true;
@@ -28,7 +28,7 @@ export const runVolumeBasic = async (
 
   // TODO: ここでelementに追加しているから、別の写真をレンダリングした後に他の別の写真をクリックしたら２枚表示されるエラーが生じるのでは？
   const content = document.getElementById(idName + '-content');
-  if (!content) return;
+  if (!content) return undefined;
 
   const element: HTMLDivElement = getElement();
   content.appendChild(element);
@@ -71,13 +71,14 @@ export const runVolumeBasic = async (
 
   // メモリー上でvolumeを定義する
 
-
-  const volume = await volumeLoader.createAndCacheVolume(volumeId, {
+  volume = await volumeLoader.createAndCacheVolume(volumeId, {
     imageIds,
   });
 
   // volumeの起動(load)のセット
   await volume.load();
+  console.log('@@@@ volume @@@@@@', volume);
+  console.log('++++ volumeLoader +++++', volumeLoader);
 
   // ビューポートを取得する
   const viewport = <Types.IVolumeViewport>(
@@ -91,6 +92,7 @@ export const runVolumeBasic = async (
     },
   ]);
 
+  return viewport;
   // 画像をレンダリングする
-  viewport.render();
+  // viewport.render();
 };

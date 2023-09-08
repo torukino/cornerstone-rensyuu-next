@@ -1,5 +1,5 @@
 'use client';
-import { cancelLoadAll } from '@cornerstonejs/core/dist/esm/loaders/imageLoader';
+import { Types } from '@cornerstonejs/core';
 import React, { useEffect } from 'react';
 
 import { runVolumeBasic } from '@/components/cornerstone3d/rensyuuTools/runVolumeBasic';
@@ -17,15 +17,21 @@ const VolumeBasic: React.FC<PROPS> = ({
   StudyInstanceUID,
 }) => {
   const idName = 'volumeBasic';
+
+  const asyncVolumeBasic = async () => {
+    const viewport: Types.IVolumeViewport | undefined = await runVolumeBasic(
+      idName,
+      SeriesInstanceUID,
+      StudyInstanceUID,
+      DerivativeDiscription,
+    );
+    console.log('viewport', viewport);
+    if (viewport) viewport.render();
+  };
+
   useEffect(() => {
     if (SeriesInstanceUID && StudyInstanceUID) {
-    
-      runVolumeBasic(
-        idName,
-        SeriesInstanceUID,
-        StudyInstanceUID,
-        DerivativeDiscription,
-      );
+      asyncVolumeBasic();
     }
     return () => {
       const content = document.getElementById(`${idName}-content`);
