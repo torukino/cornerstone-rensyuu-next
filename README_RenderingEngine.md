@@ -22,3 +22,15 @@ vtk.jsはレンダリングに使用する標準のレンダリング機能を�
 さらにCornerstone3Dでは、データを複製せずに、テクスチャを必要とする可能性のあるビューポートでテクスチャを再利用できるようにShared Volume Mappersを導入しました。
 
 たとえば、CT (軸方向、矢状方向、冠状方向)、PET (軸方向、矢状方向、冠状方向)、および融合 (軸方向、矢状方向、冠状方向) を含む 3x3 レイアウトを持つ PET-CT 融合の場合、CT と PET 用に 2 つのボリューム マッパーを個別に作成します。また、Fusion ビューポートの場合は、新しいテクスチャを再作成するのではなく、作成された両方のテクスチャを再利用します。
+
+# 一般的な使用方法
+
+レンダリング エンジンを作成した後、レンダリングのためにビューポートをそれに割り当てることができます。StackあるいはVolumeビューポートを作成するには主に 2 つのアプローチがあります。これらについてはこれから説明します。
+
+```
+import { RenderingEngine } from '@cornerstonejs/core';
+
+const renderingEngineId = 'myEngine';
+const renderingEngine = new RenderingEngine(renderingEngineId);
+```
+
