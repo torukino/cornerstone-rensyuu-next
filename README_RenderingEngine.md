@@ -27,6 +27,8 @@ vtk.jsはレンダリングに使用する標準のレンダリング機能を�
 
 レンダリング エンジンを作成した後、レンダリングのためにビューポートをそれに割り当てることができます。StackあるいはVolumeビューポートを作成するには主に 2 つのアプローチがあります。これらについてはこれから説明します。
 
+## RenderingEngineのインスタンス化
+new RenderingEngine()メソッドを呼び出すことで、RenderingEngineをインスタンス化できます。
 ```
 import { RenderingEngine } from '@cornerstonejs/core';
 
@@ -34,3 +36,85 @@ const renderingEngineId = 'myEngine';
 const renderingEngine = new RenderingEngine(renderingEngineId);
 ```
 
+## viewportを作成する
+
+ビューポートを作成するには、setViewportsとenable/disableAPIという2つの方法を使用できます。どちらのメソッドでも、ViewportInput オブジェクトが引数として渡されます。
+
+```
+PublicViewportInput = {
+  /** HTML element in the DOM */
+  element: HTMLDivElement
+  /** unique id for the viewport in the renderingEngine */
+  viewportId: string
+  /** type of the viewport VolumeViewport or StackViewport*/
+  type: ViewportType
+  /** options for the viewport */
+  defaultOptions: ViewportInputOptions
+}
+```
+
+### setViewports
+
+setViewpoは一度に一連のビューポートを作成するのに適しています。ビューポートの配列を設定した後、 
+renderingEngineはオフスクリーンキャンバスの大きさをキャンバスのサイズに適応させ、
+対応するイベントをトリガーします。
+
+```
+const viewportInput = [
+  // CT Volume Viewport - Axial
+  {
+    viewportId: 'ctAxial',
+    type: ViewportType.ORTHOGRAPHIC,
+    element: htmlElement1,
+    defaultOptions: {
+      orientation: Enums.OrientationAxis.AXIAL,
+    },
+  },
+  // CT Volume Viewport - Sagittal
+  {
+    viewportId: 'ctSagittal',
+    type: ViewportType.ORTHOGRAPHIC,
+    element: htmlElement2,
+    defaultOptions: {
+      orientation: Enums.OrientationAxis.SAGITTAL,
+    },
+  },
+  // CT Axial Stack Viewport
+  {
+    viewportId: 'ctStack',
+    type: ViewportType.STACK,
+    element: htmlElement3,
+    defaultOptions: {
+      orientation: Enums.OrientationAxis.AXIAL,
+    },
+  },
+];
+
+renderingEngine.setViewports(viewportInput);
+```
+
+### Enable/Disable API
+
+各ビューポートの有効化/無効化を個別に完全に制御するには、
+enableElementとdisableElementのAPI を使用できます。
+要素を有効にした後、 renderingEngineはそのサイズと状態を新しい要素に適応させます。
+
+```
+const viewport = {
+  viewportId: 'ctAxial',
+  type: ViewportType.ORTHOGRAPHIC,
+  element: element1,
+  defaultOptions: {
+    orientation: Enums.OrientationAxis.AXIAL,
+  },
+};
+
+renderingEngine.enableElement(viewport);
+```
+
+viewportIdを使用してビューポートを無効にできます。
+無効にした後レンダリングエンジンはオフスクリーンキャンバスのサイズを変更します。
+
+```
+renderingEngine.disableElement(viewportId: string)
+```
