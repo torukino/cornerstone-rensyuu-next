@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 
+import ViewStack from '@/components/cornerstone3d/ViewStack';
 import VolumeBasic from '@/components/cornerstone3d/VolumeBasic';
 import { CLIENTSERIES } from '@/types/clients/clientWithSeries';
 
@@ -65,12 +66,7 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
         </tbody>
       </table>
       {SeriesInstanceUID && StudyInstanceUID && (
-        <div>
-          {/* <ViewStack
-            SeriesInstanceUID={SeriesInstanceUID}
-            StudyInstanceUID={StudyInstanceUID}
-            DerivativeDiscription={DerivativeDiscription}
-          /> */}
+        <div className="flex flex-col">
           {/* <ViewStackSegment
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
@@ -81,17 +77,26 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
           /> */}
-          <VolumeBasic
-            SeriesInstanceUID={SeriesInstanceUID}
-            StudyInstanceUID={StudyInstanceUID}
-            DerivativeDiscription={DerivativeDiscription}
-          />
+          <div id="viewVolume">
+            <VolumeBasic
+              SeriesInstanceUID={SeriesInstanceUID}
+              StudyInstanceUID={StudyInstanceUID}
+              DerivativeDiscription={DerivativeDiscription}
+            />
+          </div>
           {/* 
           <ViewVolume
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
           /> */}
+          <div id="ViewStack">
+            <ViewStack
+              SeriesInstanceUID={SeriesInstanceUID}
+              StudyInstanceUID={StudyInstanceUID}
+              DerivativeDiscription={DerivativeDiscription}
+            />
+          </div>
         </div>
       )}
     </div>

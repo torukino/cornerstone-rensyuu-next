@@ -31,8 +31,9 @@ export const runVolumeBasic = async (
   const content = document.getElementById(idName + '-content');
   if (!content) return undefined;
 
-  const element: HTMLDivElement = getElement();
+  const element: HTMLDivElement = getElement(idName);
   content.appendChild(element);
+  console.log('runVolumeBasic element', element);
 
   // Dicom の使い方に従った画像の取得
   const imageIds = await getImageIds(gcp, SeriesInstanceUID, StudyInstanceUID);

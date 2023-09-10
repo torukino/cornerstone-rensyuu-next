@@ -18,7 +18,7 @@ export const runStackSegment = async (
   const content = document.getElementById(idName + '-content');
   if (!content) return;
 
-  const element: HTMLDivElement = getElement();
+  const element: HTMLDivElement = getElement(idName);
   content.appendChild(element);
 
   const viewportId = idName + '-MRI_STACK';
@@ -26,6 +26,8 @@ export const runStackSegment = async (
   // Dicom の使い方に従った画像の取得
   const imageIds = await getImageIds(gcp, SeriesInstanceUID, StudyInstanceUID);
   imageIds.sort();
+
+  console.log('element:', element);
 
   const viewportInput = {
     defaultOptions: {
@@ -37,7 +39,7 @@ export const runStackSegment = async (
   };
 
   // Instantiate a rendering engine
-  const renderingEngineId = 'myRenderingEngine';
+  const renderingEngineId = idName + '-myRenderingEngine';
   const renderingEngine = new RenderingEngine(renderingEngineId);
   renderingEngine.enableElement(viewportInput);
 
@@ -53,7 +55,7 @@ export const runStackSegment = async (
   await viewport.setStack(stack);
 
   // Set the VOI of the stack
-  viewport.setProperties({ voiRange: {lower:0, upper:2500} });
+  viewport.setProperties({ voiRange: { lower: 0, upper: 2500 } });
   // Render the image
   viewport.render();
 };

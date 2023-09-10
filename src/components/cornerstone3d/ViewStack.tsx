@@ -34,7 +34,7 @@ const ViewStack: React.FC<PROPS> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [SeriesInstanceUID, StudyInstanceUID]);
   return (
-    <div className="mb-10 ml-10">
+    <div className="mb-10 ml-10 h-[500px] w-[500px]">
       <h1 className="text-3xl"></h1>
       <p className="text-xl text-blue-800"></p>
 

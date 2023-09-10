@@ -20,7 +20,7 @@ export const runMain = async (
   const content = document.getElementById(idName + '-content');
   if (!content) return;
 
-  const element: HTMLDivElement = getElement();
+  const element: HTMLDivElement = getElement(idName);
   content.appendChild(element);
 
   const renderingEngineId = idName + '-RenderingEngine';
