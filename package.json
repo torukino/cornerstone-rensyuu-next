@@ -23,6 +23,7 @@
     "dotenv": "^16.3.1",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.2",
+    "fs": "^0.0.1-security",
     "gl-matrix": "^3.4.3",
     "googleapis": "^118.0.0",
     "lil-gui": "^0.18.2",

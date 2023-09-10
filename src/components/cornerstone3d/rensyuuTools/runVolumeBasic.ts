@@ -1,4 +1,5 @@
 import {
+  cache,
   Enums,
   RenderingEngine,
   Types,
@@ -63,24 +64,32 @@ export const runVolumeBasic = async (
   };
 
   renderingEngine.enableElement(viewportInput);
-  console.log(renderingEngine);
+  // console.log(renderingEngine);
 
   const volumeName = 'MRI-volume-id';
   const volumeLoaderScheme = 'cornerstoneStreamingImageVolume';
   const volumeId = `${volumeLoaderScheme}:${volumeName}`;
 
   // メモリー上でvolumeを定義する
+  cache.purgeCache();
 
-  volume = await volumeLoader.createAndCacheVolume(volumeId, {
+  console.log('@@@@ imageIds[0] @@@@@@', imageIds[0]);
+  const volume = await volumeLoader.createAndCacheVolume(volumeId, {
     imageIds,
   });
-
   // volumeの起動(load)のセット
   await volume.load();
-  console.log('@@@@ volume @@@@@@', volume);
-  console.log('++++ volumeLoader +++++', volumeLoader);
+  const value = volume._imageIdsIndexMap.get(imageIds[0]);
+  console.log('@@@@ volume value @@@@@@', value);
+  console.log('@@@@ volume 2 @@@@@@', Object.keys(volume));
+  const key = getKeyByValue(volume._imageIdsIndexMap, value);
+  console.log('volume3 [1] key', key);
 
   // ビューポートを取得する
+  // console.log(
+  //   '@@@@ renderingEngine.getViewport(viewportId) @@@@@@',
+  //   renderingEngine.getViewport(viewportId),
+  // );
   const viewport = <Types.IVolumeViewport>(
     renderingEngine.getViewport(viewportId)
   );
@@ -96,3 +105,11 @@ export const runVolumeBasic = async (
   // 画像をレンダリングする
   // viewport.render();
 };
+
+function getKeyByValue(map: any, searchValue: any) {
+  for (let [key, value] of map.entries()) {
+    if (value === searchValue) {
+      return key;
+    }
+  }
+}

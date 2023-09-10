@@ -25,7 +25,7 @@ const VolumeBasic: React.FC<PROPS> = ({
       StudyInstanceUID,
       DerivativeDiscription,
     );
-    console.log('viewport', viewport);
+    // console.log('viewport', viewport);
     if (viewport) viewport.render();
   };
 

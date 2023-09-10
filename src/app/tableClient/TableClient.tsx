@@ -16,7 +16,7 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
 
   const selectImage = (c: CLIENTSERIES) => {
     console.log(
-      `${c.id} ${c.name} \ninstituteName:${c.instituteName} \nDerivativeDiscription:${c.DerivativeDiscription}`,
+      `${c.id} ${c.name} DerivativeDiscription:${c.DerivativeDiscription}`,
     );
     setSeriesInstanceUID('');
     setStudyInstanceUID('');
