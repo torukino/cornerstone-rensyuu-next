@@ -30,7 +30,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/pages/api/authToken.js",
-    "src/pages/api/retrieveRendered.ts"
-, "src/pages/api/retrieveInstance.js", "src/app/image/[id]/page.tsx"  ],
+    "src/pages/api/retrieveRendered.ts",
+    "src/pages/api/retrieveInstance.js",
+    "src/app/image/[id]/page.tsx"
+  ],
   "exclude": ["node_modules"]
 }

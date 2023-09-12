@@ -80,11 +80,11 @@ export const runVolumeBasic = async (
   });
   // volumeの起動(load)のセット
   await volume.load();
-  const value = volume._imageIdsIndexMap.get(imageIds[0]);
-  console.log('@@@@ volume value @@@@@@', value);
-  console.log('@@@@ volume 2 @@@@@@', Object.keys(volume));
-  const key = getKeyByValue(volume._imageIdsIndexMap, value);
-  console.log('volume3 [1] key', key);
+  // const value = volume._imageIdsIndexMap.get(imageIds[0]);
+  // console.log('@@@@ volume value @@@@@@', value);
+  // console.log('@@@@ volume 2 @@@@@@', Object.keys(volume));
+  // const key = getKeyByValue(volume._imageIdsIndexMap, value);
+  // console.log('volume3 [1] key', key);
 
   // ビューポートを取得する
   // console.log(
@@ -101,10 +101,9 @@ export const runVolumeBasic = async (
       volumeId,
     },
   ]);
-
+  viewport.render();
   return viewport;
   // 画像をレンダリングする
-  // viewport.render();
 };
 
 function getKeyByValue(map: any, searchValue: any) {

@@ -42,6 +42,4 @@ export const runMain = async (
 
   addButtons(element, idName, imageIds, renderingEngineId, viewportId);
 
-  // Render the image
-  viewport.render();
 };

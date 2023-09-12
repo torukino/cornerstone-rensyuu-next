@@ -1,4 +1,3 @@
-import {GUI} from 'lil-gui';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
@@ -11,8 +10,8 @@ let controls: OrbitControls;
 
 export const earthThree = (canvas: HTMLElement) => {
   //gui
-  const gui = new GUI();
-  if (!gui) return;
+  // const gui = new GUI();
+  // if (!gui) return;
 
   // window.addEventListener('load', init);
   init(canvas);
@@ -35,9 +34,12 @@ export const earthThree = (canvas: HTMLElement) => {
       canvas: canvas as HTMLCanvasElement,
     });
 
-    renderer.setSize((canvas as HTMLCanvasElement).width, (canvas as HTMLCanvasElement).height); //window.innerWidth, window.innerHeight);
+    renderer.setSize(
+      (canvas as HTMLCanvasElement).width,
+      (canvas as HTMLCanvasElement).height,
+    ); //window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    console.log(renderer.domElement);
+    // console.log(renderer.domElement);
 
     // background image
     // const backgroundTexture = new THREE.TextureLoader().load(
@@ -66,9 +68,9 @@ export const earthThree = (canvas: HTMLElement) => {
         // roughness: 0.37,
       });
 
-    gui.addColor(ballMaterial, 'color');
-    gui.add(ballMaterial, 'metalness').min(0).max(1).step(0.01);
-    gui.add(ballMaterial, 'roughness').min(0).max(1).step(0.01);
+    // gui.addColor(ballMaterial, 'color');
+    // gui.add(ballMaterial, 'metalness').min(0).max(1).step(0.01);
+    // gui.add(ballMaterial, 'roughness').min(0).max(1).step(0.01);
     // mesh: combine geometry and material
     let ballMesh: THREE.Mesh = new THREE.Mesh(ballGeometry, ballMaterial);
     // add mesh to scene
@@ -85,7 +87,7 @@ export const earthThree = (canvas: HTMLElement) => {
     pointLight = new THREE.PointLight(0xffffff, 1);
     pointLight.position.set(-200, -200, -200);
     pointLight.decay = 1;
-    
+
     pointLight.power = 4000;
     // scene.add(pointLight);
 

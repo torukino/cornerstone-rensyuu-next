@@ -108,7 +108,6 @@ export const addButtons = (
     return allAnnotations;
   }
   function handleKeydown(e: KeyboardEvent) {
-    console.log(e.key);
     const allAnnotations = getAllAnnotations(toolNames);
     if (e.key === 'Escape' || e.key === 'Backspace' || e.key === 'Delete') {
       deleteSelectedAnnotation();
@@ -116,10 +115,8 @@ export const addButtons = (
       if (annotationUidNumber < allAnnotations.length - 1)
         annotationUidNumber += 1;
       else annotationUidNumber = 0;
-      console.log('annotationUidNumber:', annotationUidNumber);
       const annotation = allAnnotations[annotationUidNumber];
       const annotationUID = annotation.annotationUID;
-      console.log('annotation UID:', annotationUID);
       annotationUID &&
         selection.setAnnotationSelected(annotationUID, true, false);
     }

@@ -1,12 +1,11 @@
-import {GUI} from 'lil-gui';
 import * as THREE from 'three';
 
 export const homeThree = (canvas: HTMLElement) => {
-  console.log('homeThree');
+  // console.log('homeThree');
 
   //gui
-  const gui = new GUI();
-  if (!gui) return;
+  // const gui = new GUI();
+  // if (!gui) return;
   // get canvas
 
   if (!canvas) return;
@@ -49,9 +48,9 @@ export const homeThree = (canvas: HTMLElement) => {
     roughness: 0.37,
   });
 
-  gui.addColor(material, 'color');
-  gui.add(material, 'metalness').min(0).max(1).step(0.01);
-  gui.add(material, 'roughness').min(0).max(1).step(0.01);
+  // gui.addColor(material, 'color');
+  // gui.add(material, 'metalness').min(0).max(1).step(0.01);
+  // gui.add(material, 'roughness').min(0).max(1).step(0.01);
   //mesh
 
   const mesh1 = new THREE.Mesh(

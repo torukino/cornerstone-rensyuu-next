@@ -24,6 +24,16 @@ const nextConfig = {
 
   reactStrictMode: true,
   swcMinify: true,
+
+  webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      exclude: /node_modules/,
+      test: /\.(glsl|vs|fs|vert|frag)$/,
+      use: ['raw-loader'],
+    });
+
+    return config;
+  },
 };
 
 module.exports = nextConfig;
