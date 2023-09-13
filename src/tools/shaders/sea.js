@@ -34,8 +34,8 @@ export const sea = (canvas) => {
 
   // color
   const colorObject = {};
-  colorObject.depthColor = '#2d81ae';
-  colorObject.surfaceColor = '#66c1f9';
+  colorObject.depthColor = '#4794bd';
+  colorObject.surfaceColor = '#dbebf5';
 
   // Material
   const material = new THREE.ShaderMaterial({

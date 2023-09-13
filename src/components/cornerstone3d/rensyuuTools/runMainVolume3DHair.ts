@@ -1,4 +1,5 @@
 import {
+  cache,
   Enums,
   getRenderingEngine,
   RenderingEngine,
@@ -31,6 +32,7 @@ export const runMainVolume3DHair = async (
   StudyInstanceUID: string,
   DerivativeDiscription: string,
 ): Promise<void> => {
+  cache.purgeCache();
   const gcp = true;
   await initDemo(gcp);
 

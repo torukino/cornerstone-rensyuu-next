@@ -15,7 +15,7 @@ const ViewVolume: React.FC<PROPS> = ({
   SeriesInstanceUID,
   StudyInstanceUID,
 }) => {
-  const idName = 'viewVolume';
+  const idName = 'viewVolumeHair';
 
   useEffect(() => {
     if (SeriesInstanceUID && StudyInstanceUID) {

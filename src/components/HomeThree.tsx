@@ -45,11 +45,10 @@ const HomeThree = () => {
         ></canvas>
       </div>
       <div>
-        <main className="absolute flex flex-col items-center justify-end text-white">
-          <h1 className="pl-24 pt-44 text-2xl">Dive Into Deep ...</h1>
-          <p className="pl-32 pt-8 text-base">認知症、人、もっと深みへ</p>
-        </main>
+        {' '}
         <canvas id="webgl3" className="bg-center bg-no-repeat"></canvas>
+        <h1 className="text-2xl">Dive Into Deep ...</h1>
+        <p className="pl-8 text-base">認知症、人、もっと深みへ</p>
       </div>
     </div>
   );

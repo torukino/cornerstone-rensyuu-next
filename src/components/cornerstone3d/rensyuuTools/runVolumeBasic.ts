@@ -26,6 +26,7 @@ export const runVolumeBasic = async (
 
   const gcp = true;
   await initDemo(gcp);
+  cache.purgeCache();
 
   // TODO: ここでelementに追加しているから、別の写真をレンダリングした後に他の別の写真をクリックしたら２枚表示されるエラーが生じるのでは？
   const content = document.getElementById(idName + '-content');
@@ -72,7 +73,6 @@ export const runVolumeBasic = async (
   const volumeId = `${volumeLoaderScheme}:${volumeName}`;
 
   // メモリー上でvolumeを定義する
-  cache.purgeCache();
 
   console.log('@@@@ imageIds[0] @@@@@@', imageIds[0]);
   const volume = await volumeLoader.createAndCacheVolume(volumeId, {
