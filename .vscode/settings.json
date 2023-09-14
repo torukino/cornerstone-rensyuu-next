@@ -9,5 +9,6 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "commentTranslate.hover.enabled": false
+  "commentTranslate.hover.enabled": true,
+  "liveServer.settings.port": 5501
 }

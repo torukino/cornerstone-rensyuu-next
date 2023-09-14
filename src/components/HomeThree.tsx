@@ -45,7 +45,6 @@ const HomeThree = () => {
         ></canvas>
       </div>
       <div>
-        {' '}
         <canvas id="webgl3" className="bg-center bg-no-repeat"></canvas>
         <h1 className="text-2xl">Dive Into Deep ...</h1>
         <p className="pl-8 text-base">認知症、人、もっと深みへ</p>
