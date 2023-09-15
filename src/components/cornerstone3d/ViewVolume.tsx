@@ -46,8 +46,17 @@ const ViewVolume: React.FC<PROPS> = ({
     const volumeName = 'MRI-volume-id';
     const volumeLoaderScheme = 'cornerstoneStreamingImageVolume';
     const volumeId = `${volumeLoaderScheme}:${volumeName}`;
+    const content_crd:HTMLElement|null = document.getElementById(`${idName}-content`);
+    if (!content_crd) return undefined;
 
-    runViewVolume(imageIds, element, renderingEngineId, volumeId, viewportId);
+    runViewVolume(
+      imageIds,
+      content_crd,
+      element,
+      renderingEngineId,
+      volumeId,
+      viewportId,
+    );
   };
 
   useEffect(() => {
