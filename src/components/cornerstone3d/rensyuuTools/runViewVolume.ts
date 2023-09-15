@@ -6,9 +6,11 @@ import {
   utilities as csUtils,
   volumeLoader,
 } from '@cornerstonejs/core';
+import * as cornerstoneTools from '@cornerstonejs/tools';
 
 import { setMriTransferFunctionForVolumeActor } from '@/tools/cornerstoneTools';
 
+const { StackScrollMouseWheelTool, ToolGroupManager } = cornerstoneTools;
 const { ViewportType } = Enums;
 // let renderingEngine: RenderingEngine | null = null;
 let volume: any;
@@ -38,6 +40,15 @@ export const runViewVolume = async (
   mousePosDiv.appendChild(mriValueElement);
   //ここまで
 
+  // addTool
+  const toolGroupId = 'TOOL_GROUP_ID';
+  cornerstoneTools.addTool(cornerstoneTools.StackScrollMouseWheelTool);
+  const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
+  if (!toolGroup) return;
+  toolGroup.addTool(StackScrollMouseWheelTool.toolName);
+  toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
+
+  //ここまで
   cache.purgeCache();
 
   const renderingEngine = new RenderingEngine(renderingEngineId);
@@ -56,9 +67,12 @@ export const runViewVolume = async (
   // console.log(renderingEngine);
 
   // メモリー上でvolumeを定義する
-  const volume :Record<string, any>= await volumeLoader.createAndCacheVolume(volumeId, {
-    imageIds,
-  });
+  const volume: Record<string, any> = await volumeLoader.createAndCacheVolume(
+    volumeId,
+    {
+      imageIds,
+    },
+  );
 
   element.addEventListener('mousemove', (evt) => {
     const rect = element.getBoundingClientRect();
@@ -91,10 +105,12 @@ export const runViewVolume = async (
     },
   ]);
 
+  toolGroup.addViewport(viewportId, renderingEngineId);
+
   viewport.render();
 };
 
-function getValue(volume:Record<string, any>, worldPos: Types.Point3) {
+function getValue(volume: Record<string, any>, worldPos: Types.Point3) {
   const { dimensions, imageData, scalarData } = volume;
 
   const index = imageData.worldToIndex(worldPos);
