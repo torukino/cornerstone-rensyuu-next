@@ -7,10 +7,12 @@ import {
   volumeLoader,
 } from '@cornerstonejs/core';
 import * as cornerstoneTools from '@cornerstonejs/tools';
+import { MouseBindings } from '@cornerstonejs/tools/dist/esm/enums';
 
 import { setMriTransferFunctionForVolumeActor } from '@/tools/cornerstoneTools';
 
-const { StackScrollMouseWheelTool, ToolGroupManager } = cornerstoneTools;
+const { PanTool, StackScrollMouseWheelTool, ToolGroupManager, ZoomTool } =
+  cornerstoneTools;
 const { ViewportType } = Enums;
 // let renderingEngine: RenderingEngine | null = null;
 let volume: any;
@@ -46,7 +48,24 @@ export const runViewVolume = async (
   const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
   if (!toolGroup) return;
   toolGroup.addTool(StackScrollMouseWheelTool.toolName);
+  toolGroup.addTool(PanTool.toolName);
+  toolGroup.addTool(ZoomTool.toolName);
+
   toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
+  toolGroup.setToolActive(PanTool.toolName, {
+    bindings: [
+      {
+        mouseButton: MouseBindings.Primary, // Left Click
+      },
+    ],
+  });
+  toolGroup.setToolActive(ZoomTool.toolName, {
+    bindings: [
+      {
+        mouseButton: MouseBindings.Secondary, // Right Click
+      },
+    ],
+  });
 
   //ここまで
   cache.purgeCache();
@@ -88,7 +107,7 @@ export const runViewVolume = async (
     worldPosElement.innerText = `world: (${worldPos[0].toFixed(
       2,
     )}, ${worldPos[1].toFixed(2)}, ${worldPos[2].toFixed(2)})`;
-    mriValueElement.innerText = `MRI value: ${getValue(volume, worldPos)}`;
+    mriValueElement.innerText = `MRI value: ${getMriValue(volume, worldPos)}`;
   });
 
   // volumeの起動(load)のセット
@@ -110,7 +129,7 @@ export const runViewVolume = async (
   viewport.render();
 };
 
-function getValue(volume: Record<string, any>, worldPos: Types.Point3) {
+function getMriValue(volume: Record<string, any>, worldPos: Types.Point3) {
   const { dimensions, imageData, scalarData } = volume;
 
   const index = imageData.worldToIndex(worldPos);
