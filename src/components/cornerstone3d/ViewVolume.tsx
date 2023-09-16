@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { getElement } from '@/components/cornerstone3d/rensyuuTools/getElement';
 import { runViewVolume } from '@/components/cornerstone3d/rensyuuTools/runViewVolume';
@@ -18,6 +18,7 @@ const ViewVolume: React.FC<PROPS> = ({
   SeriesInstanceUID,
   StudyInstanceUID,
 }) => {
+  const [comment, setComment] = useState<string>(DerivativeDiscription);
   const idName = 'viewVolume';
   const viewVolumeAsync = async (
     idName: string,
@@ -40,8 +41,8 @@ const ViewVolume: React.FC<PROPS> = ({
       StudyInstanceUID,
     );
 
-    const renderingEngineId = idName + '-RenderingEngine';
-    const viewportId = idName + '-MRI-volume';
+    const renderingEngineId = 'RenderingEngine';
+    const viewportId = idName + '-viewportId';
 
     const volumeName = 'MRI-volume-id';
     const volumeLoaderScheme = 'cornerstoneStreamingImageVolume';
@@ -52,11 +53,12 @@ const ViewVolume: React.FC<PROPS> = ({
     if (!content_crd) return undefined;
 
     //volumeかstackかを判定する
-    BUG && console.log("@@-@@ ", DerivativeDiscription)
+    BUG && console.log('@@-@@ ', DerivativeDiscription);
     let isVolume = false;
     if (DerivativeDiscription) isVolume = true;
 
     runViewVolume(
+      idName,
       imageIds,
       content_crd,
       element,
@@ -68,6 +70,7 @@ const ViewVolume: React.FC<PROPS> = ({
   };
 
   useEffect(() => {
+    setComment(DerivativeDiscription);
     viewVolumeAsync(
       idName,
       SeriesInstanceUID,
@@ -93,6 +96,7 @@ const ViewVolume: React.FC<PROPS> = ({
           id={`${idName}-toolbar`}
           className="justify-between text-blue-500"
         ></div>
+        <div className="w-1/6 bg-white">{comment}</div>
         <div id={`${idName}-content`} className=" items-center"></div>
       </div>
     </div>

@@ -34,6 +34,7 @@ export const getToolGroupSetting = (
   toolGroup.addTool(ZoomTool.toolName);
   toolGroup.addTool(WindowLevelTool.toolName);
 
+  // Set the active tool for the group
   toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
   toolGroup.setToolActive(PanTool.toolName, {
     bindings: [
@@ -42,14 +43,15 @@ export const getToolGroupSetting = (
       },
     ],
   });
-  toolGroup.setToolActive(ZoomTool.toolName, {
+
+  toolGroup.setToolActive(WindowLevelTool.toolName, {
     bindings: [
       {
         mouseButton: MouseBindings.Auxiliary, // Middle Click
       },
     ],
   });
-  toolGroup.setToolActive(WindowLevelTool.toolName, {
+  toolGroup.setToolActive(ZoomTool.toolName, {
     bindings: [
       {
         mouseButton: MouseBindings.Secondary, // Right Click
