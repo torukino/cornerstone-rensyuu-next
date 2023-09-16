@@ -43,14 +43,23 @@ export const runViewVolume = async (
   //ここまで
 
   // addTool
+  // Disable right click context menu so we can have right click tools
+  element.oncontextmenu = (e) => e.preventDefault();
   const toolGroupId = 'TOOL_GROUP_ID';
-  cornerstoneTools.addTool(cornerstoneTools.StackScrollMouseWheelTool);
+  // Add tools to Cornerstone3D
+  cornerstoneTools.addTool(StackScrollMouseWheelTool);
+  cornerstoneTools.addTool(PanTool);
+  cornerstoneTools.addTool(ZoomTool);
+  // Define a tool group, which defines how mouse events map to tool commands for
+  // Any viewport using the group
   const toolGroup = ToolGroupManager.createToolGroup(toolGroupId);
   if (!toolGroup) return;
+  // Add tools to the tool group
   toolGroup.addTool(StackScrollMouseWheelTool.toolName);
   toolGroup.addTool(PanTool.toolName);
   toolGroup.addTool(ZoomTool.toolName);
-
+  // Set the initial state of the tools, here all tools are active and bound to
+  // Different mouse inputs
   toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
   toolGroup.setToolActive(PanTool.toolName, {
     bindings: [
