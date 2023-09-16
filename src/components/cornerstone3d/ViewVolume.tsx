@@ -6,7 +6,7 @@ import { runViewVolume } from '@/components/cornerstone3d/rensyuuTools/runViewVo
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import { initDemo } from '@/tools/cornerstoneTools';
 
-const BUG = false;
+const BUG = true;
 interface PROPS {
   DerivativeDiscription: string;
   SeriesInstanceUID: string;
@@ -46,8 +46,15 @@ const ViewVolume: React.FC<PROPS> = ({
     const volumeName = 'MRI-volume-id';
     const volumeLoaderScheme = 'cornerstoneStreamingImageVolume';
     const volumeId = `${volumeLoaderScheme}:${volumeName}`;
-    const content_crd:HTMLElement|null = document.getElementById(`${idName}-content`);
+    const content_crd: HTMLElement | null = document.getElementById(
+      `${idName}-content`,
+    );
     if (!content_crd) return undefined;
+
+    //volumeかstackかを判定する
+    BUG && console.log("@@-@@ ", DerivativeDiscription)
+    let isVolume = false;
+    if (DerivativeDiscription) isVolume = true;
 
     runViewVolume(
       imageIds,
@@ -56,6 +63,7 @@ const ViewVolume: React.FC<PROPS> = ({
       renderingEngineId,
       volumeId,
       viewportId,
+      isVolume,
     );
   };
 
