@@ -30,8 +30,9 @@ const ViewVolume: React.FC<PROPS> = ({
     await initDemo(gcp);
     const content = document.getElementById(idName + '-content');
     if (!content) return undefined;
-
+    content.innerHTML = '';
     const element: HTMLDivElement = getElement(idName);
+
     content.appendChild(element);
 
     // Dicom の使い方に従った画像の取得

@@ -50,7 +50,7 @@ const ViewStackMini: React.FC<PROPS> = ({
     // BUG && console.log('@@-@@ ', DerivativeDiscription || '');
     await runViewStackMini(imageIds, element, viewportId, renderingEngine);
     setLoading(false); // 画像データが利用可能になったらloadingをfalseに設定
-    setComment(DerivativeDiscription + idName);
+    setComment(DerivativeDiscription || ' ');
   };
 
   useEffect(() => {
