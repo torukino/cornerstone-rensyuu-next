@@ -1,8 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import { RenderingEngine } from '@cornerstonejs/core';
+import React, { useEffect, useState } from 'react';
 
+import ViewStackMini from '@/components/cornerstone3d/ViewStackMini';
 import ViewVolume from '@/components/cornerstone3d/ViewVolume';
+import { initDemo } from '@/tools/cornerstoneTools';
 import { CLIENTSERIES } from '@/types/clients/clientWithSeries';
 
 interface PROPS {
@@ -13,6 +16,20 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
   const [StudyInstanceUID, setStudyInstanceUID] = useState<string>('');
   const [DerivativeDiscription, setDerivativeDiscription] =
     useState<string>('');
+  const [renderingEngine, setRenderingEngine] = useState<
+    RenderingEngine | undefined
+  >(undefined);
+
+  const setRenderEngine = async () => {
+    const gcp = true;
+    await initDemo(gcp);
+    const renderingEngineId = 'RenderingEngineId';
+    setRenderingEngine(new RenderingEngine(renderingEngineId));
+  };
+
+  useEffect(() => {
+    setRenderEngine();
+  }, []);
 
   const selectImage = (c: CLIENTSERIES) => {
     console.log(
@@ -45,23 +62,45 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
           <tr>
             <th className="px-4 py-2">内訳</th>
             <th className="px-4 py-2">作成日</th>
-            <th className="px-4 py-2">年齢</th>
+            <th className="px-4 py-2">画像</th>
           </tr>
         </thead>
         <tbody>
-          {clientWithSeriesArray.map((clientWithSeries, i) => (
-            <tr key={i} onClick={() => selectImage(clientWithSeries)}>
-              <td className="border px-4 py-2">
-                <p>{clientWithSeries.DerivativeDiscription}</p>
-              </td>
-              <td className="border px-4 py-2">
-                <p>{clientWithSeries.date}</p>
-              </td>
-              <td className="border px-4 py-2">
-                <p>{clientWithSeries.age}</p>
-              </td>
-            </tr>
-          ))}
+          {clientWithSeriesArray &&
+            clientWithSeriesArray.length > 0 &&
+            clientWithSeriesArray.map((clientWithSeries, index) => (
+              <tr key={index} onClick={() => selectImage(clientWithSeries)}>
+                <td className="border px-4 py-2">
+                  <p>{clientWithSeries.DerivativeDiscription}</p>
+                </td>
+                <td className="border px-4 py-2">
+                  <p>{clientWithSeries.date}</p>
+                </td>
+                <td className="border px-4 py-2">
+                  <p>{clientWithSeries.age}</p>
+                </td>
+
+                <td className="border px-4 py-2">
+                  {renderingEngine &&
+                    clientWithSeries.seriesArray &&
+                    clientWithSeries.seriesArray.length > 0 && (
+                      <ViewStackMini
+                        index={index}
+                        renderingEngine={renderingEngine}
+                        SeriesInstanceUID={
+                          clientWithSeries.seriesArray[0].SeriesInstanceUID
+                        }
+                        StudyInstanceUID={
+                          clientWithSeries.seriesArray[0].StudyInstanceUID
+                        }
+                        DerivativeDiscription={
+                          clientWithSeries.DerivativeDiscription
+                        }
+                      />
+                    )}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
       {SeriesInstanceUID && StudyInstanceUID && (
@@ -89,13 +128,11 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}
           />
-          <div id="ViewStack">
-            {/* <ViewStack
+          {/* <ViewStack
               SeriesInstanceUID={SeriesInstanceUID}
               StudyInstanceUID={StudyInstanceUID}
               DerivativeDiscription={DerivativeDiscription}
             /> */}
-          </div>
         </div>
       )}
     </div>
