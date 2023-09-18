@@ -1,5 +1,4 @@
 import {
-  cache,
   Enums,
   RenderingEngine,
   Types,
@@ -19,16 +18,14 @@ const { ViewportType } = Enums;
 export const runViewVolume = async (
   idName: string,
   imageIds: string[],
-  content: HTMLElement,
+  coordinates: HTMLElement,
   element: HTMLDivElement,
-  renderingEngineId: string,
+  renderingEngine: RenderingEngine,
   volumeId: string,
   viewportId: string,
   isVolume: boolean,
 ): Promise<void | undefined> => {
-  cache.purgeCache();
-  const renderingEngine = new RenderingEngine(renderingEngineId);
-  if (!renderingEngine) return;
+  // cache.purgeCache();
 
   let viewport;
   let volume: Record<string, any> | undefined;
@@ -72,16 +69,20 @@ export const runViewVolume = async (
    * ここからツールの設定
    */
   // マウス操作ツール
+  const renderingEngineId = 'RenderingEngine';
   const toolGroup: cornerstoneTools.Types.IToolGroup | undefined =
     getToolGroupSetting(element);
   if (!toolGroup) return undefined;
   toolGroup.addViewport(viewportId, renderingEngineId);
+
   // ツールボタン
-  const container = document.getElementById(`${idName}-toolbar`);
-  if (!container) return;
-  await setToolButtons(idName, container, renderingEngineId, viewportId);
+  const toolbar = document.getElementById(`${idName}-toolbar`);
+  if (!toolbar) return;
+  await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
+
   // 座標表示のためのツール
-  volume && domCoordinates(content, element, viewport, volume);
+  volume && domCoordinates(coordinates, element, viewport, volume);
+
   //　イベントハンドラーの設定
   setEventHandlers(renderingEngineId, viewportId, imageIds, element);
 

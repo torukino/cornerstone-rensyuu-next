@@ -28,7 +28,6 @@ export const getToolGroupSetting = (
   const toolGroup: cornerstoneTools.Types.IToolGroup | undefined =
     ToolGroupManager.createToolGroup(toolGroupId);
   if (!toolGroup) return;
-  // Add tools to the tool group
   toolGroup.addTool(StackScrollMouseWheelTool.toolName);
   toolGroup.addTool(PanTool.toolName);
   toolGroup.addTool(ZoomTool.toolName);
@@ -59,6 +58,11 @@ export const getToolGroupSetting = (
     ],
   });
 
+
+
+  
+
   //ここまで
+  console.log('toolGroup', toolGroup);
   return toolGroup;
 };

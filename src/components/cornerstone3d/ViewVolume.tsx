@@ -1,4 +1,5 @@
 'use client';
+import { RenderingEngine } from '@cornerstonejs/core';
 import React, { useEffect, useState } from 'react';
 
 import { getElement } from '@/components/cornerstone3d/rensyuuTools/getElement';
@@ -9,28 +10,31 @@ import { initDemo } from '@/tools/cornerstoneTools';
 const BUG = true;
 interface PROPS {
   DerivativeDiscription: string;
+  renderingEngine: RenderingEngine;
   SeriesInstanceUID: string;
   StudyInstanceUID: string;
 }
 
 const ViewVolume: React.FC<PROPS> = ({
   DerivativeDiscription,
+  renderingEngine,
   SeriesInstanceUID,
   StudyInstanceUID,
 }) => {
   const [comment, setComment] = useState<string>(DerivativeDiscription);
-  const idName = 'viewVolume';
+  const [idName, setIdName] = useState<string>('viewVolume');
   const viewVolumeAsync = async (
     idName: string,
     SeriesInstanceUID: string,
     StudyInstanceUID: string,
     DerivativeDiscription: string,
+    renderingEngine: RenderingEngine,
   ) => {
     const gcp = true;
     await initDemo(gcp);
     const content = document.getElementById(idName + '-content');
     if (!content) return undefined;
-    content.innerHTML = '';
+    // content.innerHTML = '';
     const element: HTMLDivElement = getElement(idName);
 
     content.appendChild(element);
@@ -42,16 +46,16 @@ const ViewVolume: React.FC<PROPS> = ({
       StudyInstanceUID,
     );
 
-    const renderingEngineId = 'RenderingEngine';
+    // const renderingEngineId = 'RenderingEngine';
     const viewportId = idName + '-viewportId';
 
     const volumeName = 'MRI-volume-id';
     const volumeLoaderScheme = 'cornerstoneStreamingImageVolume';
     const volumeId = `${volumeLoaderScheme}:${volumeName}`;
-    const content_crd: HTMLElement | null = document.getElementById(
-      `${idName}-content`,
+    const coordinates: HTMLElement | null = document.getElementById(
+      `${idName}-coordinates`,
     );
-    if (!content_crd) return undefined;
+    if (!coordinates) return;
 
     //volumeかstackかを判定する
     BUG && console.log('@@-@@ ', DerivativeDiscription);
@@ -61,9 +65,9 @@ const ViewVolume: React.FC<PROPS> = ({
     runViewVolume(
       idName,
       imageIds,
-      content_crd,
+      coordinates,
       element,
-      renderingEngineId,
+      renderingEngine,
       volumeId,
       viewportId,
       isVolume,
@@ -77,6 +81,7 @@ const ViewVolume: React.FC<PROPS> = ({
       SeriesInstanceUID,
       StudyInstanceUID,
       DerivativeDiscription,
+      renderingEngine,
     );
 
     return () => {
@@ -84,9 +89,11 @@ const ViewVolume: React.FC<PROPS> = ({
       if (content) content.innerHTML = '';
       const toolbar = document.getElementById(`${idName}-toolbar`);
       if (toolbar) toolbar.innerHTML = '';
+      const coordinates = document.getElementById(`${idName}-coordinates`);
+      if (coordinates) coordinates.innerHTML = '';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [SeriesInstanceUID, StudyInstanceUID]);
+  }, [SeriesInstanceUID, StudyInstanceUID, renderingEngine]);
   return (
     <div className="mb-10 ml-10">
       <h1 className="text-3xl"></h1>
@@ -99,6 +106,7 @@ const ViewVolume: React.FC<PROPS> = ({
         ></div>
         <div className="w-1/6 bg-white">{comment}</div>
         <div id={`${idName}-content`} className=" items-center"></div>
+        <div id={`${idName}-coordinates`}></div>
       </div>
     </div>
   );

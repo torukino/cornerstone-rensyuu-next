@@ -66,7 +66,8 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
           </tr>
         </thead>
         <tbody>
-          {clientWithSeriesArray &&
+          {renderingEngine &&
+            clientWithSeriesArray &&
             clientWithSeriesArray.length > 0 &&
             clientWithSeriesArray.map((clientWithSeries, index) => (
               <tr key={index} onClick={() => selectImage(clientWithSeries)}>
@@ -81,8 +82,7 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
                 </td>
 
                 <td className="border px-4 py-2">
-                  {renderingEngine &&
-                    clientWithSeries.seriesArray &&
+                  {clientWithSeries.seriesArray &&
                     clientWithSeries.seriesArray.length > 0 && (
                       <ViewStackMini
                         index={index}
@@ -103,7 +103,7 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
             ))}
         </tbody>
       </table>
-      {SeriesInstanceUID && StudyInstanceUID && (
+      {renderingEngine && SeriesInstanceUID && StudyInstanceUID && (
         <div className="flex flex-col">
           {/* <ViewStackSegment
             SeriesInstanceUID={SeriesInstanceUID}
@@ -124,6 +124,7 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
           </div> */}
 
           <ViewVolume
+            renderingEngine={renderingEngine}
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}

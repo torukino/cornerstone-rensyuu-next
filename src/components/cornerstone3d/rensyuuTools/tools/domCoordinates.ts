@@ -1,9 +1,9 @@
 import { Types, utilities as csUtils } from '@cornerstonejs/core';
 
 export const domCoordinates = (
-  content: HTMLElement,
+  coordinates: HTMLElement,
   element: HTMLElement,
-  viewport: Types.IVolumeViewport|Types.IStackViewport,
+  viewport: Types.IVolumeViewport | Types.IStackViewport,
   volume: Record<string, any>,
 ) => {
   // canvasとworld座標・MRI値表示のためのDOMを用意する
@@ -13,11 +13,11 @@ export const domCoordinates = (
   const worldPosElement = document.createElement('p');
   const mriValueElement = document.createElement('p');
 
-  canvasPosElement.innerText = 'canvas:';
-  worldPosElement.innerText = 'world:';
-  mriValueElement.innerText = 'MRI value:';
+  // canvasPosElement.innerText = 'canvas:';
+  // worldPosElement.innerText = 'world:';
+  // mriValueElement.innerText = 'MRI value:';
 
-  content.appendChild(mousePosDiv);
+  coordinates.appendChild(mousePosDiv);
 
   mousePosDiv.appendChild(canvasPosElement);
   mousePosDiv.appendChild(worldPosElement);

@@ -4,13 +4,12 @@ import addButtonToToolbar from '@/components/cornerstone3d/rensyuuTools/tools/ad
 
 export const setToolButtons = (
   idName: string,
-  container: HTMLElement,
+  toolbar: HTMLElement,
   renderingEngineId: string,
   viewportId: string,
 ) => {
   addButtonToToolbar({
     title: '画像を元に戻す',
-    container,
     idName,
     onClick: () => {
       // Get the rendering engine
@@ -27,5 +26,6 @@ export const setToolButtons = (
 
       viewport.render();
     },
+    toolbar,
   });
 };
