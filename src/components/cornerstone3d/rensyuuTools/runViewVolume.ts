@@ -1,4 +1,5 @@
 import {
+  cache,
   Enums,
   RenderingEngine,
   Types,
@@ -13,29 +14,28 @@ import { setToolButtons } from '@/components/cornerstone3d/rensyuuTools/tools/se
 import { setMriTransferFunctionForVolumeActor } from '@/tools/cornerstoneTools';
 
 const { ViewportType } = Enums;
-// let renderingEngine: RenderingEngine | null = null;
-// let volume: any;
+
 export const runViewVolume = async (
   idName: string,
   imageIds: string[],
   coordinates: HTMLElement,
   element: HTMLDivElement,
-  renderingEngine: RenderingEngine,
   volumeId: string,
   viewportId: string,
   isVolume: boolean,
 ): Promise<void | undefined> => {
-  // cache.purgeCache();
+  cache.purgeCache();
+  const renderingEngineId = 'RenderingEngine';
+  const renderingEngine = new RenderingEngine(renderingEngineId);
+  if (!renderingEngine) return;
 
-  let viewport;
-  let volume: Record<string, any> | undefined;
-  if (isVolume) {
+  if (isVolume) { // Volume表示
     // メモリー上でvolumeを定義する
-    volume = await volumeLoader.createAndCacheVolume(volumeId, {
+    const volume = await volumeLoader.createAndCacheVolume(volumeId, {
       imageIds,
     });
     // volumeの起動(load)のセット
-    await volume.load();
+
     const viewportInput = {
       defaultOptions: {
         background: <Types.Point3>[1.0, 0, 0],
@@ -46,50 +46,61 @@ export const runViewVolume = async (
       viewportId,
     };
     renderingEngine.enableElement(viewportInput);
-    //ビューポートにvolumeをセットする
-    viewport = renderingEngine.getViewport(viewportId) as Types.IVolumeViewport;
-    await viewport.setVolumes([
-      {
-        callback: setMriTransferFunctionForVolumeActor,
-        volumeId,
-      },
+
+    // Get the stack viewport that was created
+    const viewport = <Types.IVolumeViewport>(
+      renderingEngine.getViewport(viewportId)
+    );
+
+    await volume.load();
+
+    // Set the volume on the viewport
+    viewport.setVolumes([
+      { callback: setMriTransferFunctionForVolumeActor, volumeId },
     ]);
-  } else {
+
+    // Render the image
+    viewport.render();
+
+    /**
+     * ここからツールの設定
+     */
+    // マウス操作ツール
+
+    const toolGroup: cornerstoneTools.Types.IToolGroup | undefined =
+      getToolGroupSetting(element);
+    if (!toolGroup) return undefined;
+    toolGroup.addViewport(viewportId, renderingEngineId);
+
+    // ツールボタン
+    const toolbar = document.getElementById(`${idName}-toolbar`);
+    if (!toolbar) return;
+    await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
+
+    // 座標表示のためのツール
+    volume && domCoordinates(coordinates, element, viewport, volume);
+
+    //　イベントハンドラーの設定
+    // setEventHandlers(renderingEngineId, viewportId, imageIds, element);
+
+    /**
+     * ツールの設定 ここまで
+     */
+  } else { // Stack 表示
     const viewportInput = {
       element,
       type: ViewportType.STACK,
       viewportId,
     };
     renderingEngine.enableElement(viewportInput);
-    viewport = renderingEngine.getViewport(viewportId) as Types.IStackViewport;
+    const viewport = renderingEngine.getViewport(
+      viewportId,
+    ) as Types.IStackViewport;
     await viewport.setStack(imageIds);
+
+    //　イベントハンドラーの設定
+    setEventHandlers(renderingEngineId, viewportId, imageIds, element);
+
+    viewport.render();
   }
-
-  /**
-   * ここからツールの設定
-   */
-  // マウス操作ツール
-  const renderingEngineId = 'RenderingEngine';
-  const toolGroup: cornerstoneTools.Types.IToolGroup | undefined =
-    getToolGroupSetting(element);
-  if (!toolGroup) return undefined;
-  toolGroup.addViewport(viewportId, renderingEngineId);
-
-  // ツールボタン
-  const toolbar = document.getElementById(`${idName}-toolbar`);
-  if (!toolbar) return;
-  await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
-
-  // 座標表示のためのツール
-  volume && domCoordinates(coordinates, element, viewport, volume);
-
-  //　イベントハンドラーの設定
-  setEventHandlers(renderingEngineId, viewportId, imageIds, element);
-
-  /**
-   * ツールの設定 ここまで
-   */
-
-  // レンダリング
-  viewport.render();
 };

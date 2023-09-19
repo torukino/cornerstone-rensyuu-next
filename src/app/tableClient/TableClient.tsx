@@ -124,7 +124,6 @@ const TableClient: React.FC<PROPS> = ({ clientWithSeriesArray }) => {
           </div> */}
 
           <ViewVolume
-            renderingEngine={renderingEngine}
             SeriesInstanceUID={SeriesInstanceUID}
             StudyInstanceUID={StudyInstanceUID}
             DerivativeDiscription={DerivativeDiscription}

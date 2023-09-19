@@ -1,5 +1,4 @@
 'use client';
-import { RenderingEngine } from '@cornerstonejs/core';
 import React, { useEffect, useState } from 'react';
 
 import { getElement } from '@/components/cornerstone3d/rensyuuTools/getElement';
@@ -10,14 +9,12 @@ import { initDemo } from '@/tools/cornerstoneTools';
 const BUG = true;
 interface PROPS {
   DerivativeDiscription: string;
-  renderingEngine: RenderingEngine;
   SeriesInstanceUID: string;
   StudyInstanceUID: string;
 }
 
 const ViewVolume: React.FC<PROPS> = ({
   DerivativeDiscription,
-  renderingEngine,
   SeriesInstanceUID,
   StudyInstanceUID,
 }) => {
@@ -28,7 +25,6 @@ const ViewVolume: React.FC<PROPS> = ({
     SeriesInstanceUID: string,
     StudyInstanceUID: string,
     DerivativeDiscription: string,
-    renderingEngine: RenderingEngine,
   ) => {
     const gcp = true;
     await initDemo(gcp);
@@ -60,14 +56,13 @@ const ViewVolume: React.FC<PROPS> = ({
     //volumeかstackかを判定する
     BUG && console.log('@@-@@ ', DerivativeDiscription);
     let isVolume = false;
-    if (DerivativeDiscription) isVolume = true;
+    if (DerivativeDiscription) isVolume = false;
 
     runViewVolume(
       idName,
       imageIds,
       coordinates,
       element,
-      renderingEngine,
       volumeId,
       viewportId,
       isVolume,
@@ -81,7 +76,6 @@ const ViewVolume: React.FC<PROPS> = ({
       SeriesInstanceUID,
       StudyInstanceUID,
       DerivativeDiscription,
-      renderingEngine,
     );
 
     return () => {
@@ -93,7 +87,7 @@ const ViewVolume: React.FC<PROPS> = ({
       if (coordinates) coordinates.innerHTML = '';
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [SeriesInstanceUID, StudyInstanceUID, renderingEngine]);
+  }, [SeriesInstanceUID, StudyInstanceUID]);
   return (
     <div className="mb-10 ml-10">
       <h1 className="text-3xl"></h1>

@@ -9,6 +9,7 @@ export const runViewStackMini = async (
   viewportId: string,
   renderingEngine: RenderingEngine,
 ): Promise<void | undefined> => {
+
   const viewportInput = {
     element,
     type: ViewportType.STACK,
@@ -21,11 +22,10 @@ export const runViewStackMini = async (
     viewportId,
   ) as Types.IStackViewport;
 
-  // console.log('imageIds', imageIds);
   const imageNum: number = imageIds.length;
   const n = Math.floor(imageNum / 2);
   await viewport.setStack(imageIds, n);
-
-  // レンダリング]
+  
+  // レンダリング
   viewport.render();
 };
