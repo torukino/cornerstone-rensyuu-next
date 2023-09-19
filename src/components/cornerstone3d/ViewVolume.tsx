@@ -56,7 +56,7 @@ const ViewVolume: React.FC<PROPS> = ({
     //volumeかstackかを判定する
     BUG && console.log('@@-@@ ', DerivativeDiscription);
     let isVolume = false;
-    if (DerivativeDiscription) isVolume = false;
+    if (DerivativeDiscription) isVolume = true;
 
     runViewVolume(
       idName,

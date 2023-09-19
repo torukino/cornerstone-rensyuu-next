@@ -29,7 +29,8 @@ export const runViewVolume = async (
   const renderingEngine = new RenderingEngine(renderingEngineId);
   if (!renderingEngine) return;
 
-  if (isVolume) { // Volume表示
+  if (isVolume) {
+    // Volume表示
     // メモリー上でvolumeを定義する
     const volume = await volumeLoader.createAndCacheVolume(volumeId, {
       imageIds,
@@ -59,9 +60,6 @@ export const runViewVolume = async (
       { callback: setMriTransferFunctionForVolumeActor, volumeId },
     ]);
 
-    // Render the image
-    viewport.render();
-
     /**
      * ここからツールの設定
      */
@@ -86,7 +84,10 @@ export const runViewVolume = async (
     /**
      * ツールの設定 ここまで
      */
-  } else { // Stack 表示
+    // Render the image
+    viewport.render();
+  } else {
+    // Stack 表示
     const viewportInput = {
       element,
       type: ViewportType.STACK,
