@@ -31,9 +31,12 @@ const ViewVolume: React.FC<PROPS> = ({
     const content = document.getElementById(idName + '-content');
     if (!content) return undefined;
     // content.innerHTML = '';
-    const element: HTMLDivElement = getElement(idName);
-
-    content.appendChild(element);
+    let element: HTMLDivElement|undefined=undefined;
+    if (!content.hasChildNodes()) {
+      element = getElement(idName);
+      content.appendChild(element);
+    }
+    if (!element) return;
 
     // Dicom の使い方に従った画像の取得
     const imageIds = await getImageIds(
