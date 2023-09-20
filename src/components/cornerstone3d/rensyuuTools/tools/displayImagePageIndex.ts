@@ -1,11 +1,11 @@
 import { getRenderingEngine } from '@cornerstonejs/core';
 
-export const displayImagePageIndex = (
+export const displayImagePageIndex = async(
   renderingEngineId: string,
   viewportId: string,
   imageIds: string[],
   element: HTMLDivElement,
-) => {
+): Promise<void> => {
   // Get the rendering engine
   const renderingEngine = getRenderingEngine(renderingEngineId);
   if (!renderingEngine) return;
@@ -13,6 +13,8 @@ export const displayImagePageIndex = (
   const viewport = renderingEngine.getViewport(viewportId);
   // Get the current index of the image displayed
   const currentImageIdIndex = viewport.getCurrentImageIdIndex();
+  
+  console.log('currentImageIdIndex:', currentImageIdIndex);
   const oldDiv = document.getElementById('image-index-display');
   if (oldDiv) {
     element.removeChild(oldDiv);

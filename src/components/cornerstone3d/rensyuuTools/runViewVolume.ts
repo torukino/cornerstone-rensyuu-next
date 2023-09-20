@@ -79,7 +79,7 @@ export const runViewVolume = async (
     volume && domCoordinates(coordinates, element, viewport, volume);
 
     //　イベントハンドラーの設定
-    // setEventHandlers(renderingEngineId, viewportId, imageIds, element);
+    setEventHandlers(renderingEngineId, viewportId, imageIds, element);
 
     /**
      * ツールの設定 ここまで
