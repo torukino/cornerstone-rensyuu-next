@@ -458,4 +458,133 @@ segmentation.locking.isSegmentIndexLocked(
 
 # Segment Index
 
+セグメンテーション ツールを使用して描画する場合、使用するセグメント インデックスを指定できます。以下では、SegmentIndex API を使用して segmentIndex を変更し、2 番目のセグメントを描画します。
+
 https://www.cornerstonejs.org/docs/concepts/cornerstone-tools/segmentation/segment-index
+
+## API
+
+```
+import { segmentation } from '@cornerstonejs/tools';
+
+// get active segment index for the segmentation Id
+segmentation.segmentIndex.getActiveSegmentIndex(segmentationId);
+
+// set active segment index for the segmentation Id
+segmentation.segmentIndex.setActiveSegmentIndex(segmentationId, segmentIndex);
+```
+
+# Segmentation Tools
+
+Cornerstone3DTools はセグメンテーションを変更するためのツールのセットを提供します。
+これらには、BrushTool、ScissorTool（RectangleScissor, CircleScissor, SphereScissor など）、RectangleRoiThresholdTool が含まれます。
+
+以下で各ツールについて詳しく説明します。
+
+## ヒント
+
+すべてのセグメンテーション ツールは、すべての 3D ビュー (アキシャル、コロナル、サジタル) でセグメンテーションを編集できます。
+
+## BrushTool
+
+BrushTool はセグメンテーションで最もよく使用されるツールです。
+クリックしてドラッグすることでセグメンテーションを描画できます (以下を参照)。
+
+このツールを使用するには、他のツールと同様に、toolGroup に追加する必要があります。
+ツールをアクティブにする方法の詳細については、[ツール](https://www.cornerstonejs.org/docs/concepts/cornerstone-tools/tools#adding-tools)セクションと[ツールグループ](https://www.cornerstonejs.org/docs/concepts/cornerstone-tools/toolGroups#toolgroup-creation-and-tool-addition)セクションを参照してください。
+
+[クリック](https://www.cornerstonejs.org/assets/images/brush-tool-53ac2a5c6cd961d35a3d689f754f282a.gif)
+
+![Alt text](image-4.png)
+
+## Rectangle Scissor Tool
+
+RectangleScissorTool は長方形のセグメンテーションを作成するために使用できます。
+
+[クリック](https://www.cornerstonejs.org/assets/images/rectangle-scissor-1e8a71a6660a82962a3adea1659111f3.gif)
+
+![Alt text](image-5.png)
+
+## Circle Scissor Tool
+
+CircleScissorTool は円形のセグメンテーションを作成するために使用できます。
+
+[クリック](https://www.cornerstonejs.org/assets/images/circle-scissor-06f8adc46d9763cc660ce28588dfcc00.gif)
+
+![Alt text](image-6.png)
+
+## Sphere Scissor Tool
+
+SphereScissorTool は球状のセグメンテーションを作成するために使用できます。マウス ポインタの周囲に 3D 球体を描画します。
+
+[クリック](https://www.cornerstonejs.org/assets/images/sphere-scissor-20323a5493cc9f1458d48f7fe5d70b1e.gif)
+
+![Alt text](image-7.png)
+
+## Threshold Tool
+
+RectangleROIThresholdTool はユーザーが描画領域をしきい値処理することでセグメンテーションを作成するために使用できます。
+
+(以下の画像では、セグメンテーションを作成するために特定のしきい値が設定されています)
+
+[クリック](https://www.cornerstonejs.org/assets/images/threshold-segmentation-tool-2a3152b7981c37334c5c6586df114410.gif)
+
+![Alt text](image-8.png)
+
+# Contour Segmentation Representation
+
+輪郭セグメンテーション表現は、輪郭セットのコレクションです。
+各輪郭セットは輪郭のコレクションです。
+各輪郭は点の集合です。
+各ポイントは 3D 座標の集合です。
+
+![Alt text](image-9.png)
+
+## Contour Set
+
+通常、セグメンテーションは複数の構造の集合であるため、各輪郭セットは単一の構造を表します。
+たとえば、セグメンテーションには複数の輪郭セットを含めることができ、それぞれが異なる構造を表します。
+各輪郭セットには一意の ID と名前があります。
+この名前は、UI に構造名を表示するために使用されます。
+
+## Contour
+
+輪郭には、輪郭を構成する点に関する情報が含まれます。各輪郭にはデータ、タイプ (閉じているか開いているか)、および色があります。
+
+## Segmentation Representationとして　Contourをロードする
+
+```
+// load each contour set and cache the geometry
+const promises = contourSets.map((contourSet) => {
+  return geometryLoader.createAndCacheGeometry(contourSet.id, {
+    type: GeometryType.CONTOUR,
+    geometryData: contourSet as Types.PublicContourSetData,
+  });
+});
+
+await Promise.all(promises);
+
+// Add the segmentations to state
+segmentation.addSegmentations([
+  {
+    segmentationId,
+    representation: {
+      // The type of segmentation
+      type: csToolsEnums.SegmentationRepresentations.Contour,
+      // The actual segmentation data, in the case of contour geometry
+      // this is a reference to the geometry data
+      data: {
+        geometryIds: contourSets.map((contourSet) => contourSet.id),
+      },
+    },
+  },
+]);
+
+// add segmentation representation
+await segmentation.addSegmentationRepresentations(toolGroupId, [
+  {
+    segmentationId,
+    type: csToolsEnums.SegmentationRepresentations.Contour,
+  },
+]);
+```
