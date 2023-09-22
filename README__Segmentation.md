@@ -12,20 +12,20 @@ Cornerstone3DTools では、 Segmentation の概念を Segmentation Representati
 
 同様の関係構造は、ポリモーフセグメンテーションが追加された 3D スライサーなどの一般的な医療画像ソフトウェアにも採用されています。
 
-## ToolGroup Specific Representations
+## ToolGroup Specific Representations　「ToolGroupに特異的な表現」
 
 以前 Cornerstone (legacy)においては、Segmentations を要素に適用しました。
-これには独自の制限がありました。
-例えば、各ビューポート (ct-アキシャル、ct-サジタル、ct-コロナル) において、Segmentitions を繰り返し作成するときなど。
+しかしそのことによる制限がありました。
+例えば、各ビューポート (ct-アキシャル、ct-サジタル、ct-コロナル) において、Segmentations を繰り返し作成するときなど。
 
-これを変更して RepresentationToolGroup を Segmentation に適用し、それに応じてすべてのビューポートに適用します。
+これを変更して <span style="color:red;">Segmentation RepresentationをToolGroupに適用</span>し、それに応じてすべてのビューポートに適用します。
 
 ## Segmentation Representation
 
 Cornerstone3DTools は、他のツールと同じ方法でセグメンテーションを処理します。
 
 たとえば addTools 介して SegmentationDisplayTool が追加される必要があり、
-segmentation を表示したい Viewports を有する ToolGroup が追加される必要があります。
+segmentation を表示する ViewportsのToolGroupにも追加される必要があります。
 
 ## API
 
@@ -50,11 +50,11 @@ segmentations.segmentIndex.XYZ;
 
 まずは、それぞれの方法について詳しく見てみよう。
 
-## State
+## State　状態
 
-SegmentationState はライブラリ内の Segmentations の現在の state と SegmentationRepresentation に関するすべての情報を保存します。
+SegmentationState はライブラリ内の Segmentations の現在の状態state と SegmentationRepresentation に関するすべての情報を保存します。
 
-前のセクションで述べたように、Segmentation と SegmentationRepresentation は互いに分離れています。
+前のセクションで述べたように、Segmentation と SegmentationRepresentation は互いに分離されています。
 Segmentation からさまざまな表現を作成できます (ラベルマップは現在サポートされています)。
 したがって State にセグメンテーションとそのツールグループ固有の表現もそれぞれ分けて保存します。
 
@@ -64,7 +64,7 @@ State の概要を以下に示します。
 
 ## Global Config
 
-Cornerstone3DTools は 2 つの構成を実装しており、それぞれを個別に設定できます。
+Cornerstone3DTools は2つの構成を実装しており、それぞれを個別に設定できます。
 state の中の GlobalConfig には、すべてのツールグループのすべてのセグメンテーション表現のグローバル構成が保存されます。
 
 それぞれを個別に設定する方法について詳しくは、[config](https://www.cornerstonejs.org/docs/concepts/cornerstone-tools/segmentation/config)を参照してください。
@@ -79,7 +79,7 @@ Cornerstone3DTools は最初にこの配列の最初のインデックスとし�
 
 ## Segmentations
 
-Segmentation には SegmentationState すべてのセグメンテーションを配列で保存します。
+SegmentationState ではすべてのセグメンテーションを配列で保存します。
 Segmentation と SegmentationRepresentation は 2 つの別個の概念であることに注意してください。
 ステート内の各セグメンテーションオブジェクトには、 SegmentationRepresentation を作成するために必要なすべての情報が格納されます。
 
@@ -104,7 +104,7 @@ Segmentation と SegmentationRepresentation は 2 つの別個の概念である
 },
 ```
 
-- segmentationId: 消費者によって提供される必須フィールド。これはセグメンテーションの一意の識別子です。
+- segmentationId: 必須フィールド。これはセグメンテーションの一意の識別子です。
 - mainType: 内部的に設定されます。デフォルトでは「Labelmap」
 - activeSegmentIndex: ツールによってセグメンテーションのデータを変更するために使用されるアクティブなセグメントインデックス。
 - segmentsLocked: ツールによって変更されない、ロックされたセグメント インデックスのセット。
@@ -112,9 +112,9 @@ Segmentation と SegmentationRepresentation は 2 つの別個の概念である
 - cachedStats: セグメンテーションの統計情報のキャッシュ (ボリュームなど - 現在は使用されていません)
 - representationData:最も重要な部分、これは SegmentationRepresentation を作成するためのデータが保存される場所です。たとえば、LABELMAP 表現では、SegmentationRepresentation を作成するために必要な情報はキャッシュされた volumeId です。
 
-## Adding Segmentations to the State
+## Adding Segmentations to the State:  stateにセグメンテーションを追加する
 
-Segmentation と は SegmentationRepresentation 互いに分離されているため、まず、segmentation 状態に を追加する必要があります。これはトップレベル API によって実行できます。
+Segmentation とSegmentationRepresentation  は 互いに分離されているため、まず状態stateに segmentationを追加する必要があります。これはトップレベル API によって実行できます。
 
 ```
 import { segmentation, Enums } from '@cornerstonejs/tools';
@@ -132,7 +132,7 @@ segmentation.addSegmentations([
 ]);
 ```
 
-ご覧のとおり segmentationId や
+ご覧のとおり segmentationId と
 SegmentationRepresentation の作成に必要なタイプとデータの入った representation
 を含む、セグメンテーションの配列を state に追加します。
 
@@ -146,12 +146,13 @@ SegmentationRepresentation を、
 
 ## ToolGroups
 
-SegmentationDisplayTool は、セグメンテーション表現を表示する役割を担う Cornerstone3DTools の内部ツールです。それぞれの Segmentation から、ToolGroup が SegmentationRepresentation を作成し表示できます。
+SegmentationDisplayTool はCornerstone3DTools の内部ツールで、セグメンテーション表現を表示する役割を担います。
+それぞれの Segmentation から、ToolGroup が SegmentationRepresentation を作成し表示できるようになります。
 
 ## SegmentationRepresentation を ToolGroup に追加する
 
 次に SegmentationRepresentation を ToolGroup に追加する必要があります。
-これは、Segmentation モジュールの addSegmentationRepresentation メソッドを使用して実行できます。このようにして ToolGroup に追加されたすべてのビューポートは、新しい SegmentationRepresentation を含むようにレンダラが更新されます。
+これは、Segmentation モジュールの中のaddSegmentationRepresentation メソッドを使用して実行できます。このようにして ToolGroup に追加されたすべてのビューポートは、新しい SegmentationRepresentation を含むようにレンダラが更新されます。
 
 ```
 import {
@@ -205,8 +206,8 @@ await segmentation.addSegmentationRepresentations(
 
 セグメンテーション表現に適用できる構成には 2 つのタイプがあります。
 
--グローバル構成: すべてのツールグループ内のすべてのセグメンテーション表現の構成。
--ToolGroup 固有の構成: 各 toolsGroup の構成。グローバル構成をオーバーライドします。
+- グローバル構成: すべてのツールグループ内のすべてのセグメンテーション表現の構成。
+- ToolGroup 固有の構成: 各 toolsGroup の構成。グローバル構成をオーバーライドします。
 
 構成の種類に関係なく、各表現構成を含むオブジェクトです。
 
@@ -303,7 +304,7 @@ segmentation.config.visibility.getSegmentationVisibility(toolGroupId, representa
 ## Color API
 
 colorLUT(カラー ルックアップ テーブル (LUT))を追加するための API を提供します。
-セグメンテーション表現がセグメントをレンダリングするために acolorLUT を使います。
+セグメンテーション表現がセグメントをレンダリングするために colorLUT を使います。
 colorLUT は各セグメントのレンダリングに使用される RGBA 値の配列です。
 たとえば、
 segment index 0(背景) は配列の最初の項目 (colorLUT [0] )を使用し、
@@ -312,8 +313,7 @@ colorLUTsegment index 1(最初のセグメント) は配列の 2 番目の項目
 ### 重要
 
 Segmentation State は配列に加えられたすべての colorLUT を追跡します
-(これにより、そのセグメンテーション表現における状態での colorLUT エントリを配列の配列します。
-)。
+(これにより、そのセグメンテーション表現の状態での colorLUT エントリを配列の配列します)。
 したがって、colorLUT を変更するには、使用する colorLUT のインデックスも指定する必要があります。
 
 ```
@@ -331,8 +331,8 @@ segmentation.config.color.getColorForSegmentIndex(toolGroupId, representationUID
 
 # Segmentation Display Tool
 
-SegmentationDisplayTool は Cornerstone3DTools 内部のツールです。
-他のツールと同様に、最初にツールを addTools 介して
+SegmentationDisplayTool は Cornerstone3DToolsの内部のツールです。
+他のツールと同様に、最初にツールを addTools 介して追加され
 次にセグメンテーションの表示するために ToolGroup に追加する必要があります。
 
 ## 使用方法
@@ -430,7 +430,7 @@ segmentation.setActiveSegmentationRepresentation(
 
 左の画像は segment index 1 を示し、
 中央の画像は segment index 2 を segment index 1 の上に描画した場合の結果を示し、
-右の画像は segment index 1 をロックして segment index 2 を segment index 1 の上に描画した場合の結果を示します。ロックされたシナリオ (右の図) でわかるように、セグメント インデックス 1 は新しい描画にっよって変更されません。
+右の画像は segment index 1 をロックして segment index 2 を segment index 1 の上に描画した場合の結果を示します。ロックされたシナリオ (右の図) でわかるように、セグメント インデックス 1 は新しい描画によって変更されません。
 
 ![Alt text](image-3.png)
 
