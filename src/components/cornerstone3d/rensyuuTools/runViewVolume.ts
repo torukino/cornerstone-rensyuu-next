@@ -64,9 +64,9 @@ export const runViewVolume = async (
      * ここからツールの設定
      */
     // マウス操作ツール
-
+    const segmentationId = 'SEGMENTATION_ID';
     const toolGroup: cornerstoneTools.Types.IToolGroup | undefined =
-      getToolGroupSetting(element);
+      await getToolGroupSetting(element, volumeId, segmentationId);
     if (!toolGroup) return undefined;
     toolGroup.addViewport(viewportId, renderingEngineId);
 
