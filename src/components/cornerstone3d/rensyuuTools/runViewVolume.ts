@@ -30,14 +30,7 @@ export const runViewVolume = async (
   if (!renderingEngine) return;
 
   if (isVolume) {
-    // Volume表示
-    // メモリー上でvolumeを定義する
-    const volume = await volumeLoader.createAndCacheVolume(volumeId, {
-      imageIds,
-    });
-    // volumeの起動(load)のセット
-
-    const viewportInput = {
+        const viewportInput = {
       defaultOptions: {
         background: <Types.Point3>[1.0, 0, 0],
         orientation: Enums.OrientationAxis.ACQUISITION,
@@ -52,9 +45,18 @@ export const runViewVolume = async (
     const viewport = <Types.IVolumeViewport>(
       renderingEngine.getViewport(viewportId)
     );
+    // Volume表示
+    // メモリー上でvolumeを定義する
+    const volume = await volumeLoader.createAndCacheVolume(volumeId, {
+      imageIds,
+    });
 
+    const segmentationId = 'SEGMENTATION_ID';
+
+
+
+    // volumeの起動(load)のセット
     await volume.load();
-
     // Set the volume on the viewport
     viewport.setVolumes([
       { callback: setMriTransferFunctionForVolumeActor, volumeId },
@@ -64,9 +66,9 @@ export const runViewVolume = async (
      * ここからツールの設定
      */
     // マウス操作ツール
-    const segmentationId = 'SEGMENTATION_ID';
+
     const toolGroup: cornerstoneTools.Types.IToolGroup | undefined =
-      await getToolGroupSetting(element, volumeId, segmentationId);
+      await getToolGroupSetting(element, volumeId,segmentationId);
     if (!toolGroup) return undefined;
     toolGroup.addViewport(viewportId, renderingEngineId);
 
