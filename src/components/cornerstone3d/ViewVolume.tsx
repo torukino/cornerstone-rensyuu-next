@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { getElement } from '@/components/cornerstone3d/rensyuuTools/getElement';
-import { runViewVolume } from '@/components/cornerstone3d/rensyuuTools/runViewVolume';
+import { runViewVolumeSegment } from '@/components/cornerstone3d/rensyuuTools/runViewVolumeSegment';
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import { initDemo } from '@/tools/cornerstoneTools';
 
@@ -31,7 +31,7 @@ const ViewVolume: React.FC<PROPS> = ({
     const content = document.getElementById(idName + '-content');
     if (!content) return undefined;
     // content.innerHTML = '';
-    let element: HTMLDivElement|undefined=undefined;
+    let element: HTMLDivElement | undefined = undefined;
     if (!content.hasChildNodes()) {
       element = getElement(idName);
       content.appendChild(element);
@@ -61,7 +61,7 @@ const ViewVolume: React.FC<PROPS> = ({
     let isVolume = false;
     if (DerivativeDiscription) isVolume = true;
 
-    runViewVolume(
+    runViewVolumeSegment(
       idName,
       imageIds,
       coordinates,
