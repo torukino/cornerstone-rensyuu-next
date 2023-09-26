@@ -11,6 +11,9 @@ import { SegmentationRepresentations } from '@cornerstonejs/tools/dist/esm/enums
 
 const { ViewportType } = Enums;
 const { SegmentationDisplayTool } = cornerstoneTools;
+
+let toolGroup: cornerstoneTools.Types.IToolGroup | undefined;
+
 export const runViewVolumeSegment = async (
   idName: string,
   imageIds: string[],
@@ -24,13 +27,23 @@ export const runViewVolumeSegment = async (
   cache.purgeCache();
 
   const toolGroupId = 'tool_group_id';
-  const toolGroup =
-    cornerstoneTools.ToolGroupManager.createToolGroup(toolGroupId);
-  if (!toolGroup) return;
 
   cornerstoneTools.addTool(SegmentationDisplayTool);
-  toolGroup.addTool(cornerstoneTools.SegmentationDisplayTool.toolName);
-  toolGroup.setToolEnabled(cornerstoneTools.SegmentationDisplayTool.toolName);
+  toolGroup = await cornerstoneTools.ToolGroupManager.createToolGroup(
+    toolGroupId,
+  );
+  if (!toolGroup) return;
+
+  const segmentationDisplayTool: cornerstoneTools.Types.IToolGroup[] | [] =
+    cornerstoneTools.ToolGroupManager.getToolGroupsWithToolName(
+      SegmentationDisplayTool.toolName,
+    );
+  console.log('segmentationDisplayTool1', segmentationDisplayTool);
+  if (segmentationDisplayTool?.length === 0) {
+    toolGroup.addTool(SegmentationDisplayTool.toolName);
+    toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
+  }
+  console.log('segmentationDisplayTool2', segmentationDisplayTool);
 
   // Define a volume in memory for  MRI
   const volume: Record<string, any> = await volumeLoader.createAndCacheVolume(
