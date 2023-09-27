@@ -50,7 +50,7 @@ export const runViewVolumeSegment = async (
       imageIds,
     },
   );
-  const segmentationId = 'my_segmentation_id';
+  const segmentationId = 'my_segmentation_id'+ Date.now();
   // Create a segmentation of the same resolution as the source data for the CT volume
   const segmentationVolume: ImageVolume =
     await volumeLoader.createAndCacheDerivedVolume(volumeId, {
@@ -59,10 +59,6 @@ export const runViewVolumeSegment = async (
 
   // Add some data to the segmentations
   createMockEllipsoidSegmentation(segmentationVolume);
-
-  cornerstoneTools.segmentation.removeSegmentationsFromToolGroup(toolGroupId, [
-    segmentationId,
-  ]);
 
   cornerstoneTools.segmentation.addSegmentations([
     {
