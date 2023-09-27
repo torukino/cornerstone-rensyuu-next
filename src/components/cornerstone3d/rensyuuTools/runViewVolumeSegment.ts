@@ -27,23 +27,21 @@ export const runViewVolumeSegment = async (
   cache.purgeCache();
 
   const toolGroupId = 'tool_group_id';
-
-  cornerstoneTools.addTool(SegmentationDisplayTool);
-  toolGroup = await cornerstoneTools.ToolGroupManager.createToolGroup(
-    toolGroupId,
-  );
+  // ツールグループが存在するかどうかを確認します
+  const hasToolGroup =
+    cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
+  // ツールグループが存在する場合、それを破壊します
+  if (hasToolGroup)
+    cornerstoneTools.ToolGroupManager.destroyToolGroup(toolGroupId);
+  // 新しいツールグループを作成します
+  toolGroup = cornerstoneTools.ToolGroupManager.createToolGroup(toolGroupId);
+  // ツールグループが作成されなかった場合、関数を終了します
   if (!toolGroup) return;
 
-  const segmentationDisplayTool: cornerstoneTools.Types.IToolGroup[] | [] =
-    cornerstoneTools.ToolGroupManager.getToolGroupsWithToolName(
-      SegmentationDisplayTool.toolName,
-    );
-  console.log('segmentationDisplayTool1', segmentationDisplayTool);
-  if (segmentationDisplayTool?.length === 0) {
-    toolGroup.addTool(SegmentationDisplayTool.toolName);
-    toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
-  }
-  console.log('segmentationDisplayTool2', segmentationDisplayTool);
+  cornerstoneTools.removeTool(SegmentationDisplayTool);
+  cornerstoneTools.addTool(SegmentationDisplayTool);
+  toolGroup.addTool(SegmentationDisplayTool.toolName);
+  toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
 
   // Define a volume in memory for  MRI
   const volume: Record<string, any> = await volumeLoader.createAndCacheVolume(
@@ -61,6 +59,10 @@ export const runViewVolumeSegment = async (
 
   // Add some data to the segmentations
   createMockEllipsoidSegmentation(segmentationVolume);
+
+  cornerstoneTools.segmentation.removeSegmentationsFromToolGroup(toolGroupId, [
+    segmentationId,
+  ]);
 
   cornerstoneTools.segmentation.addSegmentations([
     {
