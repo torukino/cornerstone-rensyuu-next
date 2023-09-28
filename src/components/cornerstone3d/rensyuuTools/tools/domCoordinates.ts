@@ -6,6 +6,8 @@ export const domCoordinates = (
   viewport: Types.IVolumeViewport | Types.IStackViewport,
   volume: Record<string, any>,
 ) => {
+  console.log('@@@@ domCoordinates @@@@');
+  console.log('@@@@ volume         @@@@', volume);
   // canvasとworld座標・MRI値表示のためのDOMを用意する
   const mousePosDiv = document.createElement('div');
 

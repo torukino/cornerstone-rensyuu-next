@@ -14,6 +14,7 @@ import { setToolButtons } from '@/components/cornerstone3d/rensyuuTools/tools/se
 import { setMriTransferFunctionForVolumeActor } from '@/tools/cornerstoneTools';
 
 const { ViewportType } = Enums;
+let toolGroup: cornerstoneTools.Types.IToolGroup | undefined;
 
 export const runViewVolume = async (
   idName: string,
@@ -30,7 +31,7 @@ export const runViewVolume = async (
   if (!renderingEngine) return;
 
   if (isVolume) {
-        const viewportInput = {
+    const viewportInput = {
       defaultOptions: {
         background: <Types.Point3>[1.0, 0, 0],
         orientation: Enums.OrientationAxis.ACQUISITION,
@@ -51,34 +52,26 @@ export const runViewVolume = async (
       imageIds,
     });
 
-    const segmentationId = 'SEGMENTATION_ID';
-
-
-
-    // volumeの起動(load)のセット
-    await volume.load();
-    // Set the volume on the viewport
-    viewport.setVolumes([
-      { callback: setMriTransferFunctionForVolumeActor, volumeId },
-    ]);
-
     /**
      * ここからツールの設定
      */
-    // マウス操作ツール
 
-    const toolGroup: cornerstoneTools.Types.IToolGroup | undefined =
-      await getToolGroupSetting(element, volumeId,segmentationId);
-    if (!toolGroup) return undefined;
-    toolGroup.addViewport(viewportId, renderingEngineId);
-
-    // ツールボタン
+    const toolGroupId = 'TOOL_GROUP_ID';
+    // ツールグループが存在する場合、それを破壊します
+    if (toolGroup)
+      cornerstoneTools.ToolGroupManager.destroyToolGroup(toolGroupId);
+    // 新しいツールグループを作成します
+    toolGroup = cornerstoneTools.ToolGroupManager.createToolGroup(toolGroupId);
+    // ツールグループが作成されなかった場合、関数を終了します
+    if (!toolGroup) return;
     const toolbar = document.getElementById(`${idName}-toolbar`);
     if (!toolbar) return;
-    await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
 
-    // 座標表示のためのツール
-    volume && domCoordinates(coordinates, element, viewport, volume);
+    // マウス操作ツール
+    await getToolGroupSetting(idName, toolbar, element, volumeId, toolGroupId);
+    toolGroup.addViewport(viewportId, renderingEngineId);
+    // ツールボタン
+    await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
 
     //　イベントハンドラーの設定
     setEventHandlers(renderingEngineId, viewportId, imageIds, element);
@@ -86,6 +79,18 @@ export const runViewVolume = async (
     /**
      * ツールの設定 ここまで
      */
+
+    // volumeの起動(load)のセット
+    await volume.load();
+
+    // 座標表示のためのツール
+    volume && domCoordinates(coordinates, element, viewport, volume);
+
+    // Set the volume on the viewport
+    viewport.setVolumes([
+      { callback: setMriTransferFunctionForVolumeActor, volumeId },
+    ]);
+
     // Render the image
     viewport.render();
   } else {
