@@ -78,7 +78,7 @@ export const runViewVolume = async (
       volumeId,
       toolGroupId,
     );
-    toolGroup.addViewport(viewportId, renderingEngineId);
+
     // ボタン　ツール設定
     await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
     //　イベントハンドラーの設定　wheelページめくりの際のページ番号の取得など
@@ -91,6 +91,7 @@ export const runViewVolume = async (
      */
 
     // volumeの起動(load)のセット
+    toolGroup.addViewport(viewportId, renderingEngineId);
     await volume.load();
 
     // Set the volume on the viewport

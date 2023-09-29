@@ -28,11 +28,13 @@ export const getSegmentToolGroupSetting = async (
   cornerstoneTools.removeTool(cornerstoneTools.CircleScissorsTool);
   cornerstoneTools.removeTool(cornerstoneTools.SphereScissorsTool);
   cornerstoneTools.removeTool(cornerstoneTools.PaintFillTool);
+  cornerstoneTools.removeTool(cornerstoneTools.BrushTool);
 
   cornerstoneTools.addTool(cornerstoneTools.RectangleScissorsTool);
   cornerstoneTools.addTool(cornerstoneTools.CircleScissorsTool);
   cornerstoneTools.addTool(cornerstoneTools.SphereScissorsTool);
   cornerstoneTools.addTool(cornerstoneTools.PaintFillTool);
+  cornerstoneTools.addTool(cornerstoneTools.BrushTool);
 
   toolGroup.addTool(SegmentationDisplayTool.toolName);
 
@@ -40,8 +42,10 @@ export const getSegmentToolGroupSetting = async (
 
   // segmentation rendering mockEllipsoidSegmentation
   // segmentationRenderingEllipsoid(volumeId, toolGroupId, idName);
+
   // segmentation swap
   // segmentationSwap(volumeId, toolGroupId, idName, toolbar);
+
   // segmentation brush and scissors
   segmentationBrushAndScissors(
     volumeId,

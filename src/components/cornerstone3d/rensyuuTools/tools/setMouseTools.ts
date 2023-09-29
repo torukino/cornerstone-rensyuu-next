@@ -38,13 +38,13 @@ export const setMouseTools = async (
 
   // Set the active tool for the group
   toolGroup.setToolActive(StackScrollMouseWheelTool.toolName);
-  toolGroup.setToolActive(PanTool.toolName, {
-    bindings: [
-      {
-        mouseButton: MouseBindings.Primary, // Left Click
-      },
-    ],
-  });
+  // toolGroup.setToolActive(PanTool.toolName, {
+  //   bindings: [
+  //     {
+  //       mouseButton: MouseBindings.Primary, // Left Click
+  //     },
+  //   ],
+  // });
 
   toolGroup.setToolActive(WindowLevelTool.toolName, {
     bindings: [

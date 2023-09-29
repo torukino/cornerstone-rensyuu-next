@@ -71,6 +71,8 @@ export const segmentationBrushAndScissors = async (
   toolGroup.addTool(CircleScissorsTool.toolName);
   toolGroup.addTool(SphereScissorsTool.toolName);
   toolGroup.addTool(PaintFillTool.toolName);
+  toolGroup.addTool(BrushTool.toolName);
+
   toolGroup.addToolInstance(
     brushInstanceNames.CircularBrush,
     BrushTool.toolName,
@@ -122,22 +124,22 @@ export const segmentationBrushAndScissors = async (
       const name = String(nameAsStringOrNumber);
       const toolGroup =
         cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
-
+      if (!toolGroup) return;
       // Set the currently active tool disabled
-      const toolName = toolGroup?.getActivePrimaryMouseButtonTool();
+      const toolName = toolGroup.getActivePrimaryMouseButtonTool();
 
       if (toolName) {
-        toolGroup?.setToolDisabled(toolName);
+        toolGroup.setToolDisabled(toolName);
       }
 
       if (brushValues.includes(name)) {
-        toolGroup?.setToolActive(name, {
+        toolGroup.setToolActive(name, {
           bindings: [{ mouseButton: MouseBindings.Primary }],
         });
       } else {
         const toolName = name;
 
-        toolGroup?.setToolActive(toolName, {
+        toolGroup.setToolActive(toolName, {
           bindings: [{ mouseButton: MouseBindings.Primary }],
         });
       }

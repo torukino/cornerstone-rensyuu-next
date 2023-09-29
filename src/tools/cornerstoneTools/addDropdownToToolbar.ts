@@ -9,7 +9,7 @@ export default function addDropDownToToolbar({
   idName: string;
   onSelectedValueChange: (value: number | string) => void;
   options: { defaultValue: number | string; values: number[] | string[] };
-  toolbar?: HTMLElement;
+  toolbar: HTMLElement;
 }) {
   const { defaultValue, values } = options;
   const select = document.createElement('select');
@@ -39,7 +39,7 @@ export default function addDropDownToToolbar({
     }
   };
 
-  toolbar?.append(select);
+  toolbar.append(select);
 }
 
 const JapaneseText = (value: string): string => {

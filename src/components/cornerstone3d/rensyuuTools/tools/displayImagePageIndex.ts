@@ -1,6 +1,6 @@
 import { getRenderingEngine } from '@cornerstonejs/core';
 
-export const displayImagePageIndex = async(
+export const displayImagePageIndex = async (
   renderingEngineId: string,
   viewportId: string,
   imageIds: string[],
@@ -13,7 +13,7 @@ export const displayImagePageIndex = async(
   const viewport = renderingEngine.getViewport(viewportId);
   // Get the current index of the image displayed
   const currentImageIdIndex = viewport.getCurrentImageIdIndex();
-  
+
   console.log('currentImageIdIndex:', currentImageIdIndex);
   const oldDiv = document.getElementById('image-index-display');
   if (oldDiv) {
