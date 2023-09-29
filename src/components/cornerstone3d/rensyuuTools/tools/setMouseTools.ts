@@ -4,7 +4,13 @@ import { MouseBindings } from '@cornerstonejs/tools/dist/esm/enums';
 const { PanTool, StackScrollMouseWheelTool, WindowLevelTool, ZoomTool } =
   cornerstoneTools;
 
-export const buttonTools = async (toolGroupId: string) => {
+export const setMouseTools = async (
+  toolGroupId: string,
+  element: HTMLElement,
+) => {
+  // Disable right click context menu so we can have right click tools
+  element.oncontextmenu = (e) => e.preventDefault();
+
   cornerstoneTools.removeTool(StackScrollMouseWheelTool);
   cornerstoneTools.removeTool(PanTool);
   cornerstoneTools.removeTool(ZoomTool);

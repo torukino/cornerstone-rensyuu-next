@@ -8,8 +8,9 @@ import {
 import * as cornerstoneTools from '@cornerstonejs/tools';
 
 import { domCoordinates } from '@/components/cornerstone3d/rensyuuTools/tools/domCoordinates';
-import { getToolGroupSetting } from '@/components/cornerstone3d/rensyuuTools/tools/getToolGroupSetting';
+import { getSegmentToolGroupSetting } from '@/components/cornerstone3d/rensyuuTools/tools/getToolGroupSetting';
 import { setEventHandlers } from '@/components/cornerstone3d/rensyuuTools/tools/setEventHandlers';
+import { setMouseTools } from '@/components/cornerstone3d/rensyuuTools/tools/setMouseTools';
 import { setToolButtons } from '@/components/cornerstone3d/rensyuuTools/tools/setToolButtons';
 import { setMriTransferFunctionForVolumeActor } from '@/tools/cornerstoneTools';
 
@@ -67,14 +68,23 @@ export const runViewVolume = async (
     const toolbar = document.getElementById(`${idName}-toolbar`);
     if (!toolbar) return;
 
-    // マウス操作ツール
-    await getToolGroupSetting(idName, toolbar, element, volumeId, toolGroupId);
+    // マウス操作 tools
+    setMouseTools(toolGroupId, element);
+    // Segmentツール
+    await getSegmentToolGroupSetting(
+      idName,
+      toolbar,
+      element,
+      volumeId,
+      toolGroupId,
+    );
     toolGroup.addViewport(viewportId, renderingEngineId);
-    // ツールボタン
+    // ボタン　ツール設定
     await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
-
-    //　イベントハンドラーの設定
+    //　イベントハンドラーの設定　wheelページめくりの際のページ番号の取得など
     setEventHandlers(renderingEngineId, viewportId, imageIds, element);
+    // 座標表示のためのツール
+    volume && domCoordinates(coordinates, element, viewport, volume);
 
     /**
      * ツールの設定 ここまで
@@ -82,9 +92,6 @@ export const runViewVolume = async (
 
     // volumeの起動(load)のセット
     await volume.load();
-
-    // 座標表示のためのツール
-    volume && domCoordinates(coordinates, element, viewport, volume);
 
     // Set the volume on the viewport
     viewport.setVolumes([
@@ -95,6 +102,10 @@ export const runViewVolume = async (
     viewport.render();
   } else {
     // Stack 表示
+
+    //　イベントハンドラーの設定
+    setEventHandlers(renderingEngineId, viewportId, imageIds, element);
+
     const viewportInput = {
       element,
       type: ViewportType.STACK,
@@ -105,9 +116,6 @@ export const runViewVolume = async (
       viewportId,
     ) as Types.IStackViewport;
     await viewport.setStack(imageIds);
-
-    //　イベントハンドラーの設定
-    setEventHandlers(renderingEngineId, viewportId, imageIds, element);
 
     viewport.render();
   }
