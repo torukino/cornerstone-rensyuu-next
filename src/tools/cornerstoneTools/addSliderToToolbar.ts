@@ -1,22 +1,22 @@
 export default function addSliderToToolbar({
   id,
   title,
-  container,
   defaultValue,
   idName,
   onSelectedValueChange,
   range,
   step,
+  toolbar,
   updateLabelOnChange,
 }: {
   id?: string;
   title: string;
-  container?: HTMLElement;
   defaultValue: number;
   idName: string;
   onSelectedValueChange: (value: string) => void;
   range: number[];
   step?: number;
+  toolbar?: HTMLElement;
   updateLabelOnChange?: (value: string, label: HTMLElement) => void;
 }) {
   const label = document.createElement('label');
@@ -50,9 +50,9 @@ export default function addSliderToToolbar({
       }
     }
   };
-  if (!container) {
-    container = document.getElementById(idName + '-toolbar') || undefined;
+  if (!toolbar) {
+    toolbar = document.getElementById(idName + '-toolbar') || undefined;
   }
-  container?.append(label);
-  container?.append(input);
+  toolbar?.append(label);
+  toolbar?.append(input);
 }

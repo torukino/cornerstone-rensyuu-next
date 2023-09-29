@@ -1,7 +1,6 @@
 import * as cornerstoneTools from '@cornerstonejs/tools';
 
-import { segmentationRenderingEllipsoid } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationRenderingEllipsoid';
-import { segmentationSwap } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationSwap';
+import { segmentationBrushAndScissors } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationBrushAndScissors';
 
 const { SegmentationDisplayTool } = cornerstoneTools;
 
@@ -24,12 +23,33 @@ export const getSegmentToolGroupSetting = async (
   // segmentation
   cornerstoneTools.removeTool(SegmentationDisplayTool);
   cornerstoneTools.addTool(SegmentationDisplayTool);
+
+  cornerstoneTools.removeTool(cornerstoneTools.RectangleScissorsTool);
+  cornerstoneTools.removeTool(cornerstoneTools.CircleScissorsTool);
+  cornerstoneTools.removeTool(cornerstoneTools.SphereScissorsTool);
+  cornerstoneTools.removeTool(cornerstoneTools.PaintFillTool);
+
+  cornerstoneTools.addTool(cornerstoneTools.RectangleScissorsTool);
+  cornerstoneTools.addTool(cornerstoneTools.CircleScissorsTool);
+  cornerstoneTools.addTool(cornerstoneTools.SphereScissorsTool);
+  cornerstoneTools.addTool(cornerstoneTools.PaintFillTool);
+
   toolGroup.addTool(SegmentationDisplayTool.toolName);
+
   toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
+
   // segmentation rendering mockEllipsoidSegmentation
-  segmentationRenderingEllipsoid(volumeId, toolGroupId, idName);
+  // segmentationRenderingEllipsoid(volumeId, toolGroupId, idName);
   // segmentation swap
-  segmentationSwap(volumeId, toolGroupId, idName, toolbar);
+  // segmentationSwap(volumeId, toolGroupId, idName, toolbar);
+  // segmentation brush and scissors
+  segmentationBrushAndScissors(
+    volumeId,
+    toolGroupId,
+    idName,
+    toolbar,
+    toolGroup,
+  );
 
   //ここまで
   console.log('toolGroup', toolGroup);

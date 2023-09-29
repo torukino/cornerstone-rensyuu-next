@@ -1,15 +1,15 @@
 export default function addDropDownToToolbar({
   id,
-  container,
   idName,
   onSelectedValueChange,
   options,
+  toolbar,
 }: {
   id?: string;
-  container?: HTMLElement;
   idName: string;
   onSelectedValueChange: (value: number | string) => void;
   options: { defaultValue: number | string; values: number[] | string[] };
+  toolbar?: HTMLElement;
 }) {
   const { defaultValue, values } = options;
   const select = document.createElement('select');
@@ -39,7 +39,7 @@ export default function addDropDownToToolbar({
     }
   };
 
-  container?.append(select);
+  toolbar?.append(select);
 }
 
 const JapaneseText = (value: string): string => {
@@ -48,12 +48,16 @@ const JapaneseText = (value: string): string => {
     ArrowAnnotate: '矢印注釈',
     Bidirectional: '両矢印',
     CircleROI: '円',
+    CircleScissors: '円ハサミ',
     CobbAngle: 'コブ角',
     EllipticalROI: '楕円',
     Length: '長さ',
+    PaintFill: '全塗り',
     PlanarFreehandROI: '自由曲線',
     Probe: 'マーカー',
     RectangleROI: '矩形',
+    RectangleScissors: '矩形ハサミ',
+    SphereScissors: '球ハサミ',
     WindowLevel: 'コントラスト',
   };
 
