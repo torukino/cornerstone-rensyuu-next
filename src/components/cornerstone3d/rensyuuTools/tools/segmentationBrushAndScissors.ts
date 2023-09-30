@@ -65,58 +65,6 @@ export const segmentationBrushAndScissors = async (
     PaintFillTool.toolName,
   ];
 
-  // Segmentation Tools
-  toolGroup.addTool(SegmentationDisplayTool.toolName);
-  toolGroup.addTool(RectangleScissorsTool.toolName);
-  toolGroup.addTool(CircleScissorsTool.toolName);
-  toolGroup.addTool(SphereScissorsTool.toolName);
-  toolGroup.addTool(PaintFillTool.toolName);
-  toolGroup.addTool(BrushTool.toolName);
-
-  toolGroup.addToolInstance(
-    brushInstanceNames.CircularBrush,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.CircularBrush,
-    },
-  );
-  toolGroup.addToolInstance(
-    brushInstanceNames.CircularEraser,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.CircularEraser,
-    },
-  );
-  toolGroup.addToolInstance(
-    brushInstanceNames.SphereBrush,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.SphereBrush,
-    },
-  );
-  toolGroup.addToolInstance(
-    brushInstanceNames.SphereEraser,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.SphereEraser,
-    },
-  );
-  toolGroup.addToolInstance(
-    brushInstanceNames.ThresholdBrush,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.ThresholdBrush,
-    },
-  );
-  toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
-
-  toolGroup.setToolActive(brushInstanceNames.CircularBrush, {
-    bindings: [{ mouseButton: MouseBindings.Primary }],
-  });
-
-  // Add some segmentations based on the source data volume
-  await addSegmentationsToState(volumeId, segmentationBrushAndScissorsId);
-
   // ============================= //
   addDropdownToToolbar({
     idName,
@@ -179,7 +127,63 @@ export const segmentationBrushAndScissors = async (
     range: [5, 50],
     toolbar,
   });
+
+  // ============= run ================ //
+
+  // Segmentation Tools
+  toolGroup.addTool(SegmentationDisplayTool.toolName);
+  toolGroup.addTool(RectangleScissorsTool.toolName);
+  toolGroup.addTool(CircleScissorsTool.toolName);
+  toolGroup.addTool(SphereScissorsTool.toolName);
+  toolGroup.addTool(PaintFillTool.toolName);
+  toolGroup.addTool(BrushTool.toolName);
+
+  toolGroup.addToolInstance(
+    brushInstanceNames.CircularBrush,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.CircularBrush,
+    },
+  );
+  toolGroup.addToolInstance(
+    brushInstanceNames.CircularEraser,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.CircularEraser,
+    },
+  );
+  toolGroup.addToolInstance(
+    brushInstanceNames.SphereBrush,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.SphereBrush,
+    },
+  );
+  toolGroup.addToolInstance(
+    brushInstanceNames.SphereEraser,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.SphereEraser,
+    },
+  );
+  toolGroup.addToolInstance(
+    brushInstanceNames.ThresholdBrush,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.ThresholdBrush,
+    },
+  );
+  toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
+
+  toolGroup.setToolActive(brushInstanceNames.CircularBrush, {
+    bindings: [{ mouseButton: MouseBindings.Primary }],
+  });
+
+  // Add some segmentations based on the source data volume
+  await addSegmentationsToState(volumeId, segmentationBrushAndScissorsId);
 };
+
+
 
 async function addSegmentationsToState(
   volumeId: string,
