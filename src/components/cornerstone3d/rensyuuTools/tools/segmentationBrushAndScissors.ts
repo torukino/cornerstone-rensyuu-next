@@ -28,10 +28,14 @@ export const segmentationBrushAndScissors = async (
   toolGroupId: string,
   idName: string,
   toolbar: HTMLElement,
-  toolGroup: cornerstoneTools.Types.IToolGroup,
 ) => {
-  const segmentationBrushAndScissorsId =
-    'segmentation_brush_scissors' + Date.now();
+  const toolGroup = cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
+  if (!toolGroup) return;
+
+  const segmentationId = 'segmentation_brush_scissors' + Date.now();
+  // Add some segmentations based on the source data volume
+
+  await addSegmentationsToState(volumeId, segmentationId);
 
   const brushInstanceNames = {
     CircularBrush: 'CircularBrush',
@@ -64,6 +68,7 @@ export const segmentationBrushAndScissors = async (
     SphereScissorsTool.toolName,
     PaintFillTool.toolName,
   ];
+  console.log('optionsValues', optionsValues);
 
   // ============================= //
   addDropdownToToolbar({
@@ -178,12 +183,7 @@ export const segmentationBrushAndScissors = async (
   toolGroup.setToolActive(brushInstanceNames.CircularBrush, {
     bindings: [{ mouseButton: MouseBindings.Primary }],
   });
-
-  // Add some segmentations based on the source data volume
-  await addSegmentationsToState(volumeId, segmentationBrushAndScissorsId);
 };
-
-
 
 async function addSegmentationsToState(
   volumeId: string,

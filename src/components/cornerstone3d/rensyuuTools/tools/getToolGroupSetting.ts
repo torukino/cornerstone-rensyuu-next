@@ -1,9 +1,8 @@
 import * as cornerstoneTools from '@cornerstonejs/tools';
 
-import { segmentationBrushAndScissors } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationBrushAndScissors';
+import { setGlobalLabelmapSegmentationConfiguration } from './setGlobalLabelmapSegmentationConfiguration';
 
 const { SegmentationDisplayTool } = cornerstoneTools;
-
 /**
  * デモセグメンテーションの各軸スライスに2つの同心円を追加する。
  */
@@ -14,6 +13,8 @@ export const getSegmentToolGroupSetting = async (
   element: HTMLElement,
   volumeId: string,
   toolGroupId: string,
+  renderingEngineId: string,
+  viewportId: string,
 ): Promise<void | undefined> => {
   // addTool
 
@@ -22,14 +23,13 @@ export const getSegmentToolGroupSetting = async (
 
   // segmentation
   cornerstoneTools.removeTool(SegmentationDisplayTool);
-  cornerstoneTools.addTool(SegmentationDisplayTool);
-
   cornerstoneTools.removeTool(cornerstoneTools.RectangleScissorsTool);
   cornerstoneTools.removeTool(cornerstoneTools.CircleScissorsTool);
   cornerstoneTools.removeTool(cornerstoneTools.SphereScissorsTool);
   cornerstoneTools.removeTool(cornerstoneTools.PaintFillTool);
   cornerstoneTools.removeTool(cornerstoneTools.BrushTool);
 
+  cornerstoneTools.addTool(SegmentationDisplayTool);
   cornerstoneTools.addTool(cornerstoneTools.RectangleScissorsTool);
   cornerstoneTools.addTool(cornerstoneTools.CircleScissorsTool);
   cornerstoneTools.addTool(cornerstoneTools.SphereScissorsTool);
@@ -37,7 +37,6 @@ export const getSegmentToolGroupSetting = async (
   cornerstoneTools.addTool(cornerstoneTools.BrushTool);
 
   toolGroup.addTool(SegmentationDisplayTool.toolName);
-
   toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
 
   // segmentation rendering mockEllipsoidSegmentation
@@ -47,12 +46,21 @@ export const getSegmentToolGroupSetting = async (
   // segmentationSwap(volumeId, toolGroupId, idName, toolbar);
 
   // segmentation brush and scissors
-  segmentationBrushAndScissors(
+  // await segmentationBrushAndScissors(
+  //   volumeId,
+  //   toolGroupId,
+  //   idName,
+  //   toolbar,
+  // );
+
+  //Global Labelmap Segmentation Configuration
+  await setGlobalLabelmapSegmentationConfiguration(
     volumeId,
     toolGroupId,
     idName,
     toolbar,
-    toolGroup,
+    renderingEngineId,
+    viewportId,
   );
 
   //ここまで

@@ -77,6 +77,8 @@ export const runViewVolume = async (
       element,
       volumeId,
       toolGroupId,
+      renderingEngineId,
+      viewportId,
     );
 
     // ボタン　ツール設定
