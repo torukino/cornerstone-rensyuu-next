@@ -1,5 +1,6 @@
 import { ImageVolume, Types, utilities as csUtils } from '@cornerstonejs/core';
 
+const BUG = false;
 export const domCoordinates = (
   coordinates: HTMLElement,
   element: HTMLElement,
@@ -86,6 +87,10 @@ function getSegmentationValue(
   index[1] = Math.floor(index[1]);
   index[2] = Math.floor(index[2]);
 
+  BUG && console.log('@@@@ index @@@@', index);
+  BUG && console.log('@@@@ dimensions @@@@', dimensions);
+  BUG && console.log('@@@@ scalarData @@@@', scalarData);
+
   if (
     !csUtils.indexWithinDimensions(
       [index[0], index[1], index[2]],
@@ -101,5 +106,6 @@ function getSegmentationValue(
   const value =
     scalarData[index[2] * zMultiple + index[1] * yMultiple + index[0]];
 
+  BUG && console.log('@@@@ value @@@@', value);
   return value;
 }
