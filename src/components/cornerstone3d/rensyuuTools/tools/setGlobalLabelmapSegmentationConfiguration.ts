@@ -1,5 +1,6 @@
 import { getRenderingEngine, volumeLoader } from '@cornerstonejs/core';
 import { segmentation } from '@cornerstonejs/tools';
+import * as cornerstoneTools from '@cornerstonejs/tools';
 import { SegmentationRepresentations } from '@cornerstonejs/tools/dist/esm/enums';
 
 import {
@@ -7,6 +8,7 @@ import {
   addToggleButtonToToolbar,
 } from '@/tools/cornerstoneTools';
 
+const BUG = true;
 export const setGlobalLabelmapSegmentationConfiguration = async (
   volumeId: string,
   toolGroupId: string,
@@ -16,36 +18,70 @@ export const setGlobalLabelmapSegmentationConfiguration = async (
   viewportId: string,
 ) => {
   // ============================= //
+  const toolGroup = cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
+  // ツールグループが作成されなかった場合、関数を終了します
+  if (!toolGroup) return;
 
+  segmentation.removeSegmentationsFromToolGroup(toolGroupId);
+
+  // この関数は、ツールバーに「segmentations切替」ボタンを追加します。
+  // ボタンがクリックされると、segmentationの設定が更新され、
+  // レンダリングエンジンがビューポートを再描画します。
+  // ここでは、configの内容のうち、
+  // renderInactiveSegmentationsがトグルされます。
   addToggleButtonToToolbar({
-    title: 'toggle render inactive segmentations',
-    defaultToggle: true,
+    title: 'セグメント切替',
+    defaultToggle: false,
 
     onClick: (toggle) => {
+      // segmentationのグローバル設定を取得します。
       const config = segmentation.config.getGlobalConfig();
-
+      if (!config.representations.LABELMAP) return;
+      BUG && console.log('@@@ config @@@', config);
+    
+      config.representations.LABELMAP.outlineWidthActive = 10;
+    
+      // 非アクティブなsegmentationsのレンダリングを切り替えます。
       config.renderInactiveSegmentations = toggle;
+      
+      // 更新した設定をグローバル設定としてセットします。
       segmentation.config.setGlobalConfig(config);
 
+      // レンダリングエンジンを取得します。
       const renderingEngine = getRenderingEngine(renderingEngineId);
+      // レンダリングエンジンが存在しない場合、関数を終了します。
       if (!renderingEngine) return;
+      // ビューポートを再描画します。
       renderingEngine.renderViewports([viewportId]);
     },
+    toolbar,
+  });
+
+  // 外輪 representation.rebderOutlineがトグルされます
+  addToggleButtonToToolbar({
+    title: '外輪トグル',
+    defaultToggle: true,
+    onClick: (toggle) => {
+      const config1 = segmentation.config.getGlobalConfig();
+      BUG && console.log('@@@ config1 @@@', config1);
+      setConfigValue('renderOutline', toggle, renderingEngineId, viewportId);
+      const config2 = segmentation.config.getGlobalConfig();
+      BUG && console.log('@@@ config2 @@@', config2);
+    },
+    toolbar,
   });
 
   addToggleButtonToToolbar({
-    title: 'toggle outline rendering',
+    title: '塗りつぶし',
     defaultToggle: true,
     onClick: (toggle) => {
-      setConfigValue('renderOutline', toggle, renderingEngineId, viewportId);
-    },
-  });
-  addToggleButtonToToolbar({
-    title: 'toggle fill rendering',
-    defaultToggle: true,
-    onClick: (toggle) => {
+      const config3 = segmentation.config.getGlobalConfig();
+      BUG && console.log('@@@ config3 @@@', config3);
       setConfigValue('renderFill', toggle, renderingEngineId, viewportId);
+      const config4 = segmentation.config.getGlobalConfig();
+      BUG && console.log('@@@ config4 @@@', config4);
     },
+    toolbar,
   });
 
   addSliderToToolbar({
@@ -188,8 +224,8 @@ async function addSegmentationsToState(
   segmentationId1: string,
   segmentationId2: string,
 ) {
-  // Create a segmentation of the same resolution as the source data
-  // using volumeLoader.createAndCacheDerivedVolume.
+  // ソースデータと同じ解像度のセグメンテーションを作成する。
+  // VolumeLoader.createAndCacheDerivedVolumeを使用。.
   const segmentationVolume1 = await volumeLoader.createAndCacheDerivedVolume(
     volumeId,
     {

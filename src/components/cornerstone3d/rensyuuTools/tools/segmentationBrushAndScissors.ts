@@ -30,12 +30,21 @@ export const segmentationBrushAndScissors = async (
   toolbar: HTMLElement,
 ) => {
   const toolGroup = cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
+  // ツールグループが作成されなかった場合、関数を終了します
   if (!toolGroup) return;
+  segmentation.removeSegmentationsFromToolGroup(toolGroupId);
 
   const segmentationId = 'segmentation_brush_scissors' + Date.now();
   // Add some segmentations based on the source data volume
-
   await addSegmentationsToState(volumeId, segmentationId);
+
+  // // Add the segmentation representation to the toolgroup
+  await segmentation.addSegmentationRepresentations(toolGroupId, [
+    {
+      segmentationId,
+      type: SegmentationRepresentations.Labelmap,
+    },
+  ]);
 
   const brushInstanceNames = {
     CircularBrush: 'CircularBrush',
@@ -101,7 +110,7 @@ export const segmentationBrushAndScissors = async (
     toolbar,
   });
 
-  const thresholdOptions = ['CT Fat: (-150, -70)', 'CT Bone: (200, 1000)'];
+  const thresholdOptions = ['MRI : (0, 200)', 'MRI : (1000, 2000)'];
 
   addDropdownToToolbar({
     idName,
@@ -110,9 +119,9 @@ export const segmentationBrushAndScissors = async (
 
       let threshold;
       if (name === thresholdOptions[0]) {
-        threshold = [-150, -70];
+        threshold = [0, 200];
       } else if (name == thresholdOptions[1]) {
-        threshold = [100, 1000];
+        threshold = [1000, 2000];
       }
 
       setBrushThresholdForToolGroup(toolGroupId, threshold as Types.Point2);

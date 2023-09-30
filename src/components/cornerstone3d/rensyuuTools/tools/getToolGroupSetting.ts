@@ -1,6 +1,6 @@
 import * as cornerstoneTools from '@cornerstonejs/tools';
 
-import { setGlobalLabelmapSegmentationConfiguration } from './setGlobalLabelmapSegmentationConfiguration';
+import { segmentationBrushAndScissors } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationBrushAndScissors';
 
 const { SegmentationDisplayTool } = cornerstoneTools;
 /**
@@ -46,22 +46,26 @@ export const getSegmentToolGroupSetting = async (
   // segmentationSwap(volumeId, toolGroupId, idName, toolbar);
 
   // segmentation brush and scissors
-  // await segmentationBrushAndScissors(
+  await segmentationBrushAndScissors(volumeId, toolGroupId, idName, toolbar);
+
+  //Global Labelmap Segmentation Configuration
+  // await setGlobalLabelmapSegmentationConfiguration(
   //   volumeId,
   //   toolGroupId,
   //   idName,
   //   toolbar,
+  //   renderingEngineId,
+  //   viewportId,
   // );
 
-  //Global Labelmap Segmentation Configuration
-  await setGlobalLabelmapSegmentationConfiguration(
-    volumeId,
-    toolGroupId,
-    idName,
-    toolbar,
-    renderingEngineId,
-    viewportId,
-  );
+  // setLabelmapSegmentSpecificConfiguration({
+  //   idName,
+  //   renderingEngineId,
+  //   toolbar,
+  //   toolGroupId,
+  //   viewportId,
+  //   volumeId,
+  // });
 
   //ここまで
   console.log('toolGroup', toolGroup);

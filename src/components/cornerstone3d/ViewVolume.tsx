@@ -6,7 +6,7 @@ import { runViewVolume } from '@/components/cornerstone3d/rensyuuTools/runViewVo
 import { getImageIds } from '@/components/cornerstone3d/tools/getImageIds';
 import { initDemo } from '@/tools/cornerstoneTools';
 
-const BUG = true;
+const BUG = false;
 interface PROPS {
   DerivativeDiscription: string;
   SeriesInstanceUID: string;
