@@ -1,10 +1,11 @@
-import { Types, utilities as csUtils } from '@cornerstonejs/core';
+import { ImageVolume, Types, utilities as csUtils } from '@cornerstonejs/core';
 
 export const domCoordinates = (
   coordinates: HTMLElement,
   element: HTMLElement,
   viewport: Types.IVolumeViewport | Types.IStackViewport,
   volume: Record<string, any>,
+  volumeSegmentation: ImageVolume,
 ) => {
   console.log('@@@@ domCoordinates @@@@');
   console.log('@@@@ volume         @@@@', volume);
@@ -14,6 +15,7 @@ export const domCoordinates = (
   const canvasPosElement = document.createElement('p');
   const worldPosElement = document.createElement('p');
   const mriValueElement = document.createElement('p');
+  const segmentationValueElement = document.createElement('p');
 
   // canvasPosElement.innerText = 'canvas:';
   // worldPosElement.innerText = 'world:';
@@ -24,6 +26,7 @@ export const domCoordinates = (
   mousePosDiv.appendChild(canvasPosElement);
   mousePosDiv.appendChild(worldPosElement);
   mousePosDiv.appendChild(mriValueElement);
+  mousePosDiv.appendChild(segmentationValueElement);
 
   element.addEventListener('mousemove', (evt) => {
     const rect = element.getBoundingClientRect();
@@ -40,6 +43,10 @@ export const domCoordinates = (
       2,
     )}, ${worldPos[1].toFixed(2)}, ${worldPos[2].toFixed(2)})`;
     mriValueElement.innerText = `MRI value: ${getMriValue(volume, worldPos)}`;
+    segmentationValueElement.innerText = `segmentation value: ${getSegmentationValue(
+      volumeSegmentation,
+      worldPos,
+    )}`;
   });
 };
 
@@ -53,6 +60,38 @@ function getMriValue(volume: Record<string, any>, worldPos: Types.Point3) {
   index[2] = Math.floor(index[2]);
 
   if (!csUtils.indexWithinDimensions(index, dimensions)) {
+    return;
+  }
+
+  const yMultiple = dimensions[0];
+  const zMultiple = dimensions[0] * dimensions[1];
+
+  const value =
+    scalarData[index[2] * zMultiple + index[1] * yMultiple + index[0]];
+
+  return value;
+}
+
+function getSegmentationValue(
+  volumeSegmentation: ImageVolume,
+  worldPos: Types.Point3,
+) {
+  const scalarData = volumeSegmentation.getScalarData();
+  const { imageData } = volumeSegmentation;
+  const { dimensions } = volumeSegmentation;
+  if (!imageData) return;
+  const index = imageData.worldToIndex(worldPos);
+
+  index[0] = Math.floor(index[0]);
+  index[1] = Math.floor(index[1]);
+  index[2] = Math.floor(index[2]);
+
+  if (
+    !csUtils.indexWithinDimensions(
+      [index[0], index[1], index[2]],
+      [dimensions[0], dimensions[1], dimensions[2]],
+    )
+  ) {
     return;
   }
 

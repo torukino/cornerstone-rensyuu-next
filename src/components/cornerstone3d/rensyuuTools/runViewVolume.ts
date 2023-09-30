@@ -68,6 +68,15 @@ export const runViewVolume = async (
     const toolbar = document.getElementById(`${idName}-toolbar`);
     if (!toolbar) return;
 
+    const segmentationId = 'segmentation_brush_scissors' + Date.now();
+    // Create a segmentation of the same resolution as the source data
+    // using volumeLoader.createAndCacheDerivedVolume.
+    const volumeSegmentation = await volumeLoader.createAndCacheDerivedVolume(
+      volumeId,
+      {
+        volumeId: segmentationId,
+      },
+    );
     // マウス操作 tools
     setMouseTools(toolGroupId, element);
     // Segmentツール
@@ -79,6 +88,7 @@ export const runViewVolume = async (
       toolGroupId,
       renderingEngineId,
       viewportId,
+      segmentationId,
     );
 
     // ボタン　ツール設定
@@ -86,7 +96,15 @@ export const runViewVolume = async (
     //　イベントハンドラーの設定　wheelページめくりの際のページ番号の取得など
     setEventHandlers(renderingEngineId, viewportId, imageIds, element);
     // 座標表示のためのツール
-    volume && domCoordinates(coordinates, element, viewport, volume);
+    volumeSegmentation &&
+      volume &&
+      domCoordinates(
+        coordinates,
+        element,
+        viewport,
+        volume,
+        volumeSegmentation,
+      );
 
     /**
      * ツールの設定 ここまで

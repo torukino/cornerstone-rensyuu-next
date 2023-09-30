@@ -15,6 +15,7 @@ export const getSegmentToolGroupSetting = async (
   toolGroupId: string,
   renderingEngineId: string,
   viewportId: string,
+  segmentationId: string,
 ): Promise<void | undefined> => {
   // addTool
 
@@ -46,7 +47,13 @@ export const getSegmentToolGroupSetting = async (
   // segmentationSwap(volumeId, toolGroupId, idName, toolbar);
 
   // segmentation brush and scissors
-  await segmentationBrushAndScissors(volumeId, toolGroupId, idName, toolbar);
+  await segmentationBrushAndScissors(
+    volumeId,
+    toolGroupId,
+    idName,
+    toolbar,
+    segmentationId,
+  );
 
   //Global Labelmap Segmentation Configuration
   // await setGlobalLabelmapSegmentationConfiguration(

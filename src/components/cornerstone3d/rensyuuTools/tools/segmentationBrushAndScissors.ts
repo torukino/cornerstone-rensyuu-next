@@ -1,4 +1,4 @@
-import { Types, volumeLoader } from '@cornerstonejs/core';
+import { Types } from '@cornerstonejs/core';
 import {
   BrushTool,
   CircleScissorsTool,
@@ -14,6 +14,7 @@ import {
   SegmentationRepresentations,
 } from '@cornerstonejs/tools/dist/esm/enums';
 import {
+  getBrushThresholdForToolGroup,
   setBrushSizeForToolGroup,
   setBrushThresholdForToolGroup,
 } from '@cornerstonejs/tools/dist/esm/utilities/segmentation';
@@ -23,18 +24,21 @@ import {
   addSliderToToolbar,
 } from '@/tools/cornerstoneTools';
 
+const BUG = true;
+
 export const segmentationBrushAndScissors = async (
   volumeId: string,
   toolGroupId: string,
   idName: string,
   toolbar: HTMLElement,
+  segmentationId: string,
 ) => {
   const toolGroup = cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
   // ツールグループが作成されなかった場合、関数を終了します
   if (!toolGroup) return;
+
   segmentation.removeSegmentationsFromToolGroup(toolGroupId);
 
-  const segmentationId = 'segmentation_brush_scissors' + Date.now();
   // Add some segmentations based on the source data volume
   await addSegmentationsToState(volumeId, segmentationId);
 
@@ -110,23 +114,59 @@ export const segmentationBrushAndScissors = async (
     toolbar,
   });
 
-  const thresholdOptions = ['MRI : (0, 200)', 'MRI : (1000, 2000)'];
+  // const thresholdOptions = ['MRI : (0, 200)', 'MRI : (1000, 2000)'];
 
-  addDropdownToToolbar({
+  // addDropdownToToolbar({
+  //   idName,
+  //   onSelectedValueChange: (nameAsStringOrNumber) => {
+  //     const name = String(nameAsStringOrNumber);
+
+  //     let threshold;
+  //     if (name === thresholdOptions[0]) {
+  //       threshold = [0, 200];
+  //     } else if (name == thresholdOptions[1]) {
+  //       threshold = [1000, 2000];
+  //     }
+
+  //     setBrushThresholdForToolGroup(toolGroupId, threshold as Types.Point2);
+  //   },
+  //   options: { defaultValue: thresholdOptions[0], values: thresholdOptions },
+  //   toolbar,
+  // });
+  updateThresholdDOM(toolbar, toolGroupId, [0, 200]);
+  setBrushThresholdForToolGroup(toolGroupId, [0, 200] as Types.Point2);
+
+  addSliderToToolbar({
+    title: '閾値下限',
+    defaultValue: 0,
     idName,
-    onSelectedValueChange: (nameAsStringOrNumber) => {
-      const name = String(nameAsStringOrNumber);
-
-      let threshold;
-      if (name === thresholdOptions[0]) {
-        threshold = [0, 200];
-      } else if (name == thresholdOptions[1]) {
-        threshold = [1000, 2000];
-      }
-
-      setBrushThresholdForToolGroup(toolGroupId, threshold as Types.Point2);
+    onSelectedValueChange: (valueAsStringOrNumber) => {
+      let value = Number(valueAsStringOrNumber);
+      const threshold = getBrushThresholdForToolGroup(toolGroupId);
+      if (value > threshold[1]) value = threshold[1];
+      BUG && console.log('threshold', threshold);
+      const threshold_new = [value, threshold[1]] as Types.Point2;
+      setBrushThresholdForToolGroup(toolGroupId, threshold_new as Types.Point2);
+      updateThresholdDOM(toolbar, toolGroupId, threshold);
     },
-    options: { defaultValue: thresholdOptions[0], values: thresholdOptions },
+    range: [0, 3000],
+    toolbar,
+  });
+
+  addSliderToToolbar({
+    title: '閾値上限',
+    defaultValue: 1000,
+    idName,
+    onSelectedValueChange: (valueAsStringOrNumber) => {
+      let value = Number(valueAsStringOrNumber);
+      const threshold = getBrushThresholdForToolGroup(toolGroupId);
+      if (threshold[0] > value) value = threshold[0];
+      BUG && console.log('threshold', threshold);
+      const threshold_new = [threshold[0], value] as Types.Point2;
+      setBrushThresholdForToolGroup(toolGroupId, threshold_new as Types.Point2);
+      updateThresholdDOM(toolbar, toolGroupId, threshold);
+    },
+    range: [0, 3000],
     toolbar,
   });
 
@@ -141,7 +181,6 @@ export const segmentationBrushAndScissors = async (
     range: [5, 50],
     toolbar,
   });
-
   // ============= run ================ //
 
   // Segmentation Tools
@@ -198,12 +237,6 @@ async function addSegmentationsToState(
   volumeId: string,
   segmentationId: string,
 ) {
-  // Create a segmentation of the same resolution as the source data
-  // using volumeLoader.createAndCacheDerivedVolume.
-  await volumeLoader.createAndCacheDerivedVolume(volumeId, {
-    volumeId: segmentationId,
-  });
-
   // Add the segmentations to state
   segmentation.addSegmentations([
     {
@@ -220,3 +253,27 @@ async function addSegmentationsToState(
     },
   ]);
 }
+
+const updateThresholdDOM = (
+  toolbar: HTMLElement,
+  toolGroupId: string,
+  threshold: Types.Point2,
+) => {
+  // 既存のthresholdDOMを探す
+  const existingThresholdDOM = toolbar.querySelector('p');
+
+  // 既存のthresholdDOMがあれば削除する
+  if (existingThresholdDOM) {
+    toolbar.removeChild(existingThresholdDOM);
+  }
+
+  // 新しいthresholdDOMを作成する
+  const thresholdDOM = document.createElement('p');
+  thresholdDOM.className =
+    'font-bold border-blue-700 bg-blue-500 text-white py-1 px-2 m-2 transition-colors duration-200 ease-in-out hover:bg-opacity-75 hover:border-purple-700';
+  const thresholdValues = getBrushThresholdForToolGroup(toolGroupId);
+  thresholdDOM.innerText = `閾値[${threshold[0]}, ${threshold[1]}]`;
+
+  // 新しいthresholdDOMを追加する
+  toolbar.append(thresholdDOM);
+};
