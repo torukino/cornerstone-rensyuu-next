@@ -105,6 +105,8 @@ const ViewVolume: React.FC<PROPS> = ({
         <div id={`${idName}-content`} className=" items-center"></div>
         <div id={`${idName}-coordinates`}></div>
       </div>
+      <div id="drawingMRI" className="my-8 text-2xl text-red-500"></div>
+      <div id="drawingLabel" className="my-8 text-2xl text-red-500"></div>
     </div>
   );
 };

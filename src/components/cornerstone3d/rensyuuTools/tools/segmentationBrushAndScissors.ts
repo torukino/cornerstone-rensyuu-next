@@ -133,8 +133,8 @@ export const segmentationBrushAndScissors = async (
   //   options: { defaultValue: thresholdOptions[0], values: thresholdOptions },
   //   toolbar,
   // });
-  updateThresholdDOM(toolbar, toolGroupId, [0, 200]);
   setBrushThresholdForToolGroup(toolGroupId, [0, 200] as Types.Point2);
+  updateThresholdDOM(toolbar, toolGroupId, [0, 200]);
 
   addSliderToToolbar({
     title: '閾値下限',
@@ -254,7 +254,7 @@ async function addSegmentationsToState(
   ]);
 }
 
-const updateThresholdDOM = (
+const updateThresholdDOM = async (
   toolbar: HTMLElement,
   toolGroupId: string,
   threshold: Types.Point2,

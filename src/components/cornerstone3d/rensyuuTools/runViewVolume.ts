@@ -104,6 +104,8 @@ export const runViewVolume = async (
         viewport,
         volume,
         volumeSegmentation,
+        toolbar,
+        idName,
       );
 
     /**
