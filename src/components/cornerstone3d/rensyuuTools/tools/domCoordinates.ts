@@ -7,6 +7,7 @@ export const domCoordinates = (
   coordinates: HTMLElement,
   element: HTMLElement,
   viewport: Types.IVolumeViewport | Types.IStackViewport,
+  volumeId: string,
   volume: Record<string, any>,
   volumeSegmentation: ImageVolume,
   toolbar: HTMLElement,
@@ -47,22 +48,34 @@ export const domCoordinates = (
     worldPosElement.innerText = `world: (${worldPos[0].toFixed(
       2,
     )}, ${worldPos[1].toFixed(2)}, ${worldPos[2].toFixed(2)})`;
+
+    const { dimensions, imageData, scalarData } = volume;
+
     mriValueElement.innerText = `MRI value: ${getMriValue(
-      volume,
       canvasPos,
       viewport as Types.IVolumeViewport,
+      scalarData,
+      imageData,
+      dimensions,
     )}`;
+
+    const scalarDataSegmentation = volumeSegmentation.getScalarData();
+    const imageDataSegmentation = volumeSegmentation.imageData;
+    const dimensionsSegmentation = volumeSegmentation.dimensions;
     segmentationValueElement.innerText = `segmentation value: ${getSegmentationValue(
       volumeSegmentation,
       canvasPos,
       viewport as Types.IVolumeViewport,
+      scalarDataSegmentation,
+      imageDataSegmentation,
+      dimensionsSegmentation,
     )}`;
   });
 
   addButtonToToolbar({
     title: 'ピクセルデータ',
     idName,
-    onClick: () => {
+    onClick: async () => {
       const eWidth: number = element.offsetWidth;
       const eHeight: number = element.offsetHeight;
       const { dimensions, imageData, scalarData } = volume;
@@ -70,14 +83,22 @@ export const domCoordinates = (
       const pixelDataSegmentation = [];
       let value: number | undefined = undefined;
       let valueSegmentation: number | undefined = undefined;
+
+      const scalarDataSegmentation = volumeSegmentation.getScalarData();
+
+
+      const imageDataSegmentation = volumeSegmentation.imageData;
+      const dimensionsSegmentation = volumeSegmentation.dimensions;
       for (let h = 0; h < eHeight; h++) {
         const widthData = [];
         const widthDataSegmentation = [];
         for (let w = 0; w < eWidth; w++) {
           value = getMriValue(
-            volume,
             [w, h] as Types.Point2,
             viewport as Types.IVolumeViewport,
+            scalarData,
+            imageData,
+            dimensions,
           ) as number;
           widthData.push(value);
 
@@ -85,7 +106,13 @@ export const domCoordinates = (
             volumeSegmentation,
             [w, h] as Types.Point2,
             viewport as Types.IVolumeViewport,
+            scalarDataSegmentation,
+            imageDataSegmentation,
+            dimensionsSegmentation,
           ) as number;
+
+          // console.log('@@@@ valueSegmentation @@@@', valueSegmentation);
+
           widthDataSegmentation.push(valueSegmentation);
         }
         pixelData.push(widthData);
@@ -93,6 +120,7 @@ export const domCoordinates = (
       }
 
       drawingPixel(pixelData, eWidth, eHeight);
+      // console.log('@@@@ pixelDataSegmentation @@@@', pixelDataSegmentation);
       drawingPixelSegmentation(pixelDataSegmentation, eWidth, eHeight);
     },
     toolbar,
@@ -100,15 +128,15 @@ export const domCoordinates = (
 };
 
 function getMriValue(
-  volume: Record<string, any>,
   canvasPos: Types.Point2,
   viewport: Types.IVolumeViewport,
+  scalarData: Types.VolumeScalarData,
+  imageData: any,
+  dimensions: Types.Point3,
 ) {
   // Convert canvas coordiantes to world coordinates
 
   const worldPos: Types.Point3 = viewport.canvasToWorld(canvasPos);
-
-  const { dimensions, imageData, scalarData } = volume;
 
   const index = imageData.worldToIndex(worldPos);
 
@@ -135,23 +163,22 @@ function getSegmentationValue(
   volumeSegmentation: ImageVolume,
   canvasPos: Types.Point2,
   viewport: Types.IVolumeViewport,
+  scalarData: Types.VolumeScalarData,
+  imageData: any,
+  dimensions: Types.Point3,
 ) {
-  const scalarData = volumeSegmentation.getScalarData();
-
-  const { imageData } = volumeSegmentation;
-  const { dimensions } = volumeSegmentation;
-
   // let max = Math.max(...scalarData); // 最大値
   // let min = Math.min(...scalarData); // 最小値
 
   // console.log(
   //   `@@@@ scalarData  max${max} min${min} ${scalarData.length} dementions ${dimensions} @@@@`,
   // );
-  if (!imageData) return;
   // console.log('@@@@ imageData @@@@', imageData);
   // Convert canvas coordiantes to world coordinates
 
   const worldPos: Types.Point3 = viewport.canvasToWorld(canvasPos);
+
+  if (!imageData) return;
   const index = imageData.worldToIndex(worldPos);
 
   index[0] = Math.floor(index[0]);
