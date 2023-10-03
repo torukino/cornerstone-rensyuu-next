@@ -3,7 +3,7 @@ import { ImageVolume, Types, utilities as csUtils } from '@cornerstonejs/core';
 import { addButtonToToolbar } from '@/tools/cornerstoneTools';
 
 const BUG = false;
-export const domCoordinates = (
+export const domCoordinates = async (
   coordinates: HTMLElement,
   element: HTMLElement,
   viewport: Types.IVolumeViewport | Types.IStackViewport,
@@ -85,7 +85,6 @@ export const domCoordinates = (
       let valueSegmentation: number | undefined = undefined;
 
       const scalarDataSegmentation = volumeSegmentation.getScalarData();
-
 
       const imageDataSegmentation = volumeSegmentation.imageData;
       const dimensionsSegmentation = volumeSegmentation.dimensions;
@@ -195,7 +194,7 @@ function getSegmentationValue(
       [dimensions[0], dimensions[1], dimensions[2]],
     )
   ) {
-    return;
+    return 0;
   }
 
   const yMultiple = dimensions[0];

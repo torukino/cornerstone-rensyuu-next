@@ -77,7 +77,6 @@ export const runViewVolume = async (
         volumeId: segmentationId,
       },
     );
-  
 
     // マウス操作 tools
     setMouseTools(toolGroupId, element);
@@ -101,7 +100,7 @@ export const runViewVolume = async (
     // 座標表示のためのツール
     volumeSegmentation &&
       volume &&
-      domCoordinates(
+      (await domCoordinates(
         coordinates,
         element,
         viewport,
@@ -110,7 +109,7 @@ export const runViewVolume = async (
         volumeSegmentation,
         toolbar,
         idName,
-      );
+      ));
 
     /**
      * ツールの設定 ここまで

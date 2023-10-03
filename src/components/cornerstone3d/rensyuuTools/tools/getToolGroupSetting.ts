@@ -2,7 +2,6 @@ import { ImageVolume } from '@cornerstonejs/core';
 import * as cornerstoneTools from '@cornerstonejs/tools';
 
 import { segmentationBrushAndScissors } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationBrushAndScissors';
-import { segmentationTutorialBrush } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationTutorialBrush';
 
 const { SegmentationDisplayTool } = cornerstoneTools;
 /**
@@ -55,22 +54,22 @@ export const getSegmentToolGroupSetting = async (
   // segmentationSwap(volumeId, toolGroupId, idName, toolbar);
 
   // segmentation brush and scissors
-  // await segmentationBrushAndScissors(
-  //   volumeId,
-  //   toolGroupId,
-  //   idName,
-  //   toolbar,
-  //   segmentationId,
-  // );
-
-  //tutorial brush
-  await segmentationTutorialBrush(
+  await segmentationBrushAndScissors(
     volumeId,
     toolGroupId,
     idName,
     toolbar,
     segmentationId,
   );
+
+  //tutorial brush
+  // await segmentationTutorialBrush(
+  //   volumeId,
+  //   toolGroupId,
+  //   idName,
+  //   toolbar,
+  //   segmentationId,
+  // );
 
   //Global Labelmap Segmentation Configuration
   // await setGlobalLabelmapSegmentationConfiguration(

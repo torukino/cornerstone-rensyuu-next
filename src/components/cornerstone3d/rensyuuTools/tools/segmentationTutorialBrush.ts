@@ -15,11 +15,11 @@ export const segmentationTutorialBrush = async (
   const toolGroup = cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
   // ツールグループが作成されなかった場合、関数を終了します
   if (!toolGroup) return;
-//   segmentation.removeSegmentationsFromToolGroup(toolGroupId);
+  //   segmentation.removeSegmentationsFromToolGroup(toolGroupId);
 
   // Segmentation Tools
   toolGroup.addTool(cornerstoneTools.BrushTool.toolName);
-  
+
   toolGroup.setToolActive(cornerstoneTools.BrushTool.toolName, {
     bindings: [{ mouseButton: MouseBindings.Primary }],
   });
@@ -37,6 +37,13 @@ export const segmentationTutorialBrush = async (
         type: SegmentationRepresentations.Labelmap,
       },
       segmentationId,
+    },
+  ]);
+  // // Add the segmentation representation to the toolGroup
+  await segmentation.addSegmentationRepresentations(toolGroupId, [
+    {
+      segmentationId,
+      type: SegmentationRepresentations.Labelmap,
     },
   ]);
 };
