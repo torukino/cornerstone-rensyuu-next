@@ -68,15 +68,17 @@ export const runViewVolume = async (
     const toolbar = document.getElementById(`${idName}-toolbar`);
     if (!toolbar) return;
 
-    const segmentationId = 'segmentation_brush_scissors' + Date.now();
     // Create a segmentation of the same resolution as the source data
     // using volumeLoader.createAndCacheDerivedVolume.
+    const segmentationId = 'segmentation_id' + Date.now();
     const volumeSegmentation = await volumeLoader.createAndCacheDerivedVolume(
       volumeId,
       {
         volumeId: segmentationId,
       },
     );
+  
+
     // マウス操作 tools
     setMouseTools(toolGroupId, element);
     // Segmentツール
@@ -89,6 +91,7 @@ export const runViewVolume = async (
       renderingEngineId,
       viewportId,
       segmentationId,
+      volumeSegmentation,
     );
 
     // ボタン　ツール設定

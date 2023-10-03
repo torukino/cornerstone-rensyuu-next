@@ -1,6 +1,8 @@
+import { ImageVolume } from '@cornerstonejs/core';
 import * as cornerstoneTools from '@cornerstonejs/tools';
 
 import { segmentationBrushAndScissors } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationBrushAndScissors';
+import { segmentationTutorialBrush } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationTutorialBrush';
 
 const { SegmentationDisplayTool } = cornerstoneTools;
 /**
@@ -16,6 +18,7 @@ export const getSegmentToolGroupSetting = async (
   renderingEngineId: string,
   viewportId: string,
   segmentationId: string,
+  volumeSegmentation: ImageVolume,
 ): Promise<void | undefined> => {
   // addTool
 
@@ -41,13 +44,27 @@ export const getSegmentToolGroupSetting = async (
   toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
 
   // segmentation rendering mockEllipsoidSegmentation
-  // segmentationRenderingEllipsoid(volumeId, toolGroupId, idName);
+  // segmentationRenderingEllipsoid(
+  //   volumeId,
+  //   toolGroupId,
+  //   volumeSegmentation,
+  //   segmentationId,
+  // );
 
   // segmentation swap
   // segmentationSwap(volumeId, toolGroupId, idName, toolbar);
 
   // segmentation brush and scissors
-  await segmentationBrushAndScissors(
+  // await segmentationBrushAndScissors(
+  //   volumeId,
+  //   toolGroupId,
+  //   idName,
+  //   toolbar,
+  //   segmentationId,
+  // );
+
+  //tutorial brush
+  await segmentationTutorialBrush(
     volumeId,
     toolGroupId,
     idName,

@@ -1,24 +1,18 @@
-import { ImageVolume, volumeLoader } from '@cornerstonejs/core';
+import { ImageVolume } from '@cornerstonejs/core';
 import { segmentation } from '@cornerstonejs/tools';
 import { SegmentationRepresentations } from '@cornerstonejs/tools/dist/esm/enums';
 
 export const segmentationRenderingEllipsoid = async (
-    volumeId: string,
-    toolGroupId: string,
-    idName: string,
+  volumeId: string,
+  toolGroupId: string,
+  volumeSegmentation: ImageVolume,
+  segmentationId: string,
 ) => {
   // ボリュームのソースデータと同じ解像度のセグメンテーションを作成する。
-  const segmentationId = 'segmentation_id' + Date.now();
-  const segmentationVolume = await volumeLoader.createAndCacheDerivedVolume(
-    volumeId,
-    {
-      volumeId: segmentationId,
-    },
-  );
 
   // Add some data to the segmentations
-  createMockEllipsoidSegmentation(segmentationVolume);
-
+  createMockEllipsoidSegmentation(volumeSegmentation);
+console.log('volumeSegmentation', volumeSegmentation.getScalarData());
   //セグメンテーションをステートに追加する
   segmentation.addSegmentations([
     {
