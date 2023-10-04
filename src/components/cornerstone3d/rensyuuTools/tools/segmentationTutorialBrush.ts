@@ -17,8 +17,6 @@ export const segmentationTutorialBrush = async (
   if (!toolGroup) return;
   //   segmentation.removeSegmentationsFromToolGroup(toolGroupId);
 
-  // Segmentation Tools
-  toolGroup.addTool(cornerstoneTools.BrushTool.toolName);
 
   toolGroup.setToolActive(cornerstoneTools.BrushTool.toolName, {
     bindings: [{ mouseButton: MouseBindings.Primary }],

@@ -11,7 +11,6 @@ import { domCoordinates } from '@/components/cornerstone3d/rensyuuTools/tools/do
 import { getSegmentToolGroupSetting } from '@/components/cornerstone3d/rensyuuTools/tools/getToolGroupSetting';
 import { setEventHandlers } from '@/components/cornerstone3d/rensyuuTools/tools/setEventHandlers';
 import { setMouseTools } from '@/components/cornerstone3d/rensyuuTools/tools/setMouseTools';
-import { setToolButtons } from '@/components/cornerstone3d/rensyuuTools/tools/setToolButtons';
 import { setMriTransferFunctionForVolumeActor } from '@/tools/cornerstoneTools';
 
 const { ViewportType } = Enums;
@@ -56,20 +55,67 @@ export const runViewVolume = async (
     /**
      * ここからツールの設定
      */
+    cornerstoneTools.removeTool(cornerstoneTools.StackScrollMouseWheelTool);
+    cornerstoneTools.addTool(cornerstoneTools.StackScrollMouseWheelTool);
 
+    cornerstoneTools.removeTool(cornerstoneTools.PanTool);
+    cornerstoneTools.addTool(cornerstoneTools.PanTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.ZoomTool);
+    cornerstoneTools.addTool(cornerstoneTools.ZoomTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.WindowLevelTool);
+    cornerstoneTools.addTool(cornerstoneTools.WindowLevelTool);
+
+    // segmentation related tools
+    cornerstoneTools.removeTool(cornerstoneTools.SegmentationDisplayTool);
+    cornerstoneTools.addTool(cornerstoneTools.SegmentationDisplayTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.CircleScissorsTool);
+    cornerstoneTools.addTool(cornerstoneTools.CircleScissorsTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.RectangleScissorsTool);
+    cornerstoneTools.addTool(cornerstoneTools.RectangleScissorsTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.SphereScissorsTool);
+    cornerstoneTools.addTool(cornerstoneTools.SphereScissorsTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.PaintFillTool);
+    cornerstoneTools.addTool(cornerstoneTools.PaintFillTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.BrushTool);
+    cornerstoneTools.addTool(cornerstoneTools.BrushTool);
+
+    // ツールグループのIDを定義します
     const toolGroupId = 'TOOL_GROUP_ID';
     // ツールグループが存在する場合、それを破壊します
-    if (toolGroup)
-      cornerstoneTools.ToolGroupManager.destroyToolGroup(toolGroupId);
+
+    cornerstoneTools.ToolGroupManager.destroyToolGroup(toolGroupId);
     // 新しいツールグループを作成します
     toolGroup = cornerstoneTools.ToolGroupManager.createToolGroup(toolGroupId);
     // ツールグループが作成されなかった場合、関数を終了します
     if (!toolGroup) return;
+
+    toolGroup.addTool(cornerstoneTools.StackScrollMouseWheelTool.toolName);
+    toolGroup.addTool(cornerstoneTools.PanTool.toolName);
+    toolGroup.addTool(cornerstoneTools.ZoomTool.toolName);
+    toolGroup.addTool(cornerstoneTools.WindowLevelTool.toolName);
+    // Segmentation Tools
+    toolGroup.addTool(cornerstoneTools.SegmentationDisplayTool.toolName);
+    toolGroup.addTool(cornerstoneTools.RectangleScissorsTool.toolName);
+    toolGroup.addTool(cornerstoneTools.CircleScissorsTool.toolName);
+    toolGroup.addTool(cornerstoneTools.SphereScissorsTool.toolName);
+    toolGroup.addTool(cornerstoneTools.PaintFillTool.toolName);
+    toolGroup.addTool(cornerstoneTools.BrushTool.toolName);
+    // segmentationDisplayToolを有効にする
+    toolGroup.setToolEnabled(cornerstoneTools.SegmentationDisplayTool.toolName);
+
     const toolbar = document.getElementById(`${idName}-toolbar`);
-    if (!toolbar) return;
+    if (!toolbar) return undefined;
 
     // Create a segmentation of the same resolution as the source data
     // using volumeLoader.createAndCacheDerivedVolume.
+    cornerstoneTools.segmentation.removeSegmentationsFromToolGroup(toolGroupId);
     const segmentationId = 'segmentation_id' + Date.now();
     const volumeSegmentation = await volumeLoader.createAndCacheDerivedVolume(
       volumeId,
@@ -80,6 +126,7 @@ export const runViewVolume = async (
 
     // マウス操作 tools
     setMouseTools(toolGroupId, element);
+
     // Segmentツール
     await getSegmentToolGroupSetting(
       idName,
@@ -94,22 +141,20 @@ export const runViewVolume = async (
     );
 
     // ボタン　ツール設定
-    await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
+    // await setToolButtons(idName, toolbar, renderingEngineId, viewportId);
     //　イベントハンドラーの設定　wheelページめくりの際のページ番号の取得など
-    setEventHandlers(renderingEngineId, viewportId, imageIds, element);
+    // setEventHandlers(renderingEngineId, viewportId, imageIds, element);
     // 座標表示のためのツール
-    volumeSegmentation &&
-      volume &&
-      (await domCoordinates(
-        coordinates,
-        element,
-        viewport,
-        volumeId,
-        volume,
-        volumeSegmentation,
-        toolbar,
-        idName,
-      ));
+    await domCoordinates(
+      coordinates,
+      element,
+      viewport,
+      volumeId,
+      volume,
+      volumeSegmentation,
+      toolbar,
+      idName,
+    );
 
     /**
      * ツールの設定 ここまで

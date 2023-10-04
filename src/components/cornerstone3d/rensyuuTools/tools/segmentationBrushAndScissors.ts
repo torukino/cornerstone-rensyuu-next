@@ -33,23 +33,6 @@ export const segmentationBrushAndScissors = async (
   toolbar: HTMLElement,
   segmentationId: string,
 ) => {
-  const toolGroup = cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
-  // ツールグループが作成されなかった場合、関数を終了します
-  if (!toolGroup) return;
-
-  segmentation.removeSegmentationsFromToolGroup(toolGroupId);
-
-  // Add some segmentations based on the source data volume
-  await addSegmentationsToState(volumeId, segmentationId);
-
-  // // Add the segmentation representation to the toolgroup
-  await segmentation.addSegmentationRepresentations(toolGroupId, [
-    {
-      segmentationId,
-      type: SegmentationRepresentations.Labelmap,
-    },
-  ]);
-
   const brushInstanceNames = {
     CircularBrush: 'CircularBrush',
     CircularEraser: 'CircularEraser',
@@ -81,7 +64,64 @@ export const segmentationBrushAndScissors = async (
     SphereScissorsTool.toolName,
     PaintFillTool.toolName,
   ];
-  console.log('optionsValues', optionsValues);
+
+  const toolGroup = cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
+  // ツールグループが作成されなかった場合、関数を終了します
+  if (!toolGroup) return;
+
+  toolGroup.addToolInstance(
+    brushInstanceNames.CircularBrush,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.CircularBrush,
+    },
+  );
+  toolGroup.addToolInstance(
+    brushInstanceNames.CircularEraser,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.CircularEraser,
+    },
+  );
+  toolGroup.addToolInstance(
+    brushInstanceNames.SphereBrush,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.SphereBrush,
+    },
+  );
+  toolGroup.addToolInstance(
+    brushInstanceNames.SphereEraser,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.SphereEraser,
+    },
+  );
+  toolGroup.addToolInstance(
+    brushInstanceNames.ThresholdBrush,
+    BrushTool.toolName,
+    {
+      activeStrategy: brushStrategies.ThresholdBrush,
+    },
+  );
+  toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
+
+  toolGroup.setToolActive(brushInstanceNames.CircularBrush, {
+    bindings: [{ mouseButton: MouseBindings.Primary }],
+  });
+
+  segmentation.removeSegmentationsFromToolGroup(toolGroupId);
+
+  // Add some segmentations based on the source data volume
+  await addSegmentationsToState(volumeId, segmentationId);
+
+  // // Add the segmentation representation to the toolgroup
+  await segmentation.addSegmentationRepresentations(toolGroupId, [
+    {
+      segmentationId,
+      type: SegmentationRepresentations.Labelmap,
+    },
+  ]);
 
   // ============================= //
   addDropdownToToolbar({
@@ -182,57 +222,7 @@ export const segmentationBrushAndScissors = async (
     toolbar,
   });
   // ============= run ================ //
-
-  // Segmentation Tools
-  toolGroup.addTool(SegmentationDisplayTool.toolName);
-  toolGroup.addTool(RectangleScissorsTool.toolName);
-  toolGroup.addTool(CircleScissorsTool.toolName);
-  toolGroup.addTool(SphereScissorsTool.toolName);
-  toolGroup.addTool(PaintFillTool.toolName);
-  toolGroup.addTool(BrushTool.toolName);
-
-  toolGroup.addToolInstance(
-    brushInstanceNames.CircularBrush,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.CircularBrush,
-    },
-  );
-  toolGroup.addToolInstance(
-    brushInstanceNames.CircularEraser,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.CircularEraser,
-    },
-  );
-  toolGroup.addToolInstance(
-    brushInstanceNames.SphereBrush,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.SphereBrush,
-    },
-  );
-  toolGroup.addToolInstance(
-    brushInstanceNames.SphereEraser,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.SphereEraser,
-    },
-  );
-  toolGroup.addToolInstance(
-    brushInstanceNames.ThresholdBrush,
-    BrushTool.toolName,
-    {
-      activeStrategy: brushStrategies.ThresholdBrush,
-    },
-  );
-  toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
-
-  toolGroup.setToolActive(brushInstanceNames.CircularBrush, {
-    bindings: [{ mouseButton: MouseBindings.Primary }],
-  });
 };
-
 async function addSegmentationsToState(
   volumeId: string,
   segmentationId: string,

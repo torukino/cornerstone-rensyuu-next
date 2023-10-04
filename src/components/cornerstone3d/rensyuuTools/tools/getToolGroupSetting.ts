@@ -1,7 +1,7 @@
 import { ImageVolume } from '@cornerstonejs/core';
 import * as cornerstoneTools from '@cornerstonejs/tools';
 
-import { segmentationBrushAndScissors } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationBrushAndScissors';
+import { segmentationTutorialBrush } from '@/components/cornerstone3d/rensyuuTools/tools/segmentationTutorialBrush';
 
 const { SegmentationDisplayTool } = cornerstoneTools;
 /**
@@ -19,29 +19,6 @@ export const getSegmentToolGroupSetting = async (
   segmentationId: string,
   volumeSegmentation: ImageVolume,
 ): Promise<void | undefined> => {
-  // addTool
-
-  const toolGroup = cornerstoneTools.ToolGroupManager.getToolGroup(toolGroupId);
-  if (!toolGroup) return;
-
-  // segmentation
-  cornerstoneTools.removeTool(SegmentationDisplayTool);
-  cornerstoneTools.removeTool(cornerstoneTools.RectangleScissorsTool);
-  cornerstoneTools.removeTool(cornerstoneTools.CircleScissorsTool);
-  cornerstoneTools.removeTool(cornerstoneTools.SphereScissorsTool);
-  cornerstoneTools.removeTool(cornerstoneTools.PaintFillTool);
-  cornerstoneTools.removeTool(cornerstoneTools.BrushTool);
-
-  cornerstoneTools.addTool(SegmentationDisplayTool);
-  cornerstoneTools.addTool(cornerstoneTools.RectangleScissorsTool);
-  cornerstoneTools.addTool(cornerstoneTools.CircleScissorsTool);
-  cornerstoneTools.addTool(cornerstoneTools.SphereScissorsTool);
-  cornerstoneTools.addTool(cornerstoneTools.PaintFillTool);
-  cornerstoneTools.addTool(cornerstoneTools.BrushTool);
-
-  toolGroup.addTool(SegmentationDisplayTool.toolName);
-  toolGroup.setToolEnabled(SegmentationDisplayTool.toolName);
-
   // segmentation rendering mockEllipsoidSegmentation
   // segmentationRenderingEllipsoid(
   //   volumeId,
@@ -54,22 +31,22 @@ export const getSegmentToolGroupSetting = async (
   // segmentationSwap(volumeId, toolGroupId, idName, toolbar);
 
   // segmentation brush and scissors
-  await segmentationBrushAndScissors(
-    volumeId,
-    toolGroupId,
-    idName,
-    toolbar,
-    segmentationId,
-  );
-
-  //tutorial brush
-  // await segmentationTutorialBrush(
+  // await segmentationBrushAndScissors(
   //   volumeId,
   //   toolGroupId,
   //   idName,
   //   toolbar,
   //   segmentationId,
   // );
+
+  //tutorial brush
+  await segmentationTutorialBrush(
+    volumeId,
+    toolGroupId,
+    idName,
+    toolbar,
+    segmentationId,
+  );
 
   //Global Labelmap Segmentation Configuration
   // await setGlobalLabelmapSegmentationConfiguration(
@@ -89,9 +66,6 @@ export const getSegmentToolGroupSetting = async (
   //   viewportId,
   //   volumeId,
   // });
-
-  //ここまで
-  console.log('toolGroup', toolGroup);
 
   // return toolGroup;
 };
