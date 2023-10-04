@@ -47,27 +47,13 @@ export const runViewVolume = async (
     const viewport = <Types.IVolumeViewport>(
       renderingEngine.getViewport(viewportId)
     );
-    // Volume表示
-    // メモリー上でvolumeを定義する
+
+    /**
+     * Volumeの作成
+     */
     const volume = await volumeLoader.createAndCacheVolume(volumeId, {
       imageIds,
     });
-
-    /**
-     * ここからツールの設定
-     */
-
-    const toolGroupId = 'TOOL_GROUP_ID';
-    // ツールグループが存在する場合、それを破壊します
-    if (toolGroup)
-      cornerstoneTools.ToolGroupManager.destroyToolGroup(toolGroupId);
-    // 新しいツールグループを作成します
-    toolGroup = cornerstoneTools.ToolGroupManager.createToolGroup(toolGroupId);
-    // ツールグループが作成されなかった場合、関数を終了します
-    if (!toolGroup) return;
-    const toolbar = document.getElementById(`${idName}-toolbar`);
-    if (!toolbar) return;
-
     // Create a segmentation of the same resolution as the source data
     // using volumeLoader.createAndCacheDerivedVolume.
     const segmentationId = 'segmentation_id' + Date.now();
@@ -77,7 +63,60 @@ export const runViewVolume = async (
         volumeId: segmentationId,
       },
     );
-  
+
+    /**
+     * 使うツールの宣言
+     */
+    cornerstoneTools.removeTool(cornerstoneTools.StackScrollMouseWheelTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.PanTool);
+    cornerstoneTools.addTool(cornerstoneTools.PanTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.ZoomTool);
+    cornerstoneTools.addTool(cornerstoneTools.ZoomTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.WindowLevelTool);
+    cornerstoneTools.addTool(cornerstoneTools.WindowLevelTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.RectangleScissorsTool);
+    cornerstoneTools.addTool(cornerstoneTools.RectangleScissorsTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.CircleScissorsTool);
+    cornerstoneTools.addTool(cornerstoneTools.CircleScissorsTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.SphereScissorsTool);
+    cornerstoneTools.addTool(cornerstoneTools.SphereScissorsTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.PaintFillTool);
+    cornerstoneTools.addTool(cornerstoneTools.PaintFillTool);
+
+    cornerstoneTools.removeTool(cornerstoneTools.BrushTool);
+    cornerstoneTools.addTool(cornerstoneTools.BrushTool);
+
+    // Add tools to Cornerstone3D
+
+    const toolGroupId = 'TOOL_GROUP_ID';
+    // ツールグループが存在する場合、それを破壊します
+    if (toolGroup)
+      cornerstoneTools.ToolGroupManager.destroyToolGroup(toolGroupId);
+    // 新しいツールグループを作成します
+    toolGroup = cornerstoneTools.ToolGroupManager.createToolGroup(toolGroupId);
+    // ツールグループが作成されなかった場合、関数を終了します
+    if (!toolGroup) return;
+
+    toolGroup.addTool(cornerstoneTools.SegmentationDisplayTool.toolName);
+    toolGroup.setToolEnabled(cornerstoneTools.SegmentationDisplayTool.toolName);
+
+    // Segmentation Tools
+    toolGroup.addTool(cornerstoneTools.RectangleScissorsTool.toolName);
+    toolGroup.addTool(cornerstoneTools.CircleScissorsTool.toolName);
+    toolGroup.addTool(cornerstoneTools.SphereScissorsTool.toolName);
+    toolGroup.addTool(cornerstoneTools.PaintFillTool.toolName);
+    toolGroup.addTool(cornerstoneTools.BrushTool.toolName);
+
+    //ツールバーDOMの取得
+    const toolbar = document.getElementById(`${idName}-toolbar`);
+    if (!toolbar) return;
 
     // マウス操作 tools
     setMouseTools(toolGroupId, element);
@@ -99,18 +138,17 @@ export const runViewVolume = async (
     //　イベントハンドラーの設定　wheelページめくりの際のページ番号の取得など
     setEventHandlers(renderingEngineId, viewportId, imageIds, element);
     // 座標表示のためのツール
-    volumeSegmentation &&
-      volume &&
-      domCoordinates(
-        coordinates,
-        element,
-        viewport,
-        volumeId,
-        volume,
-        volumeSegmentation,
-        toolbar,
-        idName,
-      );
+
+    domCoordinates(
+      coordinates,
+      element,
+      viewport,
+      volumeId,
+      volume,
+      volumeSegmentation,
+      toolbar,
+      idName,
+    );
 
     /**
      * ツールの設定 ここまで
@@ -124,7 +162,7 @@ export const runViewVolume = async (
     viewport.setVolumes([
       { callback: setMriTransferFunctionForVolumeActor, volumeId },
     ]);
-
+    console.log('too;Group', toolGroup);
     // Render the image
     viewport.render();
   } else {

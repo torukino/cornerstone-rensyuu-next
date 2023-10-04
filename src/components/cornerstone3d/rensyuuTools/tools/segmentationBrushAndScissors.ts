@@ -37,7 +37,7 @@ export const segmentationBrushAndScissors = async (
   // ツールグループが作成されなかった場合、関数を終了します
   if (!toolGroup) return;
 
-  segmentation.removeSegmentationsFromToolGroup(toolGroupId);
+  // segmentation.removeSegmentationsFromToolGroup(toolGroupId);
 
   // Add some segmentations based on the source data volume
   await addSegmentationsToState(volumeId, segmentationId);
@@ -183,13 +183,6 @@ export const segmentationBrushAndScissors = async (
   });
   // ============= run ================ //
 
-  // Segmentation Tools
-  toolGroup.addTool(SegmentationDisplayTool.toolName);
-  toolGroup.addTool(RectangleScissorsTool.toolName);
-  toolGroup.addTool(CircleScissorsTool.toolName);
-  toolGroup.addTool(SphereScissorsTool.toolName);
-  toolGroup.addTool(PaintFillTool.toolName);
-  toolGroup.addTool(BrushTool.toolName);
 
   toolGroup.addToolInstance(
     brushInstanceNames.CircularBrush,

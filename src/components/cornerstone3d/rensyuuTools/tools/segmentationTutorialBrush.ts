@@ -39,4 +39,14 @@ export const segmentationTutorialBrush = async (
       segmentationId,
     },
   ]);
+
+
+  // // Add the segmentation representation to the toolGroup
+await segmentation.addSegmentationRepresentations(toolGroupId, [
+  {
+    segmentationId,
+    type: SegmentationRepresentations.Labelmap,
+  },
+]);
+
 };

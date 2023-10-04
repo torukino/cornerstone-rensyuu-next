@@ -3,7 +3,7 @@ import { ImageVolume, Types, utilities as csUtils } from '@cornerstonejs/core';
 import { addButtonToToolbar } from '@/tools/cornerstoneTools';
 
 const BUG = false;
-export const domCoordinates = (
+export const domCoordinates = async(
   coordinates: HTMLElement,
   element: HTMLElement,
   viewport: Types.IVolumeViewport | Types.IStackViewport,
@@ -34,7 +34,7 @@ export const domCoordinates = (
   mousePosDiv.appendChild(mriValueElement);
   mousePosDiv.appendChild(segmentationValueElement);
 
-  element.addEventListener('mousemove', (evt) => {
+  element.addEventListener('mousemove', async(evt) => {
     const rect = element.getBoundingClientRect();
 
     const canvasPos = <Types.Point2>[
@@ -62,7 +62,7 @@ export const domCoordinates = (
     const scalarDataSegmentation = volumeSegmentation.getScalarData();
     const imageDataSegmentation = volumeSegmentation.imageData;
     const dimensionsSegmentation = volumeSegmentation.dimensions;
-    segmentationValueElement.innerText = `segmentation value: ${getSegmentationValue(
+    segmentationValueElement.innerText = `segmentation value: ${await getSegmentationValue(
       volumeSegmentation,
       canvasPos,
       viewport as Types.IVolumeViewport,
@@ -86,7 +86,6 @@ export const domCoordinates = (
 
       const scalarDataSegmentation = volumeSegmentation.getScalarData();
 
-
       const imageDataSegmentation = volumeSegmentation.imageData;
       const dimensionsSegmentation = volumeSegmentation.dimensions;
       for (let h = 0; h < eHeight; h++) {
@@ -102,7 +101,7 @@ export const domCoordinates = (
           ) as number;
           widthData.push(value);
 
-          valueSegmentation = getSegmentationValue(
+          valueSegmentation = await getSegmentationValue(
             volumeSegmentation,
             [w, h] as Types.Point2,
             viewport as Types.IVolumeViewport,
@@ -159,22 +158,15 @@ function getMriValue(
   return value;
 }
 
-function getSegmentationValue(
+const getSegmentationValue=async(
   volumeSegmentation: ImageVolume,
   canvasPos: Types.Point2,
   viewport: Types.IVolumeViewport,
   scalarData: Types.VolumeScalarData,
   imageData: any,
   dimensions: Types.Point3,
-) {
-  // let max = Math.max(...scalarData); // 最大値
-  // let min = Math.min(...scalarData); // 最小値
+) :Promise<number|undefined> => {
 
-  // console.log(
-  //   `@@@@ scalarData  max${max} min${min} ${scalarData.length} dementions ${dimensions} @@@@`,
-  // );
-  // console.log('@@@@ imageData @@@@', imageData);
-  // Convert canvas coordiantes to world coordinates
 
   const worldPos: Types.Point3 = viewport.canvasToWorld(canvasPos);
 
@@ -189,13 +181,8 @@ function getSegmentationValue(
   // BUG && console.log('@@@@ dimensions @@@@', dimensions);
   // BUG && console.log('@@@@ scalarData @@@@', scalarData);
 
-  if (
-    !csUtils.indexWithinDimensions(
-      [index[0], index[1], index[2]],
-      [dimensions[0], dimensions[1], dimensions[2]],
-    )
-  ) {
-    return;
+  if (!csUtils.indexWithinDimensions(index, dimensions)) {
+    return 0;
   }
 
   const yMultiple = dimensions[0];
