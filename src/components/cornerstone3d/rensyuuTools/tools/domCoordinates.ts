@@ -166,6 +166,8 @@ function getSegmentationValue(
   imageData: any,
   dimensions: Types.Point3,
 ) {
+
+  console.log('@@@@ getSegmentationValue @@@@');
   // let max = Math.max(...scalarData); // 最大値
   // let min = Math.min(...scalarData); // 最小値
 

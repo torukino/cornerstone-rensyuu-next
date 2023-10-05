@@ -51,6 +51,15 @@ export const runViewVolume = async (
     const volume = await volumeLoader.createAndCacheVolume(volumeId, {
       imageIds,
     });
+    await volume.load();
+
+    const segmentationId = 'segmentation_id' + Date.now();
+    const volumeSegmentation = await volumeLoader.createAndCacheDerivedVolume(
+      volumeId,
+      {
+        volumeId: segmentationId,
+      },
+    );
 
     /**
      * ここからツールの設定
@@ -113,16 +122,7 @@ export const runViewVolume = async (
     const toolbar = document.getElementById(`${idName}-toolbar`);
     if (!toolbar) return undefined;
 
-    // Create a segmentation of the same resolution as the source data
-    // using volumeLoader.createAndCacheDerivedVolume.
     cornerstoneTools.segmentation.removeSegmentationsFromToolGroup(toolGroupId);
-    const segmentationId = 'segmentation_id' + Date.now();
-    const volumeSegmentation = await volumeLoader.createAndCacheDerivedVolume(
-      volumeId,
-      {
-        volumeId: segmentationId,
-      },
-    );
 
     // マウス操作 tools
     setMouseTools(toolGroupId, element);
@@ -162,7 +162,6 @@ export const runViewVolume = async (
 
     // volumeの起動(load)のセット
     toolGroup.addViewport(viewportId, renderingEngineId);
-    await volume.load();
 
     // Set the volume on the viewport
     viewport.setVolumes([
