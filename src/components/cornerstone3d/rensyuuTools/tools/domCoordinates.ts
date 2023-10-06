@@ -63,7 +63,6 @@ export const domCoordinates = async (
     const imageDataSegmentation = volumeSegmentation.imageData;
     const dimensionsSegmentation = volumeSegmentation.dimensions;
     segmentationValueElement.innerText = `segmentation value: ${getSegmentationValue(
-      volumeSegmentation,
       canvasPos,
       viewport as Types.IVolumeViewport,
       scalarDataSegmentation,
@@ -102,7 +101,6 @@ export const domCoordinates = async (
           widthData.push(value);
 
           valueSegmentation = getSegmentationValue(
-            volumeSegmentation,
             [w, h] as Types.Point2,
             viewport as Types.IVolumeViewport,
             scalarDataSegmentation,
@@ -159,7 +157,6 @@ function getMriValue(
 }
 
 function getSegmentationValue(
-  volumeSegmentation: ImageVolume,
   canvasPos: Types.Point2,
   viewport: Types.IVolumeViewport,
   scalarData: Types.VolumeScalarData,
